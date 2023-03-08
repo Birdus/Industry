@@ -1,0 +1,14 @@
+/* 
+  BaseLanguage.strings
+  Industry
+
+  Created by Даниил on 08.03.2023.
+  
+*/
+
+"Login" = "Логин";
+"Password" = "Пароль";
+"Password recovery" = "Востановление пароля";
+"Enter" = "Войти";
+"Welcome!" = "Добро пожаловать!";
+

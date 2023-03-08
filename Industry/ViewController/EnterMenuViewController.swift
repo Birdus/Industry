@@ -13,7 +13,7 @@ class EnterMenuViewController: UIViewController {
     private lazy var btnEnter: UIButton = {
         let btn = UIButton()
         btn.backgroundColor = UIColor.blue
-        btn.setTitle("Войти", for: .normal )
+        btn.setTitle("Войти".localized, for: .normal )
         btn.setTitleColor(.systemGray4, for: .normal)
         btn.titleShadowColor(for: .normal)
         btn.translatesAutoresizingMaskIntoConstraints = false
@@ -36,7 +36,7 @@ class EnterMenuViewController: UIViewController {
     
     private lazy var btnRecoveryPass: UIButton = {
         let btn = UIButton()
-        btn.setTitle("Востановить пароль", for: .normal )
+        btn.setTitle("Восстановить пароль".localized, for: .normal )
         btn.setTitleColor(.systemGray, for: .normal)
         btn.titleShadowColor(for: .normal)
         btn.translatesAutoresizingMaskIntoConstraints = false
@@ -120,20 +120,6 @@ class EnterMenuViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(kbWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
-    private func gradientBackground() -> CAGradientLayer{
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-        self.navigationController?.navigationBar.shadowImage = UIImage()
-        self.navigationController?.navigationBar.isTranslucent = true
-        let colorTop = UIColor(red: 42.0/255.0, green: 152.0/255.0, blue: 253.0/255.0, alpha: 1.0).cgColor
-        let colorBottom = UIColor(red: 121.0/255.0, green: 129.0/255.0, blue: 249.0/255.0, alpha: 1.0).cgColor
-        let gradientLayer = CAGradientLayer()
-        gradientLayer.colors = [colorTop ,colorBottom]
-        gradientLayer.locations = [0.0 ,1.1]
-        gradientLayer.frame = self.view.bounds
-        return gradientLayer
-    }
-    
-    
     private func configureUI() {
         // TODO: The function is responsible for setting the UI
         view.backgroundColor = .white
@@ -188,10 +174,10 @@ extension EnterMenuViewController: UITableViewDataSource, UITableViewDelegate {
         cell.backgroundView?.isHidden = true;
         switch indexPath.row {
         case 0:
-            cell.fillTable("testLog", "Логин", false)
+            cell.fillTable("testLog", "Логин".localized, false)
             cell.delegete = self
         case 1:
-            cell.fillTable("testPas", "Пароль", true)
+            cell.fillTable("testPas", "Пароль".localized, true)
             cell.delegete = self
             cell.separatorInset = .zero
             
