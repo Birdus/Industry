@@ -48,7 +48,11 @@ class AuthenticationTblViewCell: UITableViewCell {
         configureUI()
     }
     
-    public func fillTable(_ iconName: String, _ placeholder: String, _ isPasword: Bool){
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    public func fillTable(_ iconName: String, _ placeholder: String, _ isPasword: Bool) {
         imgEnterIcon.image = UIImage(named: iconName)
         txtFld.placeholder = placeholder
         txtFld.isSecureTextEntry = isPasword
@@ -82,9 +86,7 @@ class AuthenticationTblViewCell: UITableViewCell {
         txtFld.font = UIFont.systemFont(ofSize: CGFloat(self.bounds.height/2))
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    
 }
 
 extension AuthenticationTblViewCell: UITextFieldDelegate {
