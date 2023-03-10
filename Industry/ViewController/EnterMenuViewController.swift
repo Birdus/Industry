@@ -22,14 +22,12 @@ class EnterMenuViewController: UIViewController {
         btn.backgroundColor = .systemPurple
         btn.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMaxXMinYCorner, .layerMinXMinYCorner, .layerMinXMaxYCorner]
         btn.layer.masksToBounds = true
-        
         btn.layer.shadowColor = UIColor.darkGray.cgColor;
         btn.layer.shadowOffset = CGSize(width: 1.0, height: 1.0);
         btn.layer.shadowOpacity = 1.4;
         btn.layer.shadowRadius = 5.0;
         btn.clipsToBounds = false;
         btn.layer.masksToBounds = false;
-
         return btn
     }()
     
@@ -67,7 +65,6 @@ class EnterMenuViewController: UIViewController {
         tbl.separatorInsetReference = .fromCellEdges
         tbl.allowsSelectionDuringEditing = false
         tbl.layer.masksToBounds = true
-        
         tbl.layer.shadowColor = UIColor.darkGray.cgColor;
         tbl.layer.shadowOffset = CGSize(width: 1.0, height: 1.0);
         tbl.layer.shadowOpacity = 0.4;
@@ -94,7 +91,12 @@ class EnterMenuViewController: UIViewController {
     
     @objc
     private func BtnEnter_Click(_ sender: UIButton) {
-        
+        let vc:TaskListViewController = TaskListViewController()
+//                vc.delegate = self
+        let vcNav = UINavigationController(rootViewController: vc)
+        vcNav.modalPresentationStyle = .fullScreen
+        present(vcNav , animated: true)
+
     }
     
     @objc
@@ -114,7 +116,6 @@ class EnterMenuViewController: UIViewController {
         
     }
     
-    
     private func registerForKeyboardNotifacation() {
         NotificationCenter.default.addObserver(self, selector: #selector(kbWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(kbWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -127,7 +128,6 @@ class EnterMenuViewController: UIViewController {
         view.addSubview(btnEnter)
         view.addSubview(imgCompany)
         view.addSubview(btnRecoveryPass)
-//        view.layer.insertSublayer(gradientBackground(), at: 0)
         registerForKeyboardNotifacation()
         NSLayoutConstraint.activate([
             tblAuthentication.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
@@ -174,10 +174,10 @@ extension EnterMenuViewController: UITableViewDataSource, UITableViewDelegate {
         cell.backgroundView?.isHidden = true;
         switch indexPath.row {
         case 0:
-            cell.fillTable("testLog", "Логин".localized, false)
+            cell.fillTable("iconLogin", "Логин".localized, false)
             cell.delegete = self
         case 1:
-            cell.fillTable("testPas", "Пароль".localized, true)
+            cell.fillTable("iconPass", "Пароль".localized, true)
             cell.delegete = self
             cell.separatorInset = .zero
             

@@ -17,18 +17,18 @@ class AuthenticationTblViewCell: UITableViewCell {
     weak var delegete: AuthenticationTblViewCellDelegate!
     
     private lazy var imgEnterIcon: UIImageView = {
-            let icon = UIImageView()
-            icon.translatesAutoresizingMaskIntoConstraints = false
-            return icon
-        }()
+        let icon = UIImageView()
+        icon.translatesAutoresizingMaskIntoConstraints = false
+        return icon
+    }()
     
     private lazy var txtFld: UITextField = {
         let txt = UITextField()
         txt.translatesAutoresizingMaskIntoConstraints = false
         var tlBarTxt: UIToolbar = {
             let tlBar = UIToolbar()
-            let btnDone = UIBarButtonItem(title: "Готово", style: UIBarButtonItem.Style.done, target: self, action: #selector(btnDone_Click))
-            let btnCancel = UIBarButtonItem(title: "Отменить", style: UIBarButtonItem.Style.plain, target: self, action: #selector(btnCancel_click))
+            let btnDone = UIBarButtonItem(title: "Готово".localized, style: UIBarButtonItem.Style.done, target: self, action: #selector(btnDone_Click))
+            let btnCancel = UIBarButtonItem(title: "Отменить".localized, style: UIBarButtonItem.Style.plain, target: self, action: #selector(btnCancel_click))
             let btnSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
             tlBar.setItems([btnCancel, btnSpace, btnDone], animated: true)
             tlBar.sizeToFit()
@@ -48,7 +48,11 @@ class AuthenticationTblViewCell: UITableViewCell {
         configureUI()
     }
     
-    public func fillTable(_ iconName: String, _ placeholder: String, _ isPasword: Bool){
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    public func fillTable(_ iconName: String, _ placeholder: String, _ isPasword: Bool) {
         imgEnterIcon.image = UIImage(named: iconName)
         txtFld.placeholder = placeholder
         txtFld.isSecureTextEntry = isPasword
@@ -78,14 +82,11 @@ class AuthenticationTblViewCell: UITableViewCell {
             txtFld.leadingAnchor.constraint(equalTo: imgEnterIcon.trailingAnchor, constant: 6),
             txtFld.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
             txtFld.topAnchor.constraint(equalTo: self.topAnchor)
-            
         ])
         txtFld.font = UIFont.systemFont(ofSize: CGFloat(self.bounds.height/2))
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    
 }
 
 extension AuthenticationTblViewCell: UITextFieldDelegate {
