@@ -7,7 +7,7 @@
 
 import UIKit
 
-class TaskListTblViewCell: UITableViewCell {
+class TaskCollViewCell: UICollectionViewCell {
     
     static let indificatorCell: String = "TaskListTblViewCell"
     
@@ -38,10 +38,10 @@ class TaskListTblViewCell: UITableViewCell {
         return lbl
     }()
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        configureUI()
-    }
+    override init(frame: CGRect) {
+            super.init(frame: frame)
+            configureUI ()
+        }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -62,22 +62,19 @@ class TaskListTblViewCell: UITableViewCell {
             lblTaskName.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 10),
             lblTaskName.widthAnchor.constraint(equalToConstant: self.bounds.width/1.5),
             lblTaskName.rightAnchor.constraint(equalTo: lblDeadlLine.safeAreaLayoutGuide.leftAnchor, constant: 10),
-            
+
             lblDeadlLine.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -10),
             lblDeadlLine.widthAnchor.constraint(equalToConstant: self.bounds.width/2),
             lblDeadlLine.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 10),
             lblDeadlLine.leftAnchor.constraint(equalTo: lblTaskName.safeAreaLayoutGuide.rightAnchor, constant: -10),
-            
-            
+
             lblDescription.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 10),
             lblDescription.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -10),
-            lblDescription.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor)
-
-           
-            
+            lblDescription.topAnchor.constraint(equalTo: lblTaskName.bottomAnchor, constant: 10),
+            lblDescription.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -10)
         ])
-        lblTaskName.font = UIFont.systemFont(ofSize: CGFloat(self.bounds.height/2))
-        lblDescription.font = UIFont.systemFont(ofSize: CGFloat(self.bounds.height/2))
-        lblDeadlLine.font = UIFont.systemFont(ofSize: CGFloat(self.bounds.height/2))
+        lblTaskName.font = UIFont.systemFont(ofSize: CGFloat(self.frame.height/8))
+        lblDescription.font = UIFont.systemFont(ofSize: CGFloat(self.frame.height/8))
+        lblDeadlLine.font = UIFont.systemFont(ofSize: CGFloat(self.frame.height/8))
     }
 }
