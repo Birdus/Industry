@@ -16,7 +16,7 @@ class SplachViewController: UIViewController {
         lbl.textAlignment = .center
         lbl.textColor = UIColor.black
         lbl.font = lbl.font.withSize(30)
-        lbl.text = "Добро пожаловать!"
+        lbl.text = "Добро пожаловать!".localized
         return lbl
     }()
     
