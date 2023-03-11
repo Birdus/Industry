@@ -82,9 +82,9 @@ class EnterMenuViewController: UIViewController {
     
     @objc
     private func BtnEnter_Click(_ sender: UIButton) {
-        let vc:TaskListViewController = TaskListViewController()
+        let mainTabBarController = MenuTabBarController()
 //                vc.delegate = self
-        let vcNav = UINavigationController(rootViewController: vc)
+        let vcNav = UINavigationController(rootViewController: mainTabBarController)
         vcNav.modalPresentationStyle = .fullScreen
         present(vcNav , animated: true)
 
