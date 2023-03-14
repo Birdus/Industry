@@ -20,16 +20,13 @@ class MenuTabBarController: UITabBarController {
         
         let vcTaskList = TaskListViewController()
         let vcUserTask = TaskListViewController()
-        let vcEnterMenu = EnterMenuViewController()
-        // let vc3 = ViewController()
+        let vcProfileUser = ProfileUserViewController()
         
         vcTaskList.tabBarItem = UITabBarItem(title: "Задачи", image: UIImage(named: "iconTask")?.withRenderingMode(.automatic), selectedImage: UIImage(named: "iconTask")?.withRenderingMode(.automatic))
         vcUserTask.tabBarItem = UITabBarItem(title: "Мои задачи", image: UIImage(named: "iconUserTask")?.withRenderingMode(.automatic), selectedImage: UIImage(named: "iconUserTask")?.withRenderingMode(.automatic))
-        vcEnterMenu.tabBarItem = UITabBarItem(title: "Мои профиль", image: UIImage(named: "iconAccount")?.withRenderingMode(.automatic), selectedImage: UIImage(named: "iconAccount")?.withRenderingMode(.automatic))
+        vcProfileUser.tabBarItem = UITabBarItem(title: "Мои профиль", image: UIImage(named: "iconAccount")?.withRenderingMode(.automatic), selectedImage: UIImage(named: "iconAccount")?.withRenderingMode(.automatic))
         
-        // vc3.tabBarItem = UITabBarItem(tabBarSystemItem: .downloads, tag: 2)
-        
-        self.viewControllers = [vcTaskList, vcUserTask, vcEnterMenu]
+        self.viewControllers = [vcTaskList, vcUserTask, vcProfileUser]
         
         // Добавляем TabBar к главному контроллеру
         self.tabBar.barTintColor = .white
