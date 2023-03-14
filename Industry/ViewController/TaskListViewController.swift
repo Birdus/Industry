@@ -7,62 +7,46 @@
 
 import UIKit
 
+
+
 class TaskListViewController: UIViewController {
     
-    lazy private var tabBar: UITabBar = {
-        let tabBar = UITabBar()
-        tabBar.delegate = self
-        tabBar.translatesAutoresizingMaskIntoConstraints = false
-
-        let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: (self.view.bounds.width/24))]
-        let items = [
-            UITabBarItem(title: "Задачи", image: UIImage(named: "iconTask"), selectedImage: UIImage(named: "iconTask")),
-            UITabBarItem(title: "Мои задачи", image: UIImage(named: "iconUserTask"), selectedImage: UIImage(named: "iconUserTask")),
-            UITabBarItem(title: "Профиль", image: UIImage(named: "iconAccount"), selectedImage: UIImage(named: "iconAccount"))
-        ]
-        items.forEach { item in
-            item.setTitleTextAttributes(attributes, for: .normal)
-        }
-        tabBar.items = items
-
-        return tabBar
-    }()
-
-    lazy private var tblTask: UICollectionView = {
+    
+    lazy private var collViewTask: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-            layout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
-            layout.itemSize = CGSize(width: (self.view.bounds.width - 20), height: (self.view.bounds.width) / 3)
-
-            let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-            collectionView.backgroundColor = .white
-            collectionView.register(TaskCollViewCell.self, forCellWithReuseIdentifier: TaskCollViewCell.indificatorCell)
-            collectionView.dataSource = self
-            collectionView.delegate = self
-            collectionView.translatesAutoresizingMaskIntoConstraints = false
-
-            return collectionView
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+        layout.itemSize = CGSize(width: (self.view.bounds.width - 20), height: (self.view.bounds.width) / 3)
+        
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .white
+        collectionView.register(TaskCollViewCell.self, forCellWithReuseIdentifier: TaskCollViewCell.indificatorCell)
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        
+        return collectionView
     }()
-
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
     }
     
+    private var tabBarScreenDefinition : TabBarScreenDefinition = TabBarScreenDefinition()
+    
     private func configureUI() {
         view.backgroundColor = .white
-        view.addSubview(tblTask)
-        view.addSubview(tabBar)
+        view.addSubview(collViewTask)
+        
+        if let tabBarController = self.tabBarController as? MenuTabBarController {
+            tabBarController.delegete = self
+                }
         NSLayoutConstraint.activate([
-            tblTask.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            tblTask.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            tblTask.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            tblTask.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            
-            tabBar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            tabBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            tabBar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            tabBar.heightAnchor.constraint(equalToConstant: (view.frame.height / 14))
+            collViewTask.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            collViewTask.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            collViewTask.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            collViewTask.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
         ])
     }
     
@@ -71,11 +55,16 @@ class TaskListViewController: UIViewController {
 extension TaskListViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        if tabBarScreenDefinition.isScreenUserTask {
+            return 10
+        }else {
+            return 2
+        }
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = tblTask.dequeueReusableCell(withReuseIdentifier: TaskCollViewCell.indificatorCell, for: indexPath) as! TaskCollViewCell
+        let cell = collViewTask.dequeueReusableCell(withReuseIdentifier: TaskCollViewCell.indificatorCell, for: indexPath) as! TaskCollViewCell
         
         cell.backgroundColor = .white
         cell.layer.cornerRadius = 10
@@ -112,8 +101,9 @@ extension TaskListViewController: UICollectionViewDelegate {
     
 }
 
-extension TaskListViewController: UITabBarDelegate {
-    func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
-        print("Выбрана кнопка \(item.title ?? "")")
+extension TaskListViewController: MenuTabBarControllerDelegate {
+    func menuTabBarControllerDelegate(_ tabController: MenuTabBarController, didSelectTab index: Int) {
+        tabBarScreenDefinition = TabBarScreenDefinition(rawValue: index)!
+        return
     }
 }

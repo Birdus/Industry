@@ -15,6 +15,8 @@
 		A5831B2729BBC91700A3A8F8 /* AuthenticationTableRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5831B2629BBC91700A3A8F8 /* AuthenticationTableRow.swift */; };
 		A585FF1929BA178C00A0F0AF /* TaskListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A585FF1829BA178C00A0F0AF /* TaskListViewController.swift */; };
 		A585FF1C29BA1A3600A0F0AF /* TaskCollViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A585FF1B29BA1A3600A0F0AF /* TaskCollViewCell.swift */; };
+		A5916AB229BC9D8900285D79 /* MenuTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5916AB129BC9D8900285D79 /* MenuTabBarController.swift */; };
+		A5916AB529BCCA8A00285D79 /* TabBarScreenDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5916AB429BCCA8A00285D79 /* TabBarScreenDefinition.swift */; };
 		A5E0AF1D29B8F41E003B47D2 /* LocalizeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E0AF1C29B8F41E003B47D2 /* LocalizeController.swift */; };
 		A5E0AF4E29B8FEE6003B47D2 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A5E0AF5029B8FEE6003B47D2 /* Localizable.strings */; };
 /* End PBXBuildFile section */
@@ -30,6 +32,8 @@
 		A5831B2629BBC91700A3A8F8 /* AuthenticationTableRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationTableRow.swift; sourceTree = "<group>"; };
 		A585FF1829BA178C00A0F0AF /* TaskListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListViewController.swift; sourceTree = "<group>"; };
 		A585FF1B29BA1A3600A0F0AF /* TaskCollViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskCollViewCell.swift; sourceTree = "<group>"; };
+		A5916AB129BC9D8900285D79 /* MenuTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuTabBarController.swift; sourceTree = "<group>"; };
+		A5916AB429BCCA8A00285D79 /* TabBarScreenDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarScreenDefinition.swift; sourceTree = "<group>"; };
 		A5E0AF1C29B8F41E003B47D2 /* LocalizeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizeController.swift; sourceTree = "<group>"; };
 		A5E0AF4F29B8FEE6003B47D2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -49,6 +53,7 @@
 			isa = PBXGroup;
 			children = (
 				A5831B2629BBC91700A3A8F8 /* AuthenticationTableRow.swift */,
+				A5916AB429BCCA8A00285D79 /* TabBarScreenDefinition.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -68,6 +73,7 @@
 				A0E4AA3129A8E25600BDB4EF /* SplachViewController.swift */,
 				A0E4AA4729A8E46F00BDB4EF /* EnterMenuViewController.swift */,
 				A585FF1829BA178C00A0F0AF /* TaskListViewController.swift */,
+				A5916AB129BC9D8900285D79 /* MenuTabBarController.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -193,6 +199,8 @@
 				A0E4AA2E29A8E25600BDB4EF /* AppDelegate.swift in Sources */,
 				A059752C29AA229D00586F2E /* AuthenticationTblViewCell.swift in Sources */,
 				A5E0AF1D29B8F41E003B47D2 /* LocalizeController.swift in Sources */,
+				A5916AB229BC9D8900285D79 /* MenuTabBarController.swift in Sources */,
+				A5916AB529BCCA8A00285D79 /* TabBarScreenDefinition.swift in Sources */,
 				A585FF1929BA178C00A0F0AF /* TaskListViewController.swift in Sources */,
 				A585FF1C29BA1A3600A0F0AF /* TaskCollViewCell.swift in Sources */,
 				A5831B2729BBC91700A3A8F8 /* AuthenticationTableRow.swift in Sources */,
