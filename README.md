@@ -47,3 +47,14 @@ iPad Mini 3,
 iPad Mini 4. 
 
 This application has a minimum requirement for mobile devices running on iOS 10 or higher.
+
+# More.
+This application use API.
+
+https://github.com/lookstep/Diplom
+
+The repository appears to be a web application project that utilizes the ASP.NET framework and C# programming language. The project files include folders for Controllers, Models, Views, and various other components of an ASP.NET web application. It also appears that the project is using Entity Framework, a popular object-relational mapping (ORM) framework for .NET applications.
+
+From the available files, it is difficult to determine the exact purpose or functionality of the "Diplom" project. However, it seems to be related to a diploma or thesis project, and may potentially serve a variety of purposes such as a content management system, an e-commerce platform, or a social networking site.
+
+Overall, the "Diplom" project on the lookstep GitHub account appears to be a well-organized and structured ASP.NET web application project, with a focus on utilizing the Entity Framework and C# programming language.
