@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A07D45D229C763CD00420463 /* UserCountTaskTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07D45D129C763CD00420463 /* UserCountTaskTblViewCell.swift */; };
+		A07D45DA29C78DEE00420463 /* AssignmentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07D45D929C78DEE00420463 /* AssignmentModel.swift */; };
+		A07D45DE29C78DFF00420463 /* ProjectModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07D45DD29C78DFF00420463 /* ProjectModel.swift */; };
+		A07D45E129C78E0F00420463 /* LaborCostModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07D45E029C78E0F00420463 /* LaborCostModel.swift */; };
+		A07D45E429C78E1C00420463 /* EmployeeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07D45E329C78E1C00420463 /* EmployeeModel.swift */; };
+		A07D45E829C78E3200420463 /* DivisionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07D45E729C78E3200420463 /* DivisionModel.swift */; };
+		A07D45EC29C78F9000420463 /* APIClient .swift in Sources */ = {isa = PBXBuildFile; fileRef = A07D45EB29C78F9000420463 /* APIClient .swift */; };
 		A0E4AA2E29A8E25600BDB4EF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0E4AA2D29A8E25600BDB4EF /* AppDelegate.swift */; };
 		A0E4AA3229A8E25600BDB4EF /* SplachViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0E4AA3129A8E25600BDB4EF /* SplachViewController.swift */; };
 		A0E4AA3729A8E25700BDB4EF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A0E4AA3629A8E25700BDB4EF /* Assets.xcassets */; };
@@ -24,6 +31,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A07D45D129C763CD00420463 /* UserCountTaskTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCountTaskTblViewCell.swift; sourceTree = "<group>"; };
+		A07D45D929C78DEE00420463 /* AssignmentModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignmentModel.swift; sourceTree = "<group>"; };
+		A07D45DD29C78DFF00420463 /* ProjectModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectModel.swift; sourceTree = "<group>"; };
+		A07D45E029C78E0F00420463 /* LaborCostModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaborCostModel.swift; sourceTree = "<group>"; };
+		A07D45E329C78E1C00420463 /* EmployeeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmployeeModel.swift; sourceTree = "<group>"; };
+		A07D45E729C78E3200420463 /* DivisionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DivisionModel.swift; sourceTree = "<group>"; };
+		A07D45EB29C78F9000420463 /* APIClient .swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APIClient .swift"; sourceTree = "<group>"; };
 		A0E4AA2A29A8E25600BDB4EF /* Industry.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Industry.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A0E4AA2D29A8E25600BDB4EF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A0E4AA3129A8E25600BDB4EF /* SplachViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplachViewController.swift; sourceTree = "<group>"; };
@@ -58,6 +72,11 @@
 			children = (
 				A5831B2629BBC91700A3A8F8 /* AuthenticationTableRow.swift */,
 				A5916AB429BCCA8A00285D79 /* TabBarScreenDefinition.swift */,
+				A07D45D929C78DEE00420463 /* AssignmentModel.swift */,
+				A07D45DD29C78DFF00420463 /* ProjectModel.swift */,
+				A07D45E029C78E0F00420463 /* LaborCostModel.swift */,
+				A07D45E329C78E1C00420463 /* EmployeeModel.swift */,
+				A07D45E729C78E3200420463 /* DivisionModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -68,6 +87,7 @@
 				A5833D1D29C08D4400387240 /* AuthenticationTblViewCell.swift */,
 				A585FF1B29BA1A3600A0F0AF /* TaskCollViewCell.swift */,
 				A5833D2329C09FA900387240 /* UserDescriptionCollViewCell.swift */,
+				A07D45D129C763CD00420463 /* UserCountTaskTblViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -82,6 +102,14 @@
 				A5833D2029C0990200387240 /* ProfileUserViewController.swift */,
 			);
 			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		A07D45D829C78A8200420463 /* Ethernet */ = {
+			isa = PBXGroup;
+			children = (
+				A07D45EB29C78F9000420463 /* APIClient .swift */,
+			);
+			path = Ethernet;
 			sourceTree = "<group>";
 		};
 		A0E4AA2129A8E25600BDB4EF = {
@@ -103,6 +131,7 @@
 		A0E4AA2C29A8E25600BDB4EF /* Industry */ = {
 			isa = PBXGroup;
 			children = (
+				A07D45D829C78A8200420463 /* Ethernet */,
 				A5E0AF1B29B8F3EB003B47D2 /* Localisation */,
 				A059752929AA219600586F2E /* ViewControllers */,
 				A059752829AA219000586F2E /* Views */,
@@ -212,13 +241,20 @@
 				A5833D1E29C08D4400387240 /* AuthenticationTblViewCell.swift in Sources */,
 				A0E4AA3229A8E25600BDB4EF /* SplachViewController.swift in Sources */,
 				A0E4AA2E29A8E25600BDB4EF /* AppDelegate.swift in Sources */,
+				A07D45EC29C78F9000420463 /* APIClient .swift in Sources */,
 				A5833D2129C0990200387240 /* ProfileUserViewController.swift in Sources */,
+				A07D45DE29C78DFF00420463 /* ProjectModel.swift in Sources */,
 				A5E0AF1D29B8F41E003B47D2 /* LocalizeController.swift in Sources */,
 				A5916AB229BC9D8900285D79 /* MenuTabBarController.swift in Sources */,
+				A07D45D229C763CD00420463 /* UserCountTaskTblViewCell.swift in Sources */,
+				A07D45E429C78E1C00420463 /* EmployeeModel.swift in Sources */,
+				A07D45E129C78E0F00420463 /* LaborCostModel.swift in Sources */,
 				A5916AB529BCCA8A00285D79 /* TabBarScreenDefinition.swift in Sources */,
+				A07D45E829C78E3200420463 /* DivisionModel.swift in Sources */,
 				A5833D2429C09FA900387240 /* UserDescriptionCollViewCell.swift in Sources */,
 				A585FF1929BA178C00A0F0AF /* TaskListViewController.swift in Sources */,
 				A585FF1C29BA1A3600A0F0AF /* TaskCollViewCell.swift in Sources */,
+				A07D45DA29C78DEE00420463 /* AssignmentModel.swift in Sources */,
 				A5831B2729BBC91700A3A8F8 /* AuthenticationTableRow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
