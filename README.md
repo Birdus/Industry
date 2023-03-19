@@ -48,7 +48,7 @@ iPad Mini 4.
 
 This application has a minimum requirement for mobile devices running on iOS 10 or higher.
 
-# More.
+# More. 😉
 This application use API.
 
 https://github.com/lookstep/Diplom
