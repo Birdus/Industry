@@ -45,20 +45,23 @@ class ProfileUserViewController: UIViewController {
         view.addSubview(collViewDescribeUser)
         view.addSubview(tblCountCompliteTask)
         self.navigationController?.isNavigationBarHidden = true
-        
+
+        let collViewHeight = ((UIScreen.main.bounds.size.height / 2 + collViewDescribeUser.contentOffset.y)) / 1.5
+        let tblRowHeight = ((UIScreen.main.bounds.size.height / 2 + tblCountCompliteTask.contentOffset.y) / 2) / 2
+
         NSLayoutConstraint.activate([
             collViewDescribeUser.topAnchor.constraint(equalTo: view.topAnchor, constant: 30),
             collViewDescribeUser.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             collViewDescribeUser.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            collViewDescribeUser.heightAnchor.constraint(equalToConstant: ((UIScreen.main.bounds.size.height/2 + collViewDescribeUser.contentOffset.y))/1.5),
-            
+            collViewDescribeUser.heightAnchor.constraint(equalToConstant: collViewHeight),
+
             tblCountCompliteTask.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             tblCountCompliteTask.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             tblCountCompliteTask.topAnchor.constraint(equalTo: collViewDescribeUser.bottomAnchor, constant: 5),
             tblCountCompliteTask.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor, multiplier: 0.25),
         ])
-        
-        tblCountCompliteTask.rowHeight = ((UIScreen.main.bounds.size.height/2 + tblCountCompliteTask.contentOffset.y) / 2 ) / 2
+
+        tblCountCompliteTask.rowHeight = tblRowHeight
     }
 }
 

@@ -17,10 +17,6 @@ class EnterMenuViewController: UIViewController {
         btn.setTitleColor(.systemGray4, for: .normal)
         btn.layer.cornerRadius = 10
         btn.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMaxXMinYCorner, .layerMinXMinYCorner, .layerMinXMaxYCorner]
-        btn.layer.shadowColor = UIColor.darkGray.cgColor
-        btn.layer.shadowOffset = CGSize(width: 1.0, height: 1.0)
-        btn.layer.shadowOpacity = 1.4
-        btn.layer.shadowRadius = 5.0
         btn.clipsToBounds = false
         btn.translatesAutoresizingMaskIntoConstraints = false
         btn.addTarget(self, action: #selector(BtnEnter_Click), for: .touchUpInside)
@@ -57,10 +53,6 @@ class EnterMenuViewController: UIViewController {
         tbl.allowsSelectionDuringEditing = false
         tbl.layer.cornerRadius = 10
         tbl.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMaxXMinYCorner, .layerMinXMinYCorner, .layerMinXMaxYCorner]
-        tbl.layer.shadowColor = UIColor.darkGray.cgColor
-        tbl.layer.shadowOffset = CGSize(width: 1.0, height: 1.0)
-        tbl.layer.shadowOpacity = 0.4
-        tbl.layer.shadowRadius = 5.0
         tbl.clipsToBounds = false
         return tbl
     }()
@@ -92,11 +84,11 @@ class EnterMenuViewController: UIViewController {
     
     @objc
     private func kbWillShow(_ notification: Notification) {
-        if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
-            if self.view.frame.origin.y == 0 {
-                let keyboardHeight = keyboardFrame.cgRectValue.height
-                let bottomSpace = self.view.frame.height - (btnEnter.frame.origin.y + btnEnter.frame.height)
-                self.view.frame.origin.y -= keyboardHeight - bottomSpace + 10
+        if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
+            if view.frame.origin.y == 0 {
+                let keyboardHeight = keyboardFrame.height
+                let bottomSpace = view.frame.height - (btnEnter.frame.origin.y + btnEnter.frame.height)
+                view.frame.origin.y -= max(0, keyboardHeight - bottomSpace + 10)
             }
         }
     }
@@ -107,7 +99,7 @@ class EnterMenuViewController: UIViewController {
         
     }
     
-    private func registerForKeyboardNotifacation() {
+    private func         registerForKeyboardNotifacation() {
         NotificationCenter.default.addObserver(self, selector: #selector(kbWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(kbWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
@@ -123,27 +115,27 @@ class EnterMenuViewController: UIViewController {
             registerForKeyboardNotifacation()
             NSLayoutConstraint.activate([
                 tblAuthentication.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
-                tblAuthentication.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
-                tblAuthentication.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor, multiplier: 0.25),
-                tblAuthentication.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor),
-                tblAuthentication.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
-                
-                btnEnter.heightAnchor.constraint(equalToConstant: 40),
-                btnEnter.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, constant: -80),
-                btnEnter.topAnchor.constraint(equalTo: btnRecoveryPass.bottomAnchor, constant: 40),
-                btnEnter.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
-                
-                btnRecoveryPass.topAnchor.constraint(equalTo: tblAuthentication.bottomAnchor, constant: -4),
-                btnRecoveryPass.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
-                
-                imgCompany.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, constant: -150),
-                imgCompany.heightAnchor.constraint(equalTo: imgCompany.widthAnchor),
-                imgCompany.bottomAnchor.constraint(equalTo: tblAuthentication.topAnchor, constant: -(UIScreen.main.bounds.height/2 + tblAuthentication.contentOffset.y) / 8),
-                imgCompany.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor)
+                       tblAuthentication.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
+                       tblAuthentication.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor, multiplier: 0.25),
+                       tblAuthentication.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor),
+                       tblAuthentication.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+                       
+                       btnEnter.heightAnchor.constraint(equalToConstant: 40),
+                       btnEnter.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, constant: -80),
+                       btnEnter.topAnchor.constraint(equalTo: btnRecoveryPass.bottomAnchor, constant: 40),
+                       btnEnter.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+                       
+                       btnRecoveryPass.topAnchor.constraint(equalTo: tblAuthentication.bottomAnchor, constant: -4),
+                       btnRecoveryPass.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+                       
+                       imgCompany.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, constant: -150),
+                       imgCompany.heightAnchor.constraint(equalTo: imgCompany.widthAnchor),
+                       imgCompany.bottomAnchor.constraint(equalTo: tblAuthentication.topAnchor, constant: -(UIScreen.main.bounds.height/2 + tblAuthentication.contentOffset.y) / 8),
+                       imgCompany.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor)
             ])
-                tblAuthentication.rowHeight = ((UIScreen.main.bounds.size.height/2 + tblAuthentication.contentOffset.y) / 2 ) / 2
-                btnRecoveryPass.titleLabel?.font = UIFont.systemFont(ofSize: CGFloat(UIScreen.main.bounds.width/10)/2)
-                btnEnter.titleLabel?.font = UIFont.monospacedDigitSystemFont(ofSize: CGFloat(UIScreen.main.bounds.width/10)/2, weight: .bold)
+        tblAuthentication.rowHeight = ((UIScreen.main.bounds.size.height/2 + tblAuthentication.contentOffset.y) / 2 ) / 2
+           btnRecoveryPass.titleLabel?.font = UIFont.systemFont(ofSize: CGFloat(UIScreen.main.bounds.width/10)/2)
+           btnEnter.titleLabel?.font = UIFont.monospacedDigitSystemFont(ofSize: CGFloat(UIScreen.main.bounds.width/10)/2, weight: .bold)
     }
 }
 

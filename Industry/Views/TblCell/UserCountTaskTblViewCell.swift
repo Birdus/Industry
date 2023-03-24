@@ -70,27 +70,27 @@ class UserCountTaskTblViewCell: UITableViewCell {
         let subFontScale: CGFloat = bounds.width / 12 / 2
         
         NSLayoutConstraint.activate([
-            lblCountTask.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 10),
-            lblCountTask.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 20),
-            lblCountTask.widthAnchor.constraint(equalTo: self.safeAreaLayoutGuide.widthAnchor, multiplier: 0.4),
-            lblCountTask.heightAnchor.constraint(equalTo: self.safeAreaLayoutGuide.widthAnchor, multiplier: 0.1),
-            
-            lblCountTaskDescribe.topAnchor.constraint(equalTo: lblCountTask.bottomAnchor, constant: -10),
-            lblCountTaskDescribe.leadingAnchor.constraint(equalTo: lblCountTask.leadingAnchor),
-            lblCountTaskDescribe.widthAnchor.constraint(equalTo: lblCountTask.widthAnchor),
-            lblCountTaskDescribe.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: 10),
-            
-            lblCountTime.topAnchor.constraint(equalTo: lblCountTask.topAnchor),
-            lblCountTime.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -30),
-            lblCountTime.widthAnchor.constraint(equalTo: lblCountTask.widthAnchor),
-            lblCountTime.heightAnchor.constraint(equalTo: lblCountTask.heightAnchor),
-            
-            lblCountTimeDescribe.topAnchor.constraint(equalTo: lblCountTaskDescribe.topAnchor),
-            lblCountTimeDescribe.trailingAnchor.constraint(equalTo: lblCountTime.trailingAnchor),
-            lblCountTimeDescribe.widthAnchor.constraint(equalTo: lblCountTime.widthAnchor),
-            lblCountTimeDescribe.bottomAnchor.constraint(equalTo: lblCountTaskDescribe.bottomAnchor),
-            
-            lblCountTaskDescribe.bottomAnchor.constraint(equalTo: lblCountTimeDescribe.topAnchor, constant: -2)
+            lblCountTask.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 10),
+                   lblCountTask.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+                   lblCountTask.widthAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.widthAnchor, multiplier: 0.4),
+                   lblCountTask.heightAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.widthAnchor, multiplier: 0.1),
+
+                   lblCountTaskDescribe.topAnchor.constraint(equalTo: lblCountTask.bottomAnchor, constant: -10),
+                   lblCountTaskDescribe.leadingAnchor.constraint(equalTo: lblCountTask.leadingAnchor),
+                   lblCountTaskDescribe.widthAnchor.constraint(equalTo: lblCountTask.widthAnchor),
+                   lblCountTaskDescribe.bottomAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.bottomAnchor, constant: -10),
+
+                   lblCountTime.topAnchor.constraint(equalTo: lblCountTask.topAnchor),
+                   lblCountTime.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor, constant: -30),
+                   lblCountTime.widthAnchor.constraint(equalTo: lblCountTask.widthAnchor),
+                   lblCountTime.heightAnchor.constraint(equalTo: lblCountTask.heightAnchor),
+
+                   lblCountTimeDescribe.topAnchor.constraint(equalTo: lblCountTaskDescribe.topAnchor),
+                   lblCountTimeDescribe.trailingAnchor.constraint(equalTo: lblCountTime.trailingAnchor),
+                   lblCountTimeDescribe.widthAnchor.constraint(equalTo: lblCountTime.widthAnchor),
+                   lblCountTimeDescribe.bottomAnchor.constraint(equalTo: lblCountTaskDescribe.bottomAnchor),
+
+                   lblCountTaskDescribe.bottomAnchor.constraint(equalTo: lblCountTimeDescribe.topAnchor, constant: -2)
         ])
         
         lblCountTask.font = UIFont.boldSystemFont(ofSize: fontScale * 1.5)
