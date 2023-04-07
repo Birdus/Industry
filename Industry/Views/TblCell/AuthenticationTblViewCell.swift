@@ -15,13 +15,7 @@ class AuthenticationTblViewCell: UITableViewCell {
     
     static let indificatorCell: String = "AuthenticationTblViewCell"
     weak var delegete: AuthenticationTblViewCellDelegate!
-    
-    private lazy var imgEnterIcon: UIImageView = {
-        let icon = UIImageView()
-        icon.translatesAutoresizingMaskIntoConstraints = false
-        return icon
-    }()
-    
+        
     private lazy var txtFld: UITextField = {
         let txt = UITextField()
         txt.translatesAutoresizingMaskIntoConstraints = false
@@ -54,8 +48,7 @@ class AuthenticationTblViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func fillTable(_ iconName: String, _ placeholder: String, _ isPasword: Bool) {
-        imgEnterIcon.image = UIImage(named: iconName)
+    public func fillTable(_ placeholder: String, _ isPasword: Bool) {
         txtFld.placeholder = placeholder
         txtFld.isSecureTextEntry = isPasword
     }
@@ -72,17 +65,9 @@ class AuthenticationTblViewCell: UITableViewCell {
     }
     
     private func configureUI() {
-        contentView.addSubview(imgEnterIcon)
         contentView.addSubview(txtFld)
-
-        let imageSize = (UIScreen.main.scale + UIScreen.main.bounds.size.height/2) / 10
             NSLayoutConstraint.activate([
-                imgEnterIcon.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
-                imgEnterIcon.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-                imgEnterIcon.heightAnchor.constraint(equalToConstant: imageSize),
-                imgEnterIcon.widthAnchor.constraint(equalToConstant: imageSize),
-                txtFld.leadingAnchor.constraint(equalTo: imgEnterIcon.trailingAnchor, constant: 6),
-                txtFld.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+                txtFld.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
                 txtFld.topAnchor.constraint(equalTo: contentView.topAnchor),
                 txtFld.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
             ])

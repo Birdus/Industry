@@ -1,0 +1,6 @@
+framework module Pods_Industry {
+  umbrella header "Pods-Industry-umbrella.h"
+
+  export *
+  module * { export * }
+}
