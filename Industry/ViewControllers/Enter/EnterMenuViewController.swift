@@ -12,9 +12,9 @@ class EnterMenuViewController: UIViewController {
     
     private lazy var btnEnter: UIButton = {
         let btn = UIButton()
-        btn.backgroundColor = UIColor.systemPurple
+        btn.backgroundColor = .black
         btn.setTitle("Войти".localized, for: .normal)
-        btn.setTitleColor(.systemGray4, for: .normal)
+        btn.setTitleColor(.white, for: .normal)
         btn.layer.cornerRadius = 10
         btn.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMaxXMinYCorner, .layerMinXMinYCorner, .layerMinXMaxYCorner]
         btn.clipsToBounds = false
@@ -35,7 +35,7 @@ class EnterMenuViewController: UIViewController {
     
     private lazy var imgCompany: UIImageView = {
         let icon = UIImageView()
-        icon.image = UIImage(named: "logoCompany.jpg")
+        icon.image = UIImage(named: "logoCompany.png")
         icon.translatesAutoresizingMaskIntoConstraints = false
         return icon
     }()
@@ -75,11 +75,11 @@ class EnterMenuViewController: UIViewController {
     @objc
     private func BtnEnter_Click(_ sender: UIButton) {
         let mainTabBarController = MenuTabBarController()
-//                vc.delegate = self
+        //                vc.delegate = self
         let vcNav = UINavigationController(rootViewController: mainTabBarController)
         vcNav.modalPresentationStyle = .fullScreen
         present(vcNav , animated: true)
-
+        
     }
     
     @objc
@@ -106,36 +106,36 @@ class EnterMenuViewController: UIViewController {
     
     private func configureUI() {
         // TODO: The function is responsible for setting the UI
-            view.backgroundColor = .white
-            view.addSubview(tblAuthentication)
-            view.addSubview(btnEnter)
-            view.addSubview(imgCompany)
-            view.addSubview(btnRecoveryPass)
-            navigationController?.setNavigationBarHidden(true, animated: false)
-            registerForKeyboardNotifacation()
-            NSLayoutConstraint.activate([
-                tblAuthentication.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
-                       tblAuthentication.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
-                       tblAuthentication.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor, multiplier: 0.25),
-                       tblAuthentication.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor),
-                       tblAuthentication.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
-                       
-                       btnEnter.heightAnchor.constraint(equalToConstant: 40),
-                       btnEnter.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, constant: -80),
-                       btnEnter.topAnchor.constraint(equalTo: btnRecoveryPass.bottomAnchor, constant: 40),
-                       btnEnter.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
-                       
-                       btnRecoveryPass.topAnchor.constraint(equalTo: tblAuthentication.bottomAnchor, constant: -4),
-                       btnRecoveryPass.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
-                       
-                       imgCompany.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, constant: -150),
-                       imgCompany.heightAnchor.constraint(equalTo: imgCompany.widthAnchor),
-                       imgCompany.bottomAnchor.constraint(equalTo: tblAuthentication.topAnchor, constant: -(UIScreen.main.bounds.height/2 + tblAuthentication.contentOffset.y) / 8),
-                       imgCompany.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor)
-            ])
+        view.backgroundColor = .white
+        view.addSubview(tblAuthentication)
+        view.addSubview(btnEnter)
+        view.addSubview(imgCompany)
+        view.addSubview(btnRecoveryPass)
+        navigationController?.setNavigationBarHidden(true, animated: false)
+        registerForKeyboardNotifacation()
+        NSLayoutConstraint.activate([
+            tblAuthentication.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
+            tblAuthentication.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
+            tblAuthentication.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor, multiplier: 0.25),
+            tblAuthentication.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor),
+            tblAuthentication.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+            
+            btnEnter.heightAnchor.constraint(equalToConstant: 40),
+            btnEnter.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, constant: -190),
+            btnEnter.topAnchor.constraint(equalTo: btnRecoveryPass.bottomAnchor, constant: 40),
+            btnEnter.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+            
+            btnRecoveryPass.topAnchor.constraint(equalTo: tblAuthentication.bottomAnchor, constant: -4),
+            btnRecoveryPass.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            
+            imgCompany.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, constant: -150),
+            imgCompany.heightAnchor.constraint(equalTo: imgCompany.widthAnchor),
+            imgCompany.bottomAnchor.constraint(equalTo: tblAuthentication.topAnchor, constant: -(UIScreen.main.bounds.height/2 + tblAuthentication.contentOffset.y) / 12),
+            imgCompany.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor)
+        ])
         tblAuthentication.rowHeight = ((UIScreen.main.bounds.size.height/2 + tblAuthentication.contentOffset.y) / 2 ) / 2
-           btnRecoveryPass.titleLabel?.font = UIFont.systemFont(ofSize: CGFloat(UIScreen.main.bounds.width/10)/2)
-           btnEnter.titleLabel?.font = UIFont.monospacedDigitSystemFont(ofSize: CGFloat(UIScreen.main.bounds.width/10)/2, weight: .bold)
+        btnRecoveryPass.titleLabel?.font = UIFont.systemFont(ofSize: CGFloat(UIScreen.main.bounds.width/10)/2)
+        btnEnter.titleLabel?.font = UIFont.monospacedDigitSystemFont(ofSize: CGFloat(UIScreen.main.bounds.width/10)/2, weight: .bold)
     }
 }
 
@@ -146,16 +146,16 @@ extension EnterMenuViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: AuthenticationTblViewCell.indificatorCell, for: indexPath) as? AuthenticationTblViewCell else {
-                fatalError("Unable to dequeue cell.")
-            }
-            let row = AuthenticationTableRow(rawValue: indexPath.row)!
-            cell.fillTable(row.imageName, row.title, row.isSecure)
-            cell.selectionStyle = .none
-            cell.backgroundColor = .clear
-            cell.contentView.backgroundColor = .clear
-            cell.delegete = self
-            cell.separatorInset = .zero
-            return cell
+            fatalError("Unable to dequeue cell.")
+        }
+        let row = AuthenticationTableRow(rawValue: indexPath.row)!
+        cell.fillTable(row.title, row.isSecure)
+        cell.selectionStyle = .none
+        cell.backgroundColor = .clear
+        cell.contentView.backgroundColor = .clear
+        cell.delegete = self
+        cell.separatorInset = .zero
+        return cell
     }
 }
 
