@@ -4,12 +4,20 @@
 //
 //  Created by birdus on 24.02.2023.
 //
+/**
+ A custom SplachViewController used for the Industry app's menu bar.
 
+ - Author: Daniil
+ - Version: 1.0
+ */
 import UIKit
+
+// MARK: - SplachViewController
 
 class SplachViewController: UIViewController {
 
-    // MARK: - Privates Ui
+    // MARK: - Properties
+    /// Text welcome application.
     private lazy var lblGreeting: UILabel = {
         let lbl = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
@@ -21,14 +29,13 @@ class SplachViewController: UIViewController {
     }()
     
     // MARK: - Application lifecycle
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
     }
     
     // MARK: - Privates func
-    
+    /// Configures the UI elements of the view controller.
     private func configureUI() {
         view.backgroundColor = .white
         self.view.addSubview(lblGreeting)

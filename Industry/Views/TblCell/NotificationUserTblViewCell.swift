@@ -7,44 +7,54 @@
 
 import UIKit
 
+/**
+ The cell used to display the user's completed task count and total time spent on those tasks in a table view.
+ */
 class UserCountTaskTblViewCell: UITableViewCell {
-
-    static let indificatorCell: String = "UserCountTaskTblViewCell"
     
-    lazy private var lblCountTask: UILabel = {
-        var lbl: UILabel = UILabel()
+    // MARK: - Properties
+    /// The reuse identifier for this cell.
+    static let indificatorCell = "UserCountTaskTblViewCell"
+    
+    /// The label displaying the count of completed tasks.
+    private lazy var lblCountTask: UILabel = {
+        let lbl = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
         lbl.textAlignment = .left
-        lbl.textColor = UIColor.black
+        lbl.textColor = .black
         return lbl
     }()
     
-    lazy private var lblCountTaskDescribe: UILabel = {
-        var lbl: UILabel = UILabel()
+    /// The label describing the count of completed tasks.
+    private lazy var lblCountTaskDescribe: UILabel = {
+        let lbl = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
         lbl.textAlignment = .left
-        lbl.textColor = UIColor.gray
+        lbl.textColor = .gray
         lbl.text = "Выполнено задач".localized
         return lbl
     }()
     
-    lazy private var lblCountTime: UILabel = {
-        var lbl: UILabel = UILabel()
+    /// The label displaying the total time spent on completed tasks.
+    private lazy var lblCountTime: UILabel = {
+        let lbl = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
         lbl.textAlignment = .left
-        lbl.textColor = UIColor.black
-        
+        lbl.textColor = .black
         return lbl
     }()
     
-    lazy private var lblCountTimeDescribe: UILabel = {
-        var lbl: UILabel = UILabel()
+    /// The label describing the total time spent on completed tasks.
+    private lazy var lblCountTimeDescribe: UILabel = {
+        let lbl = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
         lbl.textAlignment = .left
-        lbl.textColor = UIColor.gray
+        lbl.textColor = .gray
         lbl.text =  "Количество часов".localized
         return lbl
     }()
+    
+    // MARK: - Initialization
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -55,50 +65,63 @@ class UserCountTaskTblViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func fiillTable(_ countTask: Int, _ countTime: Int) {
-        lblCountTask.text =  String(countTask)
+    // MARK: - Public Methods
+    
+    /**
+     Fills the table view cell with the given task and time count.
+     - Parameter countTask: The count of completed tasks to display.
+     - Parameter countTime: The total time spent on completed tasks to display.
+     */
+    func fiillTable(_ countTask: Int, _ countTime: Int) {
+        lblCountTask.text = String(countTask)
         lblCountTime.text = String(countTime)
     }
+    
+    // MARK: - Private Methods
+    
+    /**
+     Configures the UI of the cell.
+     */
     
     private func configureUI() {
         contentView.addSubview(lblCountTask)
         contentView.addSubview(lblCountTime)
         contentView.addSubview(lblCountTaskDescribe)
         contentView.addSubview(lblCountTimeDescribe)
-        
         let fontScale: CGFloat = bounds.width / 10 - 10
         let subFontScale: CGFloat = bounds.width / 12 / 2
-        
         NSLayoutConstraint.activate([
+            // lblCountTask constraints
             lblCountTask.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 10),
-                   lblCountTask.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 20),
-                   lblCountTask.widthAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.widthAnchor, multiplier: 0.4),
-                   lblCountTask.heightAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.widthAnchor, multiplier: 0.1),
-
-                   lblCountTaskDescribe.topAnchor.constraint(equalTo: lblCountTask.bottomAnchor, constant: -10),
-                   lblCountTaskDescribe.leadingAnchor.constraint(equalTo: lblCountTask.leadingAnchor),
-                   lblCountTaskDescribe.widthAnchor.constraint(equalTo: lblCountTask.widthAnchor),
-                   lblCountTaskDescribe.bottomAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.bottomAnchor, constant: -10),
-
-                   lblCountTime.topAnchor.constraint(equalTo: lblCountTask.topAnchor),
-                   lblCountTime.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor, constant: -30),
-                   lblCountTime.widthAnchor.constraint(equalTo: lblCountTask.widthAnchor),
-                   lblCountTime.heightAnchor.constraint(equalTo: lblCountTask.heightAnchor),
-
-                   lblCountTimeDescribe.topAnchor.constraint(equalTo: lblCountTaskDescribe.topAnchor),
-                   lblCountTimeDescribe.trailingAnchor.constraint(equalTo: lblCountTime.trailingAnchor),
-                   lblCountTimeDescribe.widthAnchor.constraint(equalTo: lblCountTime.widthAnchor),
-                   lblCountTimeDescribe.bottomAnchor.constraint(equalTo: lblCountTaskDescribe.bottomAnchor),
-
-                   lblCountTaskDescribe.bottomAnchor.constraint(equalTo: lblCountTimeDescribe.topAnchor, constant: -2)
+            lblCountTask.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            lblCountTask.widthAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.widthAnchor, multiplier: 0.4),
+            lblCountTask.heightAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.widthAnchor, multiplier: 0.1),
+            
+            // lblCountTaskDescribe constraints
+            lblCountTaskDescribe.topAnchor.constraint(equalTo: lblCountTask.bottomAnchor, constant: -10),
+            lblCountTaskDescribe.leadingAnchor.constraint(equalTo: lblCountTask.leadingAnchor),
+            lblCountTaskDescribe.widthAnchor.constraint(equalTo: lblCountTask.widthAnchor),
+            lblCountTaskDescribe.bottomAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.bottomAnchor, constant: -10),
+            
+            // lblCountTime constraints
+            lblCountTime.topAnchor.constraint(equalTo: lblCountTask.topAnchor),
+            lblCountTime.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor, constant: -30),
+            lblCountTime.widthAnchor.constraint(equalTo: lblCountTask.widthAnchor),
+            lblCountTime.heightAnchor.constraint(equalTo: lblCountTask.heightAnchor),
+            
+            // lblCountTimeDescribe constraints
+            lblCountTimeDescribe.topAnchor.constraint(equalTo: lblCountTaskDescribe.topAnchor),
+            lblCountTimeDescribe.trailingAnchor.constraint(equalTo: lblCountTime.trailingAnchor),
+            lblCountTimeDescribe.widthAnchor.constraint(equalTo: lblCountTime.widthAnchor),
+            lblCountTimeDescribe.bottomAnchor.constraint(equalTo: lblCountTaskDescribe.bottomAnchor),
+            
+            lblCountTaskDescribe.bottomAnchor.constraint(equalTo: lblCountTimeDescribe.topAnchor, constant: -2)
         ])
         
+        // Set font
         lblCountTask.font = UIFont.boldSystemFont(ofSize: fontScale * 1.5)
         lblCountTime.font = UIFont.boldSystemFont(ofSize: fontScale * 1.5)
         lblCountTaskDescribe.font = UIFont.systemFont(ofSize: subFontScale * 1.1)
         lblCountTimeDescribe.font = UIFont.systemFont(ofSize: subFontScale * 1.1)
     }
-
-
-
 }
