@@ -75,19 +75,19 @@ class AuthenticationTblViewCell: UITableViewCell {
         contentView.addSubview(imgEnterIcon)
         contentView.addSubview(txtFld)
 
-        let imageSize = (contentView.contentScaleFactor + UIScreen.main.bounds.size.height/2) / 10
-        NSLayoutConstraint.activate([
-            imgEnterIcon.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
-            imgEnterIcon.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            imgEnterIcon.heightAnchor.constraint(equalToConstant: imageSize),
-            imgEnterIcon.widthAnchor.constraint(equalToConstant: imageSize),
-            txtFld.leadingAnchor.constraint(equalTo: imgEnterIcon.trailingAnchor, constant: 6),
-            txtFld.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
-            txtFld.topAnchor.constraint(equalTo: contentView.topAnchor),
-            txtFld.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
-        ])
+        let imageSize = (UIScreen.main.scale + UIScreen.main.bounds.size.height/2) / 10
+            NSLayoutConstraint.activate([
+                imgEnterIcon.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+                imgEnterIcon.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+                imgEnterIcon.heightAnchor.constraint(equalToConstant: imageSize),
+                imgEnterIcon.widthAnchor.constraint(equalToConstant: imageSize),
+                txtFld.leadingAnchor.constraint(equalTo: imgEnterIcon.trailingAnchor, constant: 6),
+                txtFld.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+                txtFld.topAnchor.constraint(equalTo: contentView.topAnchor),
+                txtFld.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+            ])
 
-        txtFld.font = UIFont.systemFont(ofSize: contentView.bounds.height/2)
+            txtFld.font = UIFont.systemFont(ofSize: contentView.bounds.height/2)
     }
 
 

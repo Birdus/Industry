@@ -19,7 +19,7 @@ class TaskCollViewCell: UICollectionViewCell {
         return lbl
     }()
     
-    lazy private var lblDeadlLine: UILabel = {
+    lazy private var lblDeadline: UILabel = {
         var lbl: UILabel = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
         lbl.textAlignment = .right
@@ -50,31 +50,35 @@ class TaskCollViewCell: UICollectionViewCell {
     public func fillTable(_ taskName: String, _ deadLine: String ,_ taskDiscription: String) {
         lblTaskName.text = taskName
         lblDescription.text = taskDiscription
-        lblDeadlLine.text = deadLine
+        lblDeadline.text = deadLine
     }
     
     private func configureUI () {
         contentView.addSubview(lblTaskName)
-        contentView.addSubview(lblDescription)
-        contentView.addSubview(lblDeadlLine)
-        NSLayoutConstraint.activate([
-            lblTaskName.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 10),
-            lblTaskName.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 10),
-            lblTaskName.widthAnchor.constraint(equalToConstant: self.bounds.width/1.5),
-            lblTaskName.rightAnchor.constraint(equalTo: lblDeadlLine.safeAreaLayoutGuide.leftAnchor, constant: 10),
-
-            lblDeadlLine.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -10),
-            lblDeadlLine.widthAnchor.constraint(equalToConstant: self.bounds.width/2),
-            lblDeadlLine.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 10),
-            lblDeadlLine.leftAnchor.constraint(equalTo: lblTaskName.safeAreaLayoutGuide.rightAnchor, constant: -10),
-
-            lblDescription.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 10),
-            lblDescription.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -10),
-            lblDescription.topAnchor.constraint(equalTo: lblTaskName.bottomAnchor, constant: 10),
+           contentView.addSubview(lblDescription)
+           contentView.addSubview(lblDeadline)
+           
+           let margin: CGFloat = 10
+           let heightRatio: CGFloat = 8
+           
+           NSLayoutConstraint.activate([
+               lblTaskName.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: margin),
+               lblTaskName.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: margin),
+               lblTaskName.widthAnchor.constraint(equalToConstant: self.bounds.width / 1.5),
+               lblTaskName.trailingAnchor.constraint(equalTo: lblDeadline.safeAreaLayoutGuide.leadingAnchor, constant: -margin),
+               
+               lblDeadline.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -margin),
+               lblDeadline.widthAnchor.constraint(equalToConstant: self.bounds.width / 2),
+               lblDeadline.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: margin),
+               lblDeadline.leadingAnchor.constraint(equalTo: lblTaskName.safeAreaLayoutGuide.trailingAnchor, constant: margin),
+               
+               lblDescription.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: margin),
+               lblDescription.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -margin),
+               lblDescription.topAnchor.constraint(equalTo: lblTaskName.bottomAnchor, constant: margin),
             lblDescription.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -10)
         ])
         lblTaskName.font = UIFont.systemFont(ofSize: CGFloat(self.frame.height/8))
         lblDescription.font = UIFont.systemFont(ofSize: CGFloat(self.frame.height/8))
-        lblDeadlLine.font = UIFont.systemFont(ofSize: CGFloat(self.frame.height/8))
+        lblDeadline.font = UIFont.systemFont(ofSize: CGFloat(self.frame.height/8))
     }
 }
