@@ -13,3 +13,11 @@
 "Добро пожаловать!" = "Welcome!";
 "Готово" = "Save";
 "Отменить" = "Cancel";
+"Востановления пароля" = "Password Recovery";
+"Введите свой логин который используеться на вашем акаунте" = "Enter your username that is used on your account";
+"Назад" = "Back";
+"Календарь" = "Calendar";
+"Уведомления" = "Notifications";
+"Мой профиль" = "My Profile";
+"Введите код который пришёл на вашу электронную почту, которую вы узакывали при регистрации" = "Enter the code that came to your email address that you specified during registration";
+"Код" = "Code";

@@ -52,10 +52,10 @@ class MenuTabBarController: UITabBarController {
         vcTaskList.tabBarItem = UITabBarItem(title: "Календарь".localized,
                                              image: UIImage(named: "iconTask")?.withRenderingMode(.alwaysOriginal),
                                              selectedImage: UIImage(named: "iconTaskSelected")?.withRenderingMode(.alwaysOriginal))
-        vcUserTask.tabBarItem = UITabBarItem(title: "Уведомления",
+        vcUserTask.tabBarItem = UITabBarItem(title: "Уведомления".localized,
                                              image: UIImage(named: "iconNotification")?.withRenderingMode(.alwaysOriginal),
                                              selectedImage: UIImage(named: "iconNotificationSelected")?.withRenderingMode(.alwaysOriginal))
-        vcProfileUser.tabBarItem = UITabBarItem(title: "Мой профиль",
+        vcProfileUser.tabBarItem = UITabBarItem(title: "Мой профиль".localized,
                                                 image: UIImage(named: "iconAccount")?.withRenderingMode(.alwaysOriginal),
                                                 selectedImage: UIImage(named: "iconAccountSelected")?.withRenderingMode(.alwaysOriginal))
         

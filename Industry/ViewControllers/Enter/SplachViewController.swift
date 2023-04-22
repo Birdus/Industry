@@ -37,6 +37,7 @@ class SplachViewController: UIViewController {
     // MARK: - Privates func
     /// Configures the UI elements of the view controller.
     private func configureUI() {
+        self.navigationController?.isNavigationBarHidden = true
         view.backgroundColor = .white
         self.view.addSubview(lblGreeting)
         NSLayoutConstraint.activate([

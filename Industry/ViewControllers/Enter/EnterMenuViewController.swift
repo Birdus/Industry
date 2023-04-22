@@ -104,14 +104,15 @@ class EnterMenuViewController: UIViewController {
     /// Func click button recovery password
     @objc
     private func BtnRecoveryPass_Click(_ sender: UIButton) {
-        
+        let vc = RecovoryPasswordViewController()
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     
     /// Func click button enter to application
     @objc
     private func BtnEnter_Click(_ sender: UIButton) {
-        let mainTabBarController = MenuTabBarController()
-        let navigationController = UINavigationController(rootViewController: mainTabBarController)
+        let vc = MenuTabBarController()
+        let navigationController = UINavigationController(rootViewController: vc)
         navigationController.modalPresentationStyle = .fullScreen
         present(navigationController, animated: true, completion: nil)
         
@@ -156,7 +157,7 @@ class EnterMenuViewController: UIViewController {
         view.addSubview(btnRecoveryPass)
 
         // Hide the navigation bar
-        navigationController?.setNavigationBarHidden(true, animated: false)
+        self.navigationController?.isNavigationBarHidden = true
         
         // Register for keyboard notifications
         registerForKeyboardNotification()
