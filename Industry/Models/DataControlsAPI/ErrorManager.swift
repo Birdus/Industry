@@ -1,20 +1,26 @@
-//
-//  ErrorManager.swift
-//  Industry
-//
-//  Created by Birdus on 22.03.2023.
-//
-import Foundation
+// MARK: - ErrorManager
 
+/// ErrorManager handles networking errors in the Industry app.
 enum INDNetworkingError: Error {
+    
+    /// The HTTP response is missing.
     case missingHTTPResponse
+    
+    /// A server error occurred.
     case serverError
+    
+    /// A bad request was made.
     case badRequest
+    
+    /// The requested resource was not found.
     case notFound
+    
+    /// An unexpected response was received.
     case unexpectedResponse(message: String)
     
     static let errorDomain = "Industry.NetworkingError"
     
+    /// Returns the corresponding error code for the error.
     var errorCode: Int {
         switch self {
         case .missingHTTPResponse:
@@ -30,6 +36,7 @@ enum INDNetworkingError: Error {
         }
     }
     
+    /// Returns the corresponding error message for the error.
     var errorMessage: String {
         switch self {
         case .missingHTTPResponse:
@@ -45,6 +52,7 @@ enum INDNetworkingError: Error {
         }
     }
     
+    /// Initializes an error with a given HTTP status code and optional message.
     init(statusCode: Int?, message: String? = nil) {
         switch statusCode {
         case 400:
@@ -62,5 +70,3 @@ enum INDNetworkingError: Error {
         }
     }
 }
-
-
