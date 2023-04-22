@@ -18,13 +18,13 @@ class MenuTabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let vcTaskList = TaskListViewController()
-        let vcUserTask = TaskListViewController()
+        let vcTaskList = CalendarTaskViewController()
+        let vcUserTask = NotificationListViewController()
         let vcProfileUser = ProfileUserViewController()
         
-        vcTaskList.tabBarItem = UITabBarItem(title: "Задачи", image: UIImage(named: "iconTask")?.withRenderingMode(.automatic), selectedImage: UIImage(named: "iconTask")?.withRenderingMode(.automatic))
-        vcUserTask.tabBarItem = UITabBarItem(title: "Мои задачи", image: UIImage(named: "iconUserTask")?.withRenderingMode(.automatic), selectedImage: UIImage(named: "iconUserTask")?.withRenderingMode(.automatic))
-        vcProfileUser.tabBarItem = UITabBarItem(title: "Мои профиль", image: UIImage(named: "iconAccount")?.withRenderingMode(.automatic), selectedImage: UIImage(named: "iconAccount")?.withRenderingMode(.automatic))
+        vcTaskList.tabBarItem = UITabBarItem(title: "Календарь".localized, image: UIImage(named: "iconTask")?.withRenderingMode(.alwaysOriginal), selectedImage: UIImage(named: "iconTaskSelected")?.withRenderingMode(.alwaysOriginal))
+        vcUserTask.tabBarItem = UITabBarItem(title: "Уведомления", image: UIImage(named: "iconNotification")?.withRenderingMode(.alwaysOriginal), selectedImage: UIImage(named: "iconNotificationSelected")?.withRenderingMode(.alwaysOriginal))
+        vcProfileUser.tabBarItem = UITabBarItem(title: "Мои профиль", image: UIImage(named: "iconAccount")?.withRenderingMode(.alwaysOriginal), selectedImage: UIImage(named: "iconAccountSelected")?.withRenderingMode(.alwaysOriginal))
         
         self.viewControllers = [vcTaskList, vcUserTask, vcProfileUser]
         
