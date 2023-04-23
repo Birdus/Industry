@@ -11,7 +11,7 @@
 		A0569DE829DE85C500D25991 /* CalendarTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0569DE729DE85C500D25991 /* CalendarTaskViewController.swift */; };
 		A0569DF829DEAB9600D25991 /* Pods_Industry.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D744E5C0DB64F0E2CA68335B /* Pods_Industry.framework */; };
 		A070410A29CE014F00BD2839 /* JSONDecoables.swift in Sources */ = {isa = PBXBuildFile; fileRef = A070410929CE014F00BD2839 /* JSONDecoables.swift */; };
-		A07D45D229C763CD00420463 /* NotificationUserTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07D45D129C763CD00420463 /* NotificationUserTblViewCell.swift */; };
+		A07D45D229C763CD00420463 /* UserCountTaskTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07D45D129C763CD00420463 /* UserCountTaskTblViewCell.swift */; };
 		A07D45DA29C78DEE00420463 /* AssignmentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07D45D929C78DEE00420463 /* AssignmentModel.swift */; };
 		A07D45DE29C78DFF00420463 /* ProjectModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07D45DD29C78DFF00420463 /* ProjectModel.swift */; };
 		A07D45E129C78E0F00420463 /* LaborCostModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07D45E029C78E0F00420463 /* LaborCostModel.swift */; };
@@ -47,7 +47,7 @@
 		A0569DE729DE85C500D25991 /* CalendarTaskViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarTaskViewController.swift; sourceTree = "<group>"; };
 		A0569E0129DEC6F500D25991 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A070410929CE014F00BD2839 /* JSONDecoables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONDecoables.swift; sourceTree = "<group>"; };
-		A07D45D129C763CD00420463 /* NotificationUserTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationUserTblViewCell.swift; sourceTree = "<group>"; };
+		A07D45D129C763CD00420463 /* UserCountTaskTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCountTaskTblViewCell.swift; sourceTree = "<group>"; };
 		A07D45D929C78DEE00420463 /* AssignmentModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignmentModel.swift; sourceTree = "<group>"; };
 		A07D45DD29C78DFF00420463 /* ProjectModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectModel.swift; sourceTree = "<group>"; };
 		A07D45E029C78E0F00420463 /* LaborCostModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaborCostModel.swift; sourceTree = "<group>"; };
@@ -196,7 +196,7 @@
 			isa = PBXGroup;
 			children = (
 				A5833D1D29C08D4400387240 /* AuthenticationTblViewCell.swift */,
-				A07D45D129C763CD00420463 /* NotificationUserTblViewCell.swift */,
+				A07D45D129C763CD00420463 /* UserCountTaskTblViewCell.swift */,
 			);
 			path = TblCell;
 			sourceTree = "<group>";
@@ -204,8 +204,8 @@
 		A0F5E68329CD9843008E483A /* Menu */ = {
 			isa = PBXGroup;
 			children = (
-				A585FF1829BA178C00A0F0AF /* NotificationListViewController.swift */,
 				A5916AB129BC9D8900285D79 /* MenuTabBarController.swift */,
+				A585FF1829BA178C00A0F0AF /* NotificationListViewController.swift */,
 				A5833D2029C0990200387240 /* ProfileUserViewController.swift */,
 				A0569DE729DE85C500D25991 /* CalendarTaskViewController.swift */,
 			);
@@ -396,7 +396,7 @@
 				A070410A29CE014F00BD2839 /* JSONDecoables.swift in Sources */,
 				A0569DE829DE85C500D25991 /* CalendarTaskViewController.swift in Sources */,
 				A5916AB229BC9D8900285D79 /* MenuTabBarController.swift in Sources */,
-				A07D45D229C763CD00420463 /* NotificationUserTblViewCell.swift in Sources */,
+				A07D45D229C763CD00420463 /* UserCountTaskTblViewCell.swift in Sources */,
 				A07D45E429C78E1C00420463 /* EmployeeModel.swift in Sources */,
 				A0CF9F8229CDF69800FE6A72 /* ForecastType.swift in Sources */,
 				A07D45E129C78E0F00420463 /* LaborCostModel.swift in Sources */,

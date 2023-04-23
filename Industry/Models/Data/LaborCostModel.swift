@@ -23,16 +23,12 @@ struct LaborCost: Codable, JSONDecodable {
               let assignmentId = json["assignmentId"] as? Int,
               let hourCount = json["hourCount"] as? Int,
               let employeeJson = json["employee"] as? [String: Any],
-              let assignmentJson = json["assignment"] as? [String: Any],
-              let dateFormatter = ISO8601DateFormatter() as? DateFormatter else {
+              let assignmentJson = json["assignment"] as? [String: Any] else {
             return nil
         }
         
-        guard let date = dateFormatter.date(from: dateString) else {
-            return nil
-        }
-        
-        guard let employee = Employee.decodeJSON(json: employeeJson),
+        guard let date = ISO8601DateFormatter().date(from: dateString),
+              let employee = Employee.decodeJSON(json: employeeJson),
               let assignment = Assignment.decodeJSON(json: assignmentJson) else {
             return nil
         }

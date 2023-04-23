@@ -19,5 +19,12 @@
 "Календарь" = "Calendar";
 "Уведомления" = "Notifications";
 "Мой профиль" = "My Profile";
-"Введите код который пришёл на вашу электронную почту, которую вы узакывали при регистрации" = "Enter the code that came to your email address that you specified during registration";
 "Код" = "Code";
+"Новый пароль" = "New password";
+"Подтвердите пароль" = "Confirm password";
+"Восстановить пароль" ="Restore Password";
+"Подтвердить код" = "Confirm code";
+"Сменить пароль" = "Change password";
+"Введите новый пароль и подтвердите" = "Enter a new password and confirm";
+"Введите код, который пришел на вашу электронную почту" = "Enter the code that came to your email address";
+"Зарплата по месяцам" = "Salary by month";
