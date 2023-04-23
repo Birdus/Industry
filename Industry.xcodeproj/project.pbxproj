@@ -10,7 +10,6 @@
 		A02EDA4B29CB5D180084BEBA /* ErrorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A02EDA4A29CB5D180084BEBA /* ErrorManager.swift */; };
 		A0569DE829DE85C500D25991 /* CalendarTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0569DE729DE85C500D25991 /* CalendarTaskViewController.swift */; };
 		A0569DF829DEAB9600D25991 /* Pods_Industry.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D744E5C0DB64F0E2CA68335B /* Pods_Industry.framework */; };
-		A0569DF929DEAB9600D25991 /* Pods_Industry.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D744E5C0DB64F0E2CA68335B /* Pods_Industry.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		A070410A29CE014F00BD2839 /* JSONDecoables.swift in Sources */ = {isa = PBXBuildFile; fileRef = A070410929CE014F00BD2839 /* JSONDecoables.swift */; };
 		A07D45D229C763CD00420463 /* NotificationUserTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07D45D129C763CD00420463 /* NotificationUserTblViewCell.swift */; };
 		A07D45DA29C78DEE00420463 /* AssignmentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07D45D929C78DEE00420463 /* AssignmentModel.swift */; };
@@ -28,6 +27,8 @@
 		A0E4AA3729A8E25700BDB4EF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A0E4AA3629A8E25700BDB4EF /* Assets.xcassets */; };
 		A0E4AA4829A8E46F00BDB4EF /* EnterMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0E4AA4729A8E46F00BDB4EF /* EnterMenuViewController.swift */; };
 		A0F8A7BD29CC78DB00C81D80 /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0F8A7BC29CC78DB00C81D80 /* APIManager.swift */; };
+		A528206629F3EF19002FA269 /* RecovoryPasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A528206529F3EF19002FA269 /* RecovoryPasswordViewController.swift */; };
+		A528206929F3F244002FA269 /* RecovoryPasswordCollViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A528206829F3F244002FA269 /* RecovoryPasswordCollViewCell.swift */; };
 		A5831B2729BBC91700A3A8F8 /* AuthenticationTableRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5831B2629BBC91700A3A8F8 /* AuthenticationTableRow.swift */; };
 		A5833D1E29C08D4400387240 /* AuthenticationTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5833D1D29C08D4400387240 /* AuthenticationTblViewCell.swift */; };
 		A5833D2129C0990200387240 /* ProfileUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5833D2029C0990200387240 /* ProfileUserViewController.swift */; };
@@ -38,20 +39,6 @@
 		A5E0AF1D29B8F41E003B47D2 /* LocalizeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E0AF1C29B8F41E003B47D2 /* LocalizeController.swift */; };
 		A5E0AF4E29B8FEE6003B47D2 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A5E0AF5029B8FEE6003B47D2 /* Localizable.strings */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		A0569DFA29DEAB9600D25991 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				A0569DF929DEAB9600D25991 /* Pods_Industry.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		2F6553E98AFD03F8A774538D /* Pods-Industry.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Industry.release.xcconfig"; path = "Target Support Files/Pods-Industry/Pods-Industry.release.xcconfig"; sourceTree = "<group>"; };
@@ -78,6 +65,8 @@
 		A0E4AA3B29A8E25700BDB4EF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A0E4AA4729A8E46F00BDB4EF /* EnterMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterMenuViewController.swift; sourceTree = "<group>"; };
 		A0F8A7BC29CC78DB00C81D80 /* APIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIManager.swift; sourceTree = "<group>"; };
+		A528206529F3EF19002FA269 /* RecovoryPasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecovoryPasswordViewController.swift; sourceTree = "<group>"; };
+		A528206829F3F244002FA269 /* RecovoryPasswordCollViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecovoryPasswordCollViewCell.swift; sourceTree = "<group>"; };
 		A5831B2629BBC91700A3A8F8 /* AuthenticationTableRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationTableRow.swift; sourceTree = "<group>"; };
 		A5833D1D29C08D4400387240 /* AuthenticationTblViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationTblViewCell.swift; sourceTree = "<group>"; };
 		A5833D2029C0990200387240 /* ProfileUserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileUserViewController.swift; sourceTree = "<group>"; };
@@ -124,8 +113,8 @@
 		A059752829AA219000586F2E /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				A528206729F3F164002FA269 /* CollView */,
 				A0F5E68229CD9816008E483A /* TblCell */,
-				A585FF1B29BA1A3600A0F0AF /* NotificationUserViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -134,7 +123,7 @@
 			isa = PBXGroup;
 			children = (
 				A0F5E68429CD9858008E483A /* Enter */,
-				A0F5E68329CD9843008E483A /* Main */,
+				A0F5E68329CD9843008E483A /* Menu */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -207,13 +196,12 @@
 			isa = PBXGroup;
 			children = (
 				A5833D1D29C08D4400387240 /* AuthenticationTblViewCell.swift */,
-				A5833D2329C09FA900387240 /* UserDescriptionCollViewCell.swift */,
 				A07D45D129C763CD00420463 /* NotificationUserTblViewCell.swift */,
 			);
 			path = TblCell;
 			sourceTree = "<group>";
 		};
-		A0F5E68329CD9843008E483A /* Main */ = {
+		A0F5E68329CD9843008E483A /* Menu */ = {
 			isa = PBXGroup;
 			children = (
 				A585FF1829BA178C00A0F0AF /* NotificationListViewController.swift */,
@@ -221,7 +209,7 @@
 				A5833D2029C0990200387240 /* ProfileUserViewController.swift */,
 				A0569DE729DE85C500D25991 /* CalendarTaskViewController.swift */,
 			);
-			path = Main;
+			path = Menu;
 			sourceTree = "<group>";
 		};
 		A0F5E68429CD9858008E483A /* Enter */ = {
@@ -229,8 +217,19 @@
 			children = (
 				A0E4AA3129A8E25600BDB4EF /* SplachViewController.swift */,
 				A0E4AA4729A8E46F00BDB4EF /* EnterMenuViewController.swift */,
+				A528206529F3EF19002FA269 /* RecovoryPasswordViewController.swift */,
 			);
 			path = Enter;
+			sourceTree = "<group>";
+		};
+		A528206729F3F164002FA269 /* CollView */ = {
+			isa = PBXGroup;
+			children = (
+				A585FF1B29BA1A3600A0F0AF /* NotificationUserViewCell.swift */,
+				A5833D2329C09FA900387240 /* UserDescriptionCollViewCell.swift */,
+				A528206829F3F244002FA269 /* RecovoryPasswordCollViewCell.swift */,
+			);
+			path = CollView;
 			sourceTree = "<group>";
 		};
 		A5833D0F29C0897000387240 /* Supporting Files */ = {
@@ -281,7 +280,6 @@
 				A0E4AA2729A8E25600BDB4EF /* Frameworks */,
 				A0E4AA2829A8E25600BDB4EF /* Resources */,
 				D5403E46EAECB109089008CB /* [CP] Embed Pods Frameworks */,
-				A0569DFA29DEAB9600D25991 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -390,8 +388,10 @@
 				A0E4AA2E29A8E25600BDB4EF /* AppDelegate.swift in Sources */,
 				A07D45EC29C78F9000420463 /* APIClient .swift in Sources */,
 				A5833D2129C0990200387240 /* ProfileUserViewController.swift in Sources */,
+				A528206629F3EF19002FA269 /* RecovoryPasswordViewController.swift in Sources */,
 				A0F8A7BD29CC78DB00C81D80 /* APIManager.swift in Sources */,
 				A07D45DE29C78DFF00420463 /* ProjectModel.swift in Sources */,
+				A528206929F3F244002FA269 /* RecovoryPasswordCollViewCell.swift in Sources */,
 				A5E0AF1D29B8F41E003B47D2 /* LocalizeController.swift in Sources */,
 				A070410A29CE014F00BD2839 /* JSONDecoables.swift in Sources */,
 				A0569DE829DE85C500D25991 /* CalendarTaskViewController.swift in Sources */,
