@@ -7,21 +7,31 @@
 
 import Foundation
 
+// MARK: - HttpMethodsString
+/// HttpMethodsString represents HTTP methods in string format.
 enum HttpMethodsString {
-    case Get
-    case Post
-    case Put
-    case Dleate
+    /// HTTP GET method.
+    case get
     
-    var methods: String {
+    /// HTTP POST method.
+    case post
+    
+    /// HTTP PUT method.
+    case put
+    
+    /// HTTP DELETE method.
+    case delete
+    
+    /// Returns the corresponding string value for the HTTP method.
+    var stringValue: String {
         switch self {
-        case .Get:
+        case .get:
             return "GET"
-        case .Post:
+        case .post:
             return "POST"
-        case .Put:
+        case .put:
             return "PUT"
-        case .Dleate:
+        case .delete:
             return "DELETE"
         }
     }

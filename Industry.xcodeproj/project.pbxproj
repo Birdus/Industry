@@ -35,7 +35,6 @@
 		A585FF1929BA178C00A0F0AF /* NotificationListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A585FF1829BA178C00A0F0AF /* NotificationListViewController.swift */; };
 		A585FF1C29BA1A3600A0F0AF /* NotificationUserViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A585FF1B29BA1A3600A0F0AF /* NotificationUserViewCell.swift */; };
 		A5916AB229BC9D8900285D79 /* MenuTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5916AB129BC9D8900285D79 /* MenuTabBarController.swift */; };
-		A5916AB529BCCA8A00285D79 /* TabBarScreenDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5916AB429BCCA8A00285D79 /* TabBarScreenDefinition.swift */; };
 		A5E0AF1D29B8F41E003B47D2 /* LocalizeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E0AF1C29B8F41E003B47D2 /* LocalizeController.swift */; };
 		A5E0AF4E29B8FEE6003B47D2 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A5E0AF5029B8FEE6003B47D2 /* Localizable.strings */; };
 /* End PBXBuildFile section */
@@ -86,7 +85,6 @@
 		A585FF1829BA178C00A0F0AF /* NotificationListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationListViewController.swift; sourceTree = "<group>"; };
 		A585FF1B29BA1A3600A0F0AF /* NotificationUserViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationUserViewCell.swift; sourceTree = "<group>"; };
 		A5916AB129BC9D8900285D79 /* MenuTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuTabBarController.swift; sourceTree = "<group>"; };
-		A5916AB429BCCA8A00285D79 /* TabBarScreenDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarScreenDefinition.swift; sourceTree = "<group>"; };
 		A5E0AF1C29B8F41E003B47D2 /* LocalizeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizeController.swift; sourceTree = "<group>"; };
 		A5E0AF4F29B8FEE6003B47D2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		D744E5C0DB64F0E2CA68335B /* Pods_Industry.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Industry.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -118,7 +116,6 @@
 				A070411029CE298D00BD2839 /* DataControlsAPI */,
 				A0F5E68129CD9800008E483A /* Data */,
 				A5831B2629BBC91700A3A8F8 /* AuthenticationTableRow.swift */,
-				A5916AB429BCCA8A00285D79 /* TabBarScreenDefinition.swift */,
 				A0AF115A29E06D5700FBA975 /* NotificationCollRow.swift */,
 			);
 			path = Models;
@@ -403,7 +400,6 @@
 				A07D45E429C78E1C00420463 /* EmployeeModel.swift in Sources */,
 				A0CF9F8229CDF69800FE6A72 /* ForecastType.swift in Sources */,
 				A07D45E129C78E0F00420463 /* LaborCostModel.swift in Sources */,
-				A5916AB529BCCA8A00285D79 /* TabBarScreenDefinition.swift in Sources */,
 				A07D45E829C78E3200420463 /* DivisionModel.swift in Sources */,
 				A0CF9F7F29CDF65200FE6A72 /* FinalUrll.swift in Sources */,
 				A02EDA4B29CB5D180084BEBA /* ErrorManager.swift in Sources */,
