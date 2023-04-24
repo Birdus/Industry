@@ -6,7 +6,7 @@
 //
 /**
  A custom UITabBarController used for the Industry app's menu bar.
-
+ 
  - Author: Daniil
  - Version: 1.0
  */
@@ -17,12 +17,12 @@ import UIKit
 
 protocol MenuTabBarControllerDelegate: AnyObject {
     /**
-         Called when a tab is selected in the menu tab bar controller.
-         
-         - Parameters:
-            - tabBarController: The menu tab bar controller.
-            - index: The index of the selected tab.
-         */
+     Called when a tab is selected in the menu tab bar controller.
+     
+     - Parameters:
+     - tabBarController: The menu tab bar controller.
+     - index: The index of the selected tab.
+     */
     func menuTabBarController(_ tabBarController: MenuTabBarController, didSelectTabAtIndex index: Int)
 }
 
@@ -31,18 +31,8 @@ class MenuTabBarController: UITabBarController {
     /// The delegate for the menu tab bar controller.
     weak var menuDelegate: MenuTabBarControllerDelegate?
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        // Hide the navigation bar and set the tab bar's autoresizing mask.
-        self.navigationController?.isNavigationBarHidden = true
-        self.tabBar.autoresizingMask = [.flexibleWidth, .flexibleBottomMargin]
-        self.view.translatesAutoresizingMaskIntoConstraints = false
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         // Create the view controllers for each tab.
         let vcTaskList = UINavigationController(rootViewController: CalendarTaskViewController())
         let vcUserTask = UINavigationController(rootViewController: NotificationListViewController())
@@ -68,7 +58,6 @@ class MenuTabBarController: UITabBarController {
 // MARK: - UITabBarControllerDelegate
 
 extension MenuTabBarController: UITabBarControllerDelegate {
-    
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
         // Call the menu delegate when a tab is selected.
         if let index = viewControllers?.firstIndex(of: viewController) {

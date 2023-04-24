@@ -8,5 +8,5 @@ target 'Industry' do
   # Pods for Industry
 
 pod 'FSCalendar'
-
+pod 'Charts'
 end
