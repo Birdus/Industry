@@ -111,7 +111,7 @@ class EnterMenuViewController: UIViewController {
     /// Func click button enter to application
     @objc
     private func BtnEnter_Click(_ sender: UIButton) {
-        let vc = MenuTabBarController()
+        let vc = TabBarController()
         let navigationController = UINavigationController(rootViewController: vc)
         navigationController.modalPresentationStyle = .fullScreen
         navigationController.isToolbarHidden = true
