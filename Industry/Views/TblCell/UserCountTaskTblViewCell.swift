@@ -114,8 +114,6 @@ class UserCountTaskTblViewCell: UITableViewCell {
             lblCountTimeDescribe.trailingAnchor.constraint(equalTo: lblCountTime.trailingAnchor),
             lblCountTimeDescribe.widthAnchor.constraint(equalTo: lblCountTime.widthAnchor),
             lblCountTimeDescribe.bottomAnchor.constraint(equalTo: lblCountTaskDescribe.bottomAnchor),
-            
-            lblCountTaskDescribe.bottomAnchor.constraint(equalTo: lblCountTimeDescribe.topAnchor, constant: -2)
         ])
         
         // Set font

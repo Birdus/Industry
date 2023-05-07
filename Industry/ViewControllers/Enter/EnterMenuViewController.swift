@@ -114,6 +114,8 @@ class EnterMenuViewController: UIViewController {
         let vc = MenuTabBarController()
         let navigationController = UINavigationController(rootViewController: vc)
         navigationController.modalPresentationStyle = .fullScreen
+        navigationController.isToolbarHidden = true
+        navigationController.isNavigationBarHidden = true
         present(navigationController, animated: true, completion: nil)
         
     }
@@ -167,7 +169,7 @@ class EnterMenuViewController: UIViewController {
             // Authentication table view
             tblAuthentication.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
             tblAuthentication.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
-            tblAuthentication.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor, multiplier: 0.25),
+            tblAuthentication.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor, multiplier: 0.20),
             tblAuthentication.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor),
             tblAuthentication.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
             

@@ -43,14 +43,6 @@ class AuthenticationTblViewCell: UITableViewCell {
     private lazy var txtFld: UITextField = {
         let txt = UITextField()
         txt.translatesAutoresizingMaskIntoConstraints = false
-        // Create the toolbar only once
-        let tlBar = UIToolbar()
-        let btnDone = UIBarButtonItem(title: "Готово".localized, style: .done, target: self, action: #selector(btnDone_Click))
-        let btnCancel = UIBarButtonItem(title: "Отменить".localized, style: .plain, target: self, action: #selector(btnCancel_click))
-        let btnSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        tlBar.setItems([btnCancel, btnSpace, btnDone], animated: true)
-        tlBar.sizeToFit()
-        txt.inputAccessoryView = tlBar
         txt.textColor = .black
         txt.font = UIFont(name: "San Francisco", size: 20)
         txt.isSecureTextEntry = true
@@ -96,6 +88,7 @@ class AuthenticationTblViewCell: UITableViewCell {
         contentView.addSubview(txtFld)
         NSLayoutConstraint.activate([
             txtFld.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            txtFld.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
             txtFld.topAnchor.constraint(equalTo: contentView.topAnchor),
             txtFld.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
@@ -106,6 +99,14 @@ class AuthenticationTblViewCell: UITableViewCell {
 // MARK: Text Field Delegate
 
 extension AuthenticationTblViewCell: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField == txtFld {
+            textField.resignFirstResponder()
+            return false
+        }
+        return true
+    }
+    
     func textFieldDidEndEditing(_ textField: UITextField) {
         delegete.authenticationTblViewCell(self, didChanged: txtFld.text!)
     }
