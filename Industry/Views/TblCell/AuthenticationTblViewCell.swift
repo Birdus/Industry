@@ -32,7 +32,6 @@ protocol AuthenticationTblViewCellDelegate: AnyObject {
 
 class AuthenticationTblViewCell: UITableViewCell {
     // MARK: Properties
-    
     /// The reuse identifier for the cell.
     static let indificatorCell: String = "AuthenticationTblViewCell"
     
@@ -52,7 +51,6 @@ class AuthenticationTblViewCell: UITableViewCell {
     }()
     
     // MARK: Initialization
-    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         configureUI()
@@ -63,7 +61,6 @@ class AuthenticationTblViewCell: UITableViewCell {
     }
     
     // MARK: Public Methods
-    
     /// Configures the cell with a placeholder and whether the input should be a password field.
     public func fillTable(_ placeholder: String, _ isPasword: Bool) {
         txtFld.placeholder = placeholder
@@ -71,7 +68,6 @@ class AuthenticationTblViewCell: UITableViewCell {
     }
     
     // MARK: Private Methods
-    
     /// Handles the "Done" button being pressed on the keyboard accessory view.
     @objc private func btnDone_Click(_ sender: UIBarButtonItem) {
         delegete.authenticationTblViewCell(self, didChanged: txtFld.text!)
@@ -97,7 +93,6 @@ class AuthenticationTblViewCell: UITableViewCell {
 }
 
 // MARK: Text Field Delegate
-
 extension AuthenticationTblViewCell: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField == txtFld {

@@ -26,7 +26,6 @@ class MenuViewController: UIViewController {
     }()
     
     // MARK: - View Controller Life Cycle
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
@@ -48,7 +47,6 @@ class MenuViewController: UIViewController {
 }
 
 // MARK: - UITableViewDelegate
-
 extension MenuViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -79,28 +77,26 @@ extension MenuViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        var vc: UIViewController = UIViewController()
         switch indexPath.row {
         case 0, 1:
-            let userProfileViewController = UserProfileViewController()
-            navigationController?.pushViewController(userProfileViewController, animated: true)
+            vc = UserProfileViewController()
         case 2:
-            let notificationListViewController = NotificationListViewController()
-            navigationController?.pushViewController(notificationListViewController, animated: true)
-            return
+            vc = NotificationListViewController()
         case 3:
-            let statisticUserViewController = StatisticUserViewController()
-            navigationController?.pushViewController(statisticUserViewController, animated: true)
+            vc = StatisticUserViewController()
         case 4:
-            let settingUserViewController = SettingUserViewController()
-            navigationController?.pushViewController(settingUserViewController, animated: true)
+            vc = SettingUserViewController()
         default:
             return
         }
+        let vcNav = UINavigationController(rootViewController: vc)
+        vcNav.modalPresentationStyle = .fullScreen
+        navigationController?.present(vcNav, animated: true, completion: nil)
     }
 }
 
 // MARK: - UITableViewDataSource
-
 extension MenuViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -134,6 +130,7 @@ extension MenuViewController: UITableViewDataSource {
             }
             cell.selectionStyle = .none
             cell.backgroundColor = .clear
+            cell.accessoryType = .disclosureIndicator
             cell.contentView.backgroundColor = .clear
             switch indexPath.row {
             case 2:

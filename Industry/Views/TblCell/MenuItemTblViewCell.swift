@@ -11,7 +11,6 @@ import UIKit
 class MenuItemTblViewCell: UITableViewCell {
     
     // MARK: - Properties
-    
     /// The identifier used to register this cell with a table view.
     static let indificatorCell = "MenuItemTblViewCell"
     
@@ -31,7 +30,6 @@ class MenuItemTblViewCell: UITableViewCell {
     }()
     
     // MARK: - Initialization
-    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         configureUI()
@@ -42,7 +40,6 @@ class MenuItemTblViewCell: UITableViewCell {
     }
     
     // MARK: - Public Methods
-    
     /**
      Fills the table view cell with the given menu item name and icon name.
      
@@ -55,14 +52,12 @@ class MenuItemTblViewCell: UITableViewCell {
     }
     
     // MARK: - Private Methods
-    
     /**
      Configures the UI of the cell.
      */
     private func configureUI() {
         contentView.addSubview(lblName)
         contentView.addSubview(imgIcon)
-        
         NSLayoutConstraint.activate([
             imgIcon.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             imgIcon.widthAnchor.constraint(equalTo: imgIcon.heightAnchor),
@@ -73,7 +68,6 @@ class MenuItemTblViewCell: UITableViewCell {
             lblName.leadingAnchor.constraint(equalTo: imgIcon.trailingAnchor, constant: 10),
             lblName.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10)
         ])
-        let lblSizeFont = UIFont.systemFont(ofSize: CGFloat(UIScreen.main.bounds.width/10)/2)
-        lblName.font = lblSizeFont
+        lblName.font = UIFont.systemFont(ofSize: CGFloat(UIScreen.main.bounds.width/10)/2)
     }
 }

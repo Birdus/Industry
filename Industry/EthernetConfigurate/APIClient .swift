@@ -58,10 +58,9 @@ extension APIManager {
      JSONTaskWith: HTTP request with JSON data
      
      - Parameters:
-     - request: The HTTP request object.
-     - HTTPMethod: The HTTP request method.
-     - completionHandler: The completion handler to be called when the task is complete.
-     
+        - request: The HTTP request object.
+        - HTTPMethod: The HTTP request method.
+        - completionHandler: The completion handler to be called when the task is complete.
      - Returns: A URLSessionDataTask object
      */
     func JSONTaskWith(request: URLRequest, HTTPMethod: HttpMethodsString, completionHandler: @escaping JSONCompletionHandler) -> JSONTask {
@@ -87,11 +86,11 @@ extension APIManager {
      fetch: Get data for a single item
      
      - Parameters:
-     - request: The HTTP request object
-     - HTTPMethod: The HTTP request method
-     - id: The id of the item to fetch
-     - parse: The function used to parse the JSON data
-     - completionHandler: The completion handler to be called when the task is complete
+        - request: The HTTP request object
+        - HTTPMethod: The HTTP request method
+        - id: The id of the item to fetch
+        - parse: The function used to parse the JSON data
+        - completionHandler: The completion handler to be called when the task is complete
      
      */
     func fetch<T>(request: URLRequest, HTTPMethod: HttpMethodsString, _ id: Int?, parse: @escaping ([String: Any]) -> T?, completionHandler: @escaping (APIResult<T>) -> Void) {
@@ -115,13 +114,13 @@ extension APIManager {
     /**
      Fetches API data with the given request and HTTP method, parses the response data to an array of generic type T and calls the completion handler with the parsed data or error.
      
-     Parameters:
-     
-     request: The URLRequest object representing the API request.
-     HTTPMethod: The HttpMethodsString object representing the HTTP method of the API request.
-     parse: The closure that takes a dictionary object of JSON response data and returns an array of generic type T.
-     completionHandler: The closure that takes an APIResult object that holds either the parsed data or the error.
-     Returns: The JSONTask object representing the data task for the API request.
+     - Parameters:
+        - request: The URLRequest object representing the API request.
+        - HTTPMethod: The HttpMethodsString object representing the HTTP method of the API request.
+        - id: The primary key found.
+        - parse: The closure that takes a dictionary object of JSON response data and returns an array of generic type T.
+        - completionHandler: The closure that takes an APIResult object that holds either the parsed data or the error.
+     - Returns: The JSONTask object representing the data task for the API request.
      */
     func fetch<T>(request: URLRequest, HTTPMethod: HttpMethodsString,id: Int?, parse: @escaping ([String: Any]) -> [T]?, completionHandler: @escaping (APIResult<T>) -> Void) -> JSONTask {
         let dataTask = JSONTaskWith(request: request, HTTPMethod: HTTPMethod) { (json, response, error, _) in

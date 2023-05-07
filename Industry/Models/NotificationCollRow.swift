@@ -8,7 +8,6 @@
 import Foundation
 
 // MARK: - NotificationCollRow
-
 /// This enum represents a collection view cell row for notifications. It has three possible cases:
 /// - event
 /// - deadLineTask

@@ -14,10 +14,11 @@ import Foundation
 final class APIManagerIndustry: APIManager {
     /**
      Makes a network request to fetch an array of objects that conform to `JSONDecodable`.
-     - Parameter request The `URLRequest` object that defines the network request to be made.
-     - Parameter HTTPMethod The HTTP method used to make the request.
-     - Parameter parse: A closure that takes a dictionary of `[String: Any]` as input and returns an array of objects that conform to `JSONDecodable`.
-     - Parameter completionHandler: A closure that takes an `APIResult` object as input and has no return value.
+     - Parameters:
+        -  request The `URLRequest` object that defines the network request to be made.
+        -  HTTPMethod The HTTP method used to make the request.
+        -  parse: A closure that takes a dictionary of `[String: Any]` as input and returns an array of objects that conform to `JSONDecodable`.
+        -  completionHandler: A closure that takes an `APIResult` object as input and has no return value.
      */
     func fetch<T>(request: URLRequest, HTTPMethod: HttpMethodsString, parse: @escaping ([String : Any]) -> [T]?, completionHandler: @escaping (APIResult<T>) -> Void) where T : Decodable {
         var requestToFetch = request
@@ -47,13 +48,12 @@ final class APIManagerIndustry: APIManager {
     
     /**
      Makes a network request to fetch a single object that conforms to `JSONDecodable`.
-     
      - Parameters:
-     - request: The `URLRequest` object that defines the network request to be made.
-     - HTTPMethod: The HTTP method used to make the request.
-     - id: An optional `Int` value that represents the ID of the object to be fetched.
-     - parse: A closure that takes a dictionary of `[String: Any]` as input and returns an object that conforms to `JSONDecodable`.
-     - completionHandler: A closure that takes an `APIResult` object as input and has no return value.
+        - request: The `URLRequest` object that defines the network request to be made.
+        - HTTPMethod: The HTTP method used to make the request.
+        - id: An optional `Int` value that represents the ID of the object to be fetched.
+        - parse: A closure that takes a dictionary of `[String: Any]` as input and returns an object that conforms to `JSONDecodable`.
+        - completionHandler: A closure that takes an `APIResult` object as input and has no return value.
      */
     func fetch<T>(request: URLRequest, HTTPMethod: HttpMethodsString, id: Int?, parse: @escaping ([String: Any]) -> T?, completionHandler: @escaping (APIResult<T>) -> Void) where T: JSONDecodable {
         var requestToFetch = request
@@ -104,7 +104,6 @@ final class APIManagerIndustry: APIManager {
        
        /**
         Initializes a new instance of the URLSessionManager class.
-        
         - Parameter sessionConfiguration: The configuration object used to create the session.
         */
        init(sessionConfiguration: URLSessionConfiguration) {

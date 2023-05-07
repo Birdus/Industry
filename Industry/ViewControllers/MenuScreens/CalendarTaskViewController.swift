@@ -92,7 +92,6 @@ class CalendarTaskViewController: UIViewController {
 }
 
 // MARK: - FSCalendarDelegate
-
 extension CalendarTaskViewController: FSCalendarDelegate {
     
     /// Handler for when a user selects a date on the calendar.

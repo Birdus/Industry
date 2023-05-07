@@ -105,7 +105,9 @@ class EnterMenuViewController: UIViewController {
     @objc
     private func BtnRecoveryPass_Click(_ sender: UIButton) {
         let vc = RecovoryPasswordViewController()
-        self.navigationController?.pushViewController(vc, animated: true)
+        let vcNav = UINavigationController(rootViewController: vc)
+        vcNav.modalPresentationStyle = .fullScreen
+        navigationController?.present(vcNav, animated: true, completion: nil)
     }
     
     /// Func click button enter to application
