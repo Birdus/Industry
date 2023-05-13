@@ -28,7 +28,6 @@ class SplachViewController: UIViewController {
         return lbl
     }()
     
-    
     // other properties and methods
     
     override func viewDidLoad() {

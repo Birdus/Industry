@@ -29,6 +29,7 @@
 		A0F8A7BD29CC78DB00C81D80 /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0F8A7BC29CC78DB00C81D80 /* APIManager.swift */; };
 		A528206629F3EF19002FA269 /* RecovoryPasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A528206529F3EF19002FA269 /* RecovoryPasswordViewController.swift */; };
 		A528206929F3F244002FA269 /* RecovoryPasswordCollViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A528206829F3F244002FA269 /* RecovoryPasswordCollViewCell.swift */; };
+		A52D517729F95E20005DB97D /* Duration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52D517629F95E1F005DB97D /* Duration.swift */; };
 		A578851B29F67E0D00D26455 /* HeadMenuTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A578851A29F67E0D00D26455 /* HeadMenuTblViewCell.swift */; };
 		A578852329F6887700D26455 /* MenuItemTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A578852229F6887700D26455 /* MenuItemTblViewCell.swift */; };
 		A578852629F6B7DE00D26455 /* StatisticUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A578852529F6B7DE00D26455 /* StatisticUserViewController.swift */; };
@@ -41,6 +42,7 @@
 		A585FF1929BA178C00A0F0AF /* NotificationListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A585FF1829BA178C00A0F0AF /* NotificationListViewController.swift */; };
 		A585FF1C29BA1A3600A0F0AF /* NotificationUserViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A585FF1B29BA1A3600A0F0AF /* NotificationUserViewCell.swift */; };
 		A5916AB229BC9D8900285D79 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5916AB129BC9D8900285D79 /* TabBarController.swift */; };
+		A5AC14FD2A07C540008FB74C /* SetingUserTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5AC14FC2A07C540008FB74C /* SetingUserTblViewCell.swift */; };
 		A5E0AF1D29B8F41E003B47D2 /* LocalizeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E0AF1C29B8F41E003B47D2 /* LocalizeController.swift */; };
 		A5E0AF4E29B8FEE6003B47D2 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A5E0AF5029B8FEE6003B47D2 /* Localizable.strings */; };
 /* End PBXBuildFile section */
@@ -72,6 +74,7 @@
 		A0F8A7BC29CC78DB00C81D80 /* APIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIManager.swift; sourceTree = "<group>"; };
 		A528206529F3EF19002FA269 /* RecovoryPasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecovoryPasswordViewController.swift; sourceTree = "<group>"; };
 		A528206829F3F244002FA269 /* RecovoryPasswordCollViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecovoryPasswordCollViewCell.swift; sourceTree = "<group>"; };
+		A52D517629F95E1F005DB97D /* Duration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Duration.swift; sourceTree = "<group>"; };
 		A578851A29F67E0D00D26455 /* HeadMenuTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadMenuTblViewCell.swift; sourceTree = "<group>"; };
 		A578852229F6887700D26455 /* MenuItemTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuItemTblViewCell.swift; sourceTree = "<group>"; };
 		A578852529F6B7DE00D26455 /* StatisticUserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticUserViewController.swift; sourceTree = "<group>"; };
@@ -84,6 +87,7 @@
 		A585FF1829BA178C00A0F0AF /* NotificationListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationListViewController.swift; sourceTree = "<group>"; };
 		A585FF1B29BA1A3600A0F0AF /* NotificationUserViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationUserViewCell.swift; sourceTree = "<group>"; };
 		A5916AB129BC9D8900285D79 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
+		A5AC14FC2A07C540008FB74C /* SetingUserTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetingUserTblViewCell.swift; sourceTree = "<group>"; };
 		A5E0AF1C29B8F41E003B47D2 /* LocalizeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizeController.swift; sourceTree = "<group>"; };
 		A5E0AF4F29B8FEE6003B47D2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		D744E5C0DB64F0E2CA68335B /* Pods_Industry.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Industry.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -116,6 +120,7 @@
 				A0F5E68129CD9800008E483A /* Data */,
 				A5831B2629BBC91700A3A8F8 /* AuthenticationTableRow.swift */,
 				A0AF115A29E06D5700FBA975 /* NotificationCollRow.swift */,
+				A52D517629F95E1F005DB97D /* Duration.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -132,8 +137,8 @@
 		A059752929AA219600586F2E /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				A0F5E68429CD9858008E483A /* Enter */,
-				A0F5E68329CD9843008E483A /* Menu */,
+				A0F5E68429CD9858008E483A /* EnterScreens */,
+				A0F5E68329CD9843008E483A /* MenuScreens */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -209,11 +214,12 @@
 				A07D45D129C763CD00420463 /* UserCountTaskTblViewCell.swift */,
 				A578851A29F67E0D00D26455 /* HeadMenuTblViewCell.swift */,
 				A578852229F6887700D26455 /* MenuItemTblViewCell.swift */,
+				A5AC14FC2A07C540008FB74C /* SetingUserTblViewCell.swift */,
 			);
 			path = TblCell;
 			sourceTree = "<group>";
 		};
-		A0F5E68329CD9843008E483A /* Menu */ = {
+		A0F5E68329CD9843008E483A /* MenuScreens */ = {
 			isa = PBXGroup;
 			children = (
 				A578852E29F6B9CA00D26455 /* UserScreens */,
@@ -222,17 +228,17 @@
 				A0569DE729DE85C500D25991 /* CalendarTaskViewController.swift */,
 				A578852829F6B82E00D26455 /* DocumentFlowViewController.swift */,
 			);
-			path = Menu;
+			path = MenuScreens;
 			sourceTree = "<group>";
 		};
-		A0F5E68429CD9858008E483A /* Enter */ = {
+		A0F5E68429CD9858008E483A /* EnterScreens */ = {
 			isa = PBXGroup;
 			children = (
 				A0E4AA3129A8E25600BDB4EF /* SplachViewController.swift */,
 				A0E4AA4729A8E46F00BDB4EF /* EnterMenuViewController.swift */,
 				A528206529F3EF19002FA269 /* RecovoryPasswordViewController.swift */,
 			);
-			path = Enter;
+			path = EnterScreens;
 			sourceTree = "<group>";
 		};
 		A528206729F3F164002FA269 /* CollView */ = {
@@ -417,6 +423,7 @@
 				A5833D2129C0990200387240 /* MenuViewController.swift in Sources */,
 				A528206629F3EF19002FA269 /* RecovoryPasswordViewController.swift in Sources */,
 				A0F8A7BD29CC78DB00C81D80 /* APIManager.swift in Sources */,
+				A52D517729F95E20005DB97D /* Duration.swift in Sources */,
 				A578851B29F67E0D00D26455 /* HeadMenuTblViewCell.swift in Sources */,
 				A07D45DE29C78DFF00420463 /* ProjectModel.swift in Sources */,
 				A528206929F3F244002FA269 /* RecovoryPasswordCollViewCell.swift in Sources */,
@@ -425,6 +432,7 @@
 				A578852629F6B7DE00D26455 /* StatisticUserViewController.swift in Sources */,
 				A0569DE829DE85C500D25991 /* CalendarTaskViewController.swift in Sources */,
 				A5916AB229BC9D8900285D79 /* TabBarController.swift in Sources */,
+				A5AC14FD2A07C540008FB74C /* SetingUserTblViewCell.swift in Sources */,
 				A07D45D229C763CD00420463 /* UserCountTaskTblViewCell.swift in Sources */,
 				A07D45E429C78E1C00420463 /* EmployeeModel.swift in Sources */,
 				A0CF9F8229CDF69800FE6A72 /* ForecastType.swift in Sources */,

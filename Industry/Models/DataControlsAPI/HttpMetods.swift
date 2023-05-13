@@ -12,13 +12,10 @@ import Foundation
 enum HttpMethodsString {
     /// HTTP GET method.
     case get
-    
     /// HTTP POST method.
     case post
-    
     /// HTTP PUT method.
     case put
-    
     /// HTTP DELETE method.
     case delete
     

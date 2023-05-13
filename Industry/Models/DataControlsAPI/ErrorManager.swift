@@ -2,19 +2,14 @@
 
 /// ErrorManager handles networking errors in the Industry app.
 enum INDNetworkingError: Error {
-    
     /// The HTTP response is missing.
     case missingHTTPResponse
-    
     /// A server error occurred.
     case serverError
-    
     /// A bad request was made.
     case badRequest
-    
     /// The requested resource was not found.
     case notFound
-    
     /// An unexpected response was received.
     case unexpectedResponse(message: String)
     

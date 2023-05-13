@@ -14,7 +14,6 @@
 import UIKit
 
 // MARK: - MenuTabBarControllerDelegate
-
 protocol TabBarControllerDelegate: AnyObject {
     /**
      Called when a tab is selected in the menu tab bar controller.
@@ -34,29 +33,28 @@ class TabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Create the view controllers for each tab.
-        let vcTaskList = UINavigationController(rootViewController: CalendarTaskViewController())
-        let vcUserTask = UINavigationController(rootViewController: DocumentFlowViewController())
-        let vcProfileUser = UINavigationController(rootViewController: MenuViewController())
-        
+        let vcCalendar = UINavigationController(rootViewController: CalendarTaskViewController())
+        let vcDocumentFlow = UINavigationController(rootViewController: DocumentFlowViewController())
+        let vcMenuUser = MenuViewController()
+        vcCalendar.isNavigationBarHidden = false
+        vcDocumentFlow.isNavigationBarHidden = false
         // Set the tab bar items for each view controller.
-        vcTaskList.tabBarItem = UITabBarItem(title: "Календарь".localized,
+        vcCalendar.tabBarItem = UITabBarItem(title: "Календарь".localized,
                                              image: UIImage(named: "iconTask")?.withRenderingMode(.alwaysOriginal),
                                              selectedImage: UIImage(named: "iconTaskSelected")?.withRenderingMode(.alwaysOriginal))
-        vcUserTask.tabBarItem = UITabBarItem(title: "Документооборот".localized,
-                                             image: UIImage(named: "iconDocumentFlow")?.withRenderingMode(.alwaysOriginal),
-                                             selectedImage: UIImage(named: "iconDocumentFlow")?.withRenderingMode(.alwaysOriginal))
-        vcProfileUser.tabBarItem = UITabBarItem(title: "Мой профиль".localized,
-                                                image: UIImage(named: "iconAccount")?.withRenderingMode(.alwaysOriginal),
-                                                selectedImage: UIImage(named: "iconAccountSelected")?.withRenderingMode(.alwaysOriginal))
-        
+        vcDocumentFlow.tabBarItem = UITabBarItem(title: "Документооборот".localized,
+                                                 image: UIImage(named: "iconDocumentFlow")?.withRenderingMode(.alwaysOriginal),
+                                                 selectedImage: UIImage(named: "iconDocumentFlow")?.withRenderingMode(.alwaysOriginal))
+        vcMenuUser.tabBarItem = UITabBarItem(title: "Мой профиль".localized,
+                                             image: UIImage(named: "iconAccount")?.withRenderingMode(.alwaysOriginal),
+                                             selectedImage: UIImage(named: "iconAccountSelected")?.withRenderingMode(.alwaysOriginal))
         // Set the view controllers for the tab bar.
-        self.viewControllers = [vcTaskList, vcUserTask, vcProfileUser]
+        self.setViewControllers([vcCalendar, vcDocumentFlow, vcMenuUser], animated: true)
         self.delegate = self
     }
 }
 
 // MARK: - UITabBarControllerDelegate
-
 extension TabBarController: UITabBarControllerDelegate {
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
         // Call the menu delegate when a tab is selected.

@@ -56,6 +56,7 @@ class RecovoryPasswordViewController: UIViewController {
     private func btnBack_Click(_ sender: UIButton) {
         navigationController?.popViewController(animated: true)
         dismiss(animated: true, completion: nil)
+        self.navigationController?.isNavigationBarHidden = true
     }
     
     /// Keyboard will show notification handler

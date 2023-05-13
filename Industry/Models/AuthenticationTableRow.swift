@@ -7,12 +7,10 @@
 
 import Foundation
 // MARK: - AuthenticationTableRow
-
 /// AuthenticationTableRow represents the rows in the authentication table view.
 enum AuthenticationTableRow: Int, CaseIterable {
     /// The login row.
     case login
-    
     /// The password row.
     case password
     
