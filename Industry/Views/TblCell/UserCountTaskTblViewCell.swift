@@ -44,6 +44,7 @@ class UserCountTaskTblViewCell: UITableViewCell {
         return lbl
     }()
     
+    
     /// The label describing the total time spent on completed tasks.
     private lazy var lblCountTimeDescribe: UILabel = {
         let lbl = UILabel()
@@ -88,13 +89,11 @@ class UserCountTaskTblViewCell: UITableViewCell {
         contentView.addSubview(lblCountTime)
         contentView.addSubview(lblCountTaskDescribe)
         contentView.addSubview(lblCountTimeDescribe)
-        let fontScale: CGFloat = bounds.width / 10 - 10
-        let subFontScale: CGFloat = bounds.width / 12 / 2
         NSLayoutConstraint.activate([
             // lblCountTask constraints
             lblCountTask.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 10),
-            lblCountTask.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 20),
-            lblCountTask.widthAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.widthAnchor, multiplier: 0.4),
+            lblCountTask.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 10),
+            lblCountTask.trailingAnchor.constraint(equalTo: contentView.centerXAnchor, constant: -10 ),
             lblCountTask.heightAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.widthAnchor, multiplier: 0.1),
             
             // lblCountTaskDescribe constraints
@@ -105,7 +104,7 @@ class UserCountTaskTblViewCell: UITableViewCell {
             
             // lblCountTime constraints
             lblCountTime.topAnchor.constraint(equalTo: lblCountTask.topAnchor),
-            lblCountTime.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor, constant: -30),
+            lblCountTime.leadingAnchor.constraint(equalTo: contentView.centerXAnchor, constant: 10),
             lblCountTime.widthAnchor.constraint(equalTo: lblCountTask.widthAnchor),
             lblCountTime.heightAnchor.constraint(equalTo: lblCountTask.heightAnchor),
             
@@ -117,9 +116,11 @@ class UserCountTaskTblViewCell: UITableViewCell {
         ])
         
         // Set font
-        lblCountTask.font = UIFont.boldSystemFont(ofSize: fontScale * 1.5)
-        lblCountTime.font = UIFont.boldSystemFont(ofSize: fontScale * 1.5)
-        lblCountTaskDescribe.font = UIFont.systemFont(ofSize: subFontScale * 1.1)
-        lblCountTimeDescribe.font = UIFont.systemFont(ofSize: subFontScale * 1.1)
+        let fontScale = UIFont.systemFont(ofSize: CGFloat(UIScreen.main.bounds.width/10))
+        let subFontScale = UIFont.systemFont(ofSize: CGFloat(UIScreen.main.bounds.width/10)/2)
+        lblCountTask.font = fontScale
+        lblCountTime.font = fontScale
+        lblCountTaskDescribe.font = subFontScale
+        lblCountTimeDescribe.font = subFontScale
     }
 }

@@ -28,3 +28,12 @@
 "Введите новый пароль и подтвердите" = "Enter a new password and confirm";
 "Введите код, который пришел на вашу электронную почту" = "Enter the code that came to your email address";
 "Зарплата по месяцам" = "Salary by month";
+"Уведомления" = "Notifications";
+"Статистика" = "Statistics";
+"Настройки" = "Settings";
+"Выйти" = "Exit";
+"Документооборот" = "Document flow";
+"Подразделения: " = "Divisions: ";
+"Должность: " = "Role: ";
+"Выполнено задач" = "Completed tasks";
+"Количество часов" = "Number of hours";

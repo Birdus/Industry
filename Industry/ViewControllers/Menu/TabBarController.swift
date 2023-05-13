@@ -15,7 +15,7 @@ import UIKit
 
 // MARK: - MenuTabBarControllerDelegate
 
-protocol MenuTabBarControllerDelegate: AnyObject {
+protocol TabBarControllerDelegate: AnyObject {
     /**
      Called when a tab is selected in the menu tab bar controller.
      
@@ -23,28 +23,28 @@ protocol MenuTabBarControllerDelegate: AnyObject {
      - tabBarController: The menu tab bar controller.
      - index: The index of the selected tab.
      */
-    func menuTabBarController(_ tabBarController: MenuTabBarController, didSelectTabAtIndex index: Int)
+    func tabBarController(_ tabBarController: TabBarController, didSelectTabAtIndex index: Int)
 }
 
-class MenuTabBarController: UITabBarController {
+class TabBarController: UITabBarController {
     
     /// The delegate for the menu tab bar controller.
-    weak var menuDelegate: MenuTabBarControllerDelegate?
+    weak var menuDelegate: TabBarControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Create the view controllers for each tab.
         let vcTaskList = UINavigationController(rootViewController: CalendarTaskViewController())
-        let vcUserTask = UINavigationController(rootViewController: NotificationListViewController())
-        let vcProfileUser = UINavigationController(rootViewController: ProfileUserViewController())
+        let vcUserTask = UINavigationController(rootViewController: DocumentFlowViewController())
+        let vcProfileUser = UINavigationController(rootViewController: MenuViewController())
         
         // Set the tab bar items for each view controller.
         vcTaskList.tabBarItem = UITabBarItem(title: "Календарь".localized,
                                              image: UIImage(named: "iconTask")?.withRenderingMode(.alwaysOriginal),
                                              selectedImage: UIImage(named: "iconTaskSelected")?.withRenderingMode(.alwaysOriginal))
-        vcUserTask.tabBarItem = UITabBarItem(title: "Уведомления".localized,
-                                             image: UIImage(named: "iconNotification")?.withRenderingMode(.alwaysOriginal),
-                                             selectedImage: UIImage(named: "iconNotificationSelected")?.withRenderingMode(.alwaysOriginal))
+        vcUserTask.tabBarItem = UITabBarItem(title: "Документооборот".localized,
+                                             image: UIImage(named: "iconDocumentFlow")?.withRenderingMode(.alwaysOriginal),
+                                             selectedImage: UIImage(named: "iconDocumentFlow")?.withRenderingMode(.alwaysOriginal))
         vcProfileUser.tabBarItem = UITabBarItem(title: "Мой профиль".localized,
                                                 image: UIImage(named: "iconAccount")?.withRenderingMode(.alwaysOriginal),
                                                 selectedImage: UIImage(named: "iconAccountSelected")?.withRenderingMode(.alwaysOriginal))
@@ -57,11 +57,11 @@ class MenuTabBarController: UITabBarController {
 
 // MARK: - UITabBarControllerDelegate
 
-extension MenuTabBarController: UITabBarControllerDelegate {
+extension TabBarController: UITabBarControllerDelegate {
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
         // Call the menu delegate when a tab is selected.
         if let index = viewControllers?.firstIndex(of: viewController) {
-            menuDelegate?.menuTabBarController(self, didSelectTabAtIndex: index)
+            menuDelegate?.tabBarController(self, didSelectTabAtIndex: index)
         }
     }
 }
