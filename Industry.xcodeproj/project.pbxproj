@@ -35,7 +35,6 @@
 		A578852629F6B7DE00D26455 /* StatisticUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A578852529F6B7DE00D26455 /* StatisticUserViewController.swift */; };
 		A578852929F6B82E00D26455 /* DocumentFlowViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A578852829F6B82E00D26455 /* DocumentFlowViewController.swift */; };
 		A578852C29F6B9C400D26455 /* SettingUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A578852B29F6B9C400D26455 /* SettingUserViewController.swift */; };
-		A578853029F6BA5800D26455 /* UserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A578852F29F6BA5800D26455 /* UserProfileViewController.swift */; };
 		A5831B2729BBC91700A3A8F8 /* AuthenticationTableRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5831B2629BBC91700A3A8F8 /* AuthenticationTableRow.swift */; };
 		A5833D1E29C08D4400387240 /* AuthenticationTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5833D1D29C08D4400387240 /* AuthenticationTblViewCell.swift */; };
 		A5833D2129C0990200387240 /* MenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5833D2029C0990200387240 /* MenuViewController.swift */; };
@@ -43,6 +42,8 @@
 		A585FF1C29BA1A3600A0F0AF /* NotificationUserViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A585FF1B29BA1A3600A0F0AF /* NotificationUserViewCell.swift */; };
 		A5916AB229BC9D8900285D79 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5916AB129BC9D8900285D79 /* TabBarController.swift */; };
 		A5AC14FD2A07C540008FB74C /* SetingUserTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5AC14FC2A07C540008FB74C /* SetingUserTblViewCell.swift */; };
+		A5AC15092A0BB50A008FB74C /* PrivacyPolicyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5AC15082A0BB50A008FB74C /* PrivacyPolicyViewController.swift */; };
+		A5AC15122A0FDE2B008FB74C /* ListCaledarTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5AC15112A0FDE2A008FB74C /* ListCaledarTblViewCell.swift */; };
 		A5E0AF1D29B8F41E003B47D2 /* LocalizeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E0AF1C29B8F41E003B47D2 /* LocalizeController.swift */; };
 		A5E0AF4E29B8FEE6003B47D2 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A5E0AF5029B8FEE6003B47D2 /* Localizable.strings */; };
 /* End PBXBuildFile section */
@@ -80,7 +81,6 @@
 		A578852529F6B7DE00D26455 /* StatisticUserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticUserViewController.swift; sourceTree = "<group>"; };
 		A578852829F6B82E00D26455 /* DocumentFlowViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentFlowViewController.swift; sourceTree = "<group>"; };
 		A578852B29F6B9C400D26455 /* SettingUserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingUserViewController.swift; sourceTree = "<group>"; };
-		A578852F29F6BA5800D26455 /* UserProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileViewController.swift; sourceTree = "<group>"; };
 		A5831B2629BBC91700A3A8F8 /* AuthenticationTableRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationTableRow.swift; sourceTree = "<group>"; };
 		A5833D1D29C08D4400387240 /* AuthenticationTblViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationTblViewCell.swift; sourceTree = "<group>"; };
 		A5833D2029C0990200387240 /* MenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuViewController.swift; sourceTree = "<group>"; };
@@ -88,6 +88,8 @@
 		A585FF1B29BA1A3600A0F0AF /* NotificationUserViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationUserViewCell.swift; sourceTree = "<group>"; };
 		A5916AB129BC9D8900285D79 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		A5AC14FC2A07C540008FB74C /* SetingUserTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetingUserTblViewCell.swift; sourceTree = "<group>"; };
+		A5AC15082A0BB50A008FB74C /* PrivacyPolicyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyPolicyViewController.swift; sourceTree = "<group>"; };
+		A5AC15112A0FDE2A008FB74C /* ListCaledarTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListCaledarTblViewCell.swift; sourceTree = "<group>"; };
 		A5E0AF1C29B8F41E003B47D2 /* LocalizeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizeController.swift; sourceTree = "<group>"; };
 		A5E0AF4F29B8FEE6003B47D2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		D744E5C0DB64F0E2CA68335B /* Pods_Industry.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Industry.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -215,6 +217,7 @@
 				A578851A29F67E0D00D26455 /* HeadMenuTblViewCell.swift */,
 				A578852229F6887700D26455 /* MenuItemTblViewCell.swift */,
 				A5AC14FC2A07C540008FB74C /* SetingUserTblViewCell.swift */,
+				A5AC15112A0FDE2A008FB74C /* ListCaledarTblViewCell.swift */,
 			);
 			path = TblCell;
 			sourceTree = "<group>";
@@ -256,7 +259,7 @@
 				A585FF1829BA178C00A0F0AF /* NotificationListViewController.swift */,
 				A578852529F6B7DE00D26455 /* StatisticUserViewController.swift */,
 				A578852B29F6B9C400D26455 /* SettingUserViewController.swift */,
-				A578852F29F6BA5800D26455 /* UserProfileViewController.swift */,
+				A5AC15082A0BB50A008FB74C /* PrivacyPolicyViewController.swift */,
 			);
 			path = UserScreens;
 			sourceTree = "<group>";
@@ -415,7 +418,6 @@
 				A578852929F6B82E00D26455 /* DocumentFlowViewController.swift in Sources */,
 				A578852C29F6B9C400D26455 /* SettingUserViewController.swift in Sources */,
 				A5833D1E29C08D4400387240 /* AuthenticationTblViewCell.swift in Sources */,
-				A578853029F6BA5800D26455 /* UserProfileViewController.swift in Sources */,
 				A0E4AA3229A8E25600BDB4EF /* SplachViewController.swift in Sources */,
 				A0E4AA2E29A8E25600BDB4EF /* AppDelegate.swift in Sources */,
 				A578852329F6887700D26455 /* MenuItemTblViewCell.swift in Sources */,
@@ -425,6 +427,7 @@
 				A0F8A7BD29CC78DB00C81D80 /* APIManager.swift in Sources */,
 				A52D517729F95E20005DB97D /* Duration.swift in Sources */,
 				A578851B29F67E0D00D26455 /* HeadMenuTblViewCell.swift in Sources */,
+				A5AC15092A0BB50A008FB74C /* PrivacyPolicyViewController.swift in Sources */,
 				A07D45DE29C78DFF00420463 /* ProjectModel.swift in Sources */,
 				A528206929F3F244002FA269 /* RecovoryPasswordCollViewCell.swift in Sources */,
 				A5E0AF1D29B8F41E003B47D2 /* LocalizeController.swift in Sources */,
@@ -438,6 +441,7 @@
 				A0CF9F8229CDF69800FE6A72 /* ForecastType.swift in Sources */,
 				A07D45E129C78E0F00420463 /* LaborCostModel.swift in Sources */,
 				A07D45E829C78E3200420463 /* DivisionModel.swift in Sources */,
+				A5AC15122A0FDE2B008FB74C /* ListCaledarTblViewCell.swift in Sources */,
 				A0CF9F7F29CDF65200FE6A72 /* FinalUrll.swift in Sources */,
 				A02EDA4B29CB5D180084BEBA /* ErrorManager.swift in Sources */,
 				A585FF1929BA178C00A0F0AF /* NotificationListViewController.swift in Sources */,

@@ -30,6 +30,11 @@ class NotificationListViewController: UIViewController {
         return collectionView
     }()
     
+    private lazy var btnAddNotification: UIBarButtonItem = {
+        let btn = UIBarButtonItem(title: "+".localized, style: .done, target: self, action: #selector(btnAddNotification_Click))
+        return btn
+    }()
+    
     private lazy var btnBack: UIBarButtonItem = {
         let btn = UIBarButtonItem(title: "Назад".localized, style: .plain, target: self, action: #selector(btnBack_Click))
         return btn
@@ -50,12 +55,18 @@ class NotificationListViewController: UIViewController {
         self.navigationController?.isNavigationBarHidden = true
     }
     
+    @objc
+    private func btnAddNotification_Click(_ sender: UIButton) {
+        
+    }
+    
     // MARK: - Private Methods
     /// Configures the UI elements of the view controller.
     private func configureUI() {
         view.backgroundColor = .white
         view.addSubview(collNotification)
         self.navigationItem.leftBarButtonItem = btnBack
+        self.navigationItem.rightBarButtonItem = btnAddNotification
         self.navigationController?.isNavigationBarHidden = false
         collNotification.layer.borderWidth = 0
         collNotification.layer.borderColor = UIColor.clear.cgColor

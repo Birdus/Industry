@@ -7,10 +7,19 @@
 
 import UIKit
 
+protocol HeadMenuTblViewCellDelegate: AnyObject {
+    /// Tells the delegate that the text in the text field is changed.
+    /// - Parameter cell: The HeadMenuTblViewCell whose text field's value changed.
+    func headMenuTblViewCell(_ cell: HeadMenuTblViewCell,didFinishPickingImage avatar: UIImageView)
+}
+
 class HeadMenuTblViewCell: UITableViewCell {
     // MARK: - Properties
     /// The reuse identifier for this cell.
     static let indificatorCell = "HeadProfileTblViewCell"
+    
+    /// The delegate for handling changes in text input.
+    weak var delegete: HeadMenuTblViewCellDelegate!
     
     /// A UILabel displaying the first, last and  name of the user.
     lazy private var lblFIO: UILabel = {
@@ -56,6 +65,12 @@ class HeadMenuTblViewCell: UITableViewCell {
         return imageView
     }()
     
+    private lazy var tapGesture: UITapGestureRecognizer = {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapAvatar))
+        return tapGesture
+    }()
+    
+    
     // MARK: - Initialization
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -66,6 +81,16 @@ class HeadMenuTblViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    deinit {
+        self.removeGestureRecognizer(tapGesture)
+    }
+    
+    // MARK: - Action
+    @objc
+    func didTapAvatar() {
+        delegete.headMenuTblViewCell(self, didFinishPickingImage: imageView ?? UIImageView())
+    }
+    
     // MARK: - Public Methods
     /**
      Fills the table view cell with the head menu user.
@@ -74,10 +99,10 @@ class HeadMenuTblViewCell: UITableViewCell {
      - Parameter role: The role user
      - Parameter nameImgAvatar: The path from image user
      */
-    func fiillTable(_ FIO: String, _ devisionUser: String,_ role: String, _ nameImgAvatar: String) {
+    func fiillTable(_ FIO: String, _ devisionUser: String,_ role: String, _ nameImgAvatar: UIImage) {
         lblFIO.text = FIO
         lblDivisionUser.text = "Подразделения: ".localized + devisionUser
-        imgAvatarUser.image = UIImage(named: nameImgAvatar)
+        imgAvatarUser.image = nameImgAvatar
         lblRoleUser.text = "Должность: ".localized + role
     }
     
@@ -90,6 +115,7 @@ class HeadMenuTblViewCell: UITableViewCell {
         contentView.addSubview(lblDivisionUser)
         contentView.addSubview(viewProfileImageContainer)
         contentView.addSubview(lblRoleUser)
+        viewProfileImageContainer.addGestureRecognizer(tapGesture)
         viewProfileImageContainer.addSubview(imgAvatarUser)
         NSLayoutConstraint.activate([
             viewProfileImageContainer.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
