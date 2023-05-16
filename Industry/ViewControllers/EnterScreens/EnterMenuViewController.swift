@@ -40,6 +40,10 @@ import UIKit
 class EnterMenuViewController: UIViewController {
     
     // MARK: - Properties
+    
+    private var usserLogin: String?
+    private var usserPassword: String?
+    
     /// A button for entering the app.
     private lazy var btnEnter: UIButton = {
         let btn = UIButton()
@@ -104,6 +108,7 @@ class EnterMenuViewController: UIViewController {
     /// Func click button recovery password
     @objc
     private func BtnRecoveryPass_Click(_ sender: UIButton) {
+
         let vc = RecovoryPasswordViewController()
         let vcNav = UINavigationController(rootViewController: vc)
         vcNav.modalPresentationStyle = .fullScreen
@@ -151,6 +156,11 @@ class EnterMenuViewController: UIViewController {
     // MARK: - Privates func
     /// Configures the UI elements of the view controller.
     private func configureUI() {
+        btnEnter.accessibilityIdentifier = "btnEnter"
+        btnRecoveryPass.accessibilityIdentifier = "btnRecoveryPass"
+        imgCompany.accessibilityIdentifier = "imgCompany"
+        tblAuthentication.accessibilityIdentifier = "tblAuthentication"
+
         // TODO: The function is responsible for setting the UI
         // Set background color
         view.backgroundColor = .white
@@ -217,6 +227,14 @@ extension EnterMenuViewController: UITableViewDataSource {
             fatalError("Unable to dequeue cell.")
         }
         let row = AuthenticationTableRow(rawValue: indexPath.row)!
+        switch indexPath.row {
+        case 0:
+            cell.accessibilityIdentifier = "cellLogin"
+        case 1:
+            cell.accessibilityIdentifier = "cellPassword"
+        default:
+            break
+        }
         cell.fillTable(row.title, row.isSecure)
         cell.selectionStyle = .none
         cell.backgroundColor = .clear
@@ -240,6 +258,11 @@ extension EnterMenuViewController: AuthenticationTblViewCellDelegate {
     /// - Parameter cell: The table view cell that contains the text field.
     /// - Parameter value: The new text for the text field.
     func authenticationTblViewCell(_ cell: AuthenticationTblViewCell, didChanged value: String) {
+        if cell.accessibilityIdentifier == "cellLogin" {
+            usserLogin = value
+        } else if cell.accessibilityIdentifier == "cellPassword" {
+            usserPassword = value
+        }
         return
     }
 }

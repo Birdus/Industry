@@ -94,6 +94,7 @@ class AuthenticationTblViewCell: UITableViewCell {
 
 // MARK: Text Field Delegate
 extension AuthenticationTblViewCell: UITextFieldDelegate {
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField == txtFld {
             textField.resignFirstResponder()
@@ -103,6 +104,10 @@ extension AuthenticationTblViewCell: UITextFieldDelegate {
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        delegete.authenticationTblViewCell(self, didChanged: txtFld.text!)
+        if let value = textField.text {
+            if !value.isNullOrWhiteSpace {
+                delegete.authenticationTblViewCell(self, didChanged: value)
+            }
+        }
     }
 }

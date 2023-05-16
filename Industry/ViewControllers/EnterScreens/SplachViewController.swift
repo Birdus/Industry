@@ -33,10 +33,10 @@ class SplachViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
-        
     }
     
     private func configureUI() {
+        lblGreeting.accessibilityIdentifier = "lblGreeting"
         self.navigationController?.isNavigationBarHidden = true
         view.backgroundColor = .white
         self.view.addSubview(lblGreeting)

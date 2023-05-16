@@ -45,10 +45,16 @@ class ListCaledarTblViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func fiillTable(_ typeAction: String, _ descriptinAction: String, _ deadLineAction: String) {
+    func fiillTable(_ typeAction: String, _ descriptinAction: String, _ deadLineAction: Date?) {
+        
+        if let date = deadLineAction {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+            lblDeadLineAction.text = dateFormatter.string(from: date)
+        }
         lblTypeAction.text = typeAction
         lblDescriptionAction.text = descriptinAction
-        lblDeadLineAction.text = deadLineAction
+        
     }
     
     private func configureUI() {

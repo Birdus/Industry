@@ -10,6 +10,9 @@ import UIKit
 class MenuViewController: UIViewController {
     
     // MARK: - Properties
+    
+    private var employee: Employee!
+    
     /// A table view that displays menu items.
     private lazy var menuTableView: UITableView = {
         let tableView = UITableView()
@@ -116,7 +119,7 @@ extension MenuViewController: UITableViewDataSource {
             cell.selectionStyle = .none
             cell.backgroundColor = .clear
             cell.contentView.backgroundColor = .clear
-            cell.fiillTable("Гетманцев Даниил Олегович", "Directum", "Junior", imgChange)
+            cell.fiillTable("\(employee.lastName) \(employee.firstName) \(employee.secondName)", employee.division.divisionName, employee.role, imgChange)
             cell.separatorInset = UIEdgeInsets(top: 0, left: view.bounds.width / 4, bottom: 0, right: 0)
             cell.delegete = self
             return cell
@@ -127,7 +130,13 @@ extension MenuViewController: UITableViewDataSource {
             cell.selectionStyle = .none
             cell.backgroundColor = .clear
             cell.contentView.backgroundColor = .clear
-            cell.fiillTable(10, 20)
+            if let laborCost = employee.laborCosts {
+                var sumHour: Int = 0
+                laborCost.forEach { sumHour += $0.hourCount }
+                cell.fiillTable(laborCost.count, sumHour)
+            } else {
+                cell.fiillTable(0, 0)
+            }
             return cell
         default:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: MenuItemTblViewCell.indificatorCell, for: indexPath) as? MenuItemTblViewCell else {
@@ -190,5 +199,11 @@ extension MenuViewController: UIImagePickerControllerDelegate, UINavigationContr
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true, completion: nil)
+    }
+}
+
+extension MenuViewController: TabBarControllerDelegate {
+    func tabBarController(_ tabBarController: TabBarController, didSelectTabAtIndex index: Int, employee data: Employee) {
+        employee = data
     }
 }
