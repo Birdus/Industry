@@ -64,28 +64,36 @@ class StatisticUserViewController: UIViewController {
             let alControl = UIAlertController(title: "Продолжительность статистики".localized, message: nil, preferredStyle: .alert)
             
             let btnShowMoneyOfWeak: UIAlertAction = {
-                let btn = UIAlertAction(title: "За неделю".localized, style: .default, handler: {(alert: UIAlertAction!) in
+                let btn = UIAlertAction(title: "За неделю".localized,
+                                        style: .default,
+                                        handler: {(alert: UIAlertAction!) in
                     self.showStatistics(for: .week)
                 })
                 return btn
             }()
             
             let btnShowMoneyOfMouth: UIAlertAction = {
-                let btn = UIAlertAction(title: "За месяц".localized, style: .default, handler: {(alert: UIAlertAction!) in
+                let btn = UIAlertAction(title: "За месяц".localized,
+                                        style: .default,
+                                        handler: {(alert: UIAlertAction!) in
                     self.showStatistics(for: .month)
                 })
                 return btn
             }()
             
             let btnShowMoneyOfYear: UIAlertAction = {
-                let btn = UIAlertAction(title: "За год".localized, style: .default, handler: {(alert: UIAlertAction!) in
+                let btn = UIAlertAction(title: "За год".localized,
+                                        style: .default,
+                                        handler: {(alert: UIAlertAction!) in
                     self.showStatistics(for: .year)
                 })
                 return btn
             }()
             
             let btnCancel: UIAlertAction = {
-                let btn = UIAlertAction(title: "Отмена".localized, style: .cancel, handler: {(alert: UIAlertAction!) in
+                let btn = UIAlertAction(title: "Отмена".localized,
+                                        style: .cancel,
+                                        handler: {(alert: UIAlertAction!) in
                     self.navigationController?.popViewController(animated: true)
                     self.dismiss(animated: true, completion: nil)
                 })
@@ -113,7 +121,6 @@ class StatisticUserViewController: UIViewController {
         for x in 0..<duration.description.count {
             entries.append(BarChartDataEntry(x: Double(x), y: Double(60 * x)))
         }
-        
         let dataSetBrCh = BarChartDataSet(entries: entries, label: "₽")
         brChStatic.data = BarChartData(dataSet: dataSetBrCh)
         let dataSetPieCh = PieChartDataSet(entries: entriesPie, label: "Затраченное время по часам".localized)

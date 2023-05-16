@@ -9,8 +9,10 @@ import UIKit
 
 class SettingUserViewController: UIViewController {
     
+    // MARK: - Properties
     private let indificatorDefaultCell = "indificatorDefaultCell"
-    
+
+    // MARK: - UI
     private lazy var tblMenuView: UITableView = {
         let tableView = UITableView()
         tableView.register(SetingUserTblViewCell.self, forCellReuseIdentifier: SetingUserTblViewCell.indificatorCell)
@@ -23,24 +25,27 @@ class SettingUserViewController: UIViewController {
         tableView.delegate = self
         return tableView
     }()
-    
+
     private lazy var btnBack: UIBarButtonItem = {
         let btn = UIBarButtonItem(title: "Назад".localized, style: .plain, target: self, action: #selector(btnBack_Click))
         return btn
     }()
-    
+
+    // MARK: - View controller lifecycle methods
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
     }
-    
+
+    // MARK: - Actions
     @objc
     private func btnBack_Click(_ sender: UIButton) {
         navigationController?.popViewController(animated: true)
         dismiss(animated: true, completion: nil)
         self.navigationController?.isNavigationBarHidden = true
     }
-    
+
+    // MARK: - Private func
     private func configureUI() {
         self.navigationItem.leftBarButtonItem = btnBack
         self.navigationController?.isNavigationBarHidden = false
@@ -56,7 +61,7 @@ class SettingUserViewController: UIViewController {
     }
 }
 
-
+// MARK: - Table data source delegate
 extension SettingUserViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 8
@@ -142,6 +147,7 @@ extension SettingUserViewController: UITableViewDataSource {
     }
 }
 
+// MARK: - Table delegate
 extension SettingUserViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let screenHeight = UIScreen.main.bounds.size.height
@@ -161,5 +167,22 @@ extension SettingUserViewController: UITableViewDelegate {
         view.heightAnchor.constraint(equalToConstant: 1).isActive = true
         view.backgroundColor = .clear
         return view
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        var vc: UIViewController = UIViewController()
+        if indexPath.row >= 6 {
+            switch indexPath.row {
+            case 6:
+                vc = PrivacyPolicyViewController()
+            case 7:
+                vc = RecovoryPasswordViewController()
+            default:
+                return
+            }
+            let vcNav = UINavigationController(rootViewController: vc)
+            vcNav.modalPresentationStyle = .fullScreen
+            navigationController?.present(vcNav, animated: true, completion: nil)
+        }
     }
 }
