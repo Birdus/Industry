@@ -9,12 +9,10 @@ import UIKit
 
 class RecovoryPasswordCollViewCell: UICollectionViewCell {
     // MARK: - Properties
-    
     /// The identifier for this collection view cell
     static let indificatorCell: String = "CollectionViewCell"
     
     // MARK: - UI Elements
-    
     /// A label to show the heading of the password recovery screen.
     private lazy var lblHead: UILabel = {
         let lbl = UILabel()
@@ -194,7 +192,7 @@ class RecovoryPasswordCollViewCell: UICollectionViewCell {
             break
         }
     }
-
+    
     // MARK: - Private Methods
     /// Configures the cell's user interface.
     private func configureUI () {
@@ -208,16 +206,13 @@ class RecovoryPasswordCollViewCell: UICollectionViewCell {
             lblHead.leadingAnchor.constraint(equalTo: guide.leadingAnchor, constant: 10),
             lblHead.trailingAnchor.constraint(equalTo: guide.trailingAnchor, constant: -10),
             lblHead.heightAnchor.constraint(equalToConstant: self.frame.height / 6),
-            
             lblDescription.topAnchor.constraint(equalTo: lblHead.bottomAnchor, constant: 10),
             lblDescription.leadingAnchor.constraint(equalTo: guide.leadingAnchor, constant: 10),
             lblDescription.bottomAnchor.constraint(equalTo: txtFldLogin.topAnchor, constant: -10),
             lblDescription.trailingAnchor.constraint(equalTo: guide.trailingAnchor, constant: -10),
-            
             txtFldLogin.leadingAnchor.constraint(equalTo: guide.leadingAnchor, constant: 10),
             txtFldLogin.trailingAnchor.constraint(equalTo: guide.trailingAnchor, constant: -10),
             txtFldLogin.bottomAnchor.constraint(equalTo: btnRecoveryPass.topAnchor, constant: -30),
-            
             btnRecoveryPass.bottomAnchor.constraint(equalTo: guide.bottomAnchor, constant: -10),
             btnRecoveryPass.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 0.8),
             btnRecoveryPass.centerXAnchor.constraint(equalTo: guide.centerXAnchor),

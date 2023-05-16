@@ -46,7 +46,6 @@ class NotificationUserViewCell: UICollectionViewCell {
     }()
     
     // MARK: Initializers
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         configureUI()

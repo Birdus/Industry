@@ -8,7 +8,6 @@
 import Foundation
 
 // MARK: - ForecastType
-
 /**
  ForecastType represents the available API endpoints for Industry app's forecast feature.
  Each case in the enum corresponds to a specific endpoint.
@@ -16,34 +15,24 @@ import Foundation
 enum ForecastType: FinalURLPoint {
     /// Endpoint for getting a list of assignments.
     case Assignment
-    
     /// Endpoint for getting a specific assignment by ID.
     case AssignmentWithId(id: Int)
-    
     /// Endpoint for getting a list of divisions.
     case Division
-    
     /// Endpoint for getting a specific division by ID.
     case DivisionWitchId(id: Int)
-    
     /// Endpoint for getting a list of employees.
     case Employee
-    
     /// Endpoint for getting a specific employee by ID.
     case EmployeeWitchId(id: Int)
-    
     /// Endpoint for getting a list of projects.
     case Project
-    
     /// Endpoint for getting a specific project by ID.
     case ProjectWitchId(id: Int)
-    
     /// Endpoint for getting a list of labor costs.
     case LaborCost
-    
     /// Endpoint for getting a specific labor cost by ID.
     case LaborCostWitchId(id: Int)
-    
     
     /// The base URL for all endpoints.
     var baseURL: URL {

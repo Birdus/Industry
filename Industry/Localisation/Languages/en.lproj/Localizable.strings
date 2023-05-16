@@ -37,3 +37,30 @@
 "Должность: " = "Role: ";
 "Выполнено задач" = "Completed tasks";
 "Количество часов" = "Number of hours";
+
+"Продолжительность статистики" = "Duration of statistics";
+"За неделю" = "Per week";
+"За месяц" = "Per month";
+"За год" = "Per Year";
+"Отмена" = "Cancel";
+"Затраченное время по часам" = "Time spent by the clock";
+
+"Понедельник" = "Monday";
+"Вторник" ="Tuesday";
+"Среда" = "Wednesday";
+"Четверг" = "Thursday";
+"Пятница" = "Friday";
+"Суббота" = "Saturday";
+"Статистика по неделе" = "Statistics by week";
+"Статистика по месяцу" = "Statistics by month";
+"Статистика по году" = "Statistics by year";
+"Уведомления" = "Notifications";
+"Выключить все уведомления" = "Turn off all notifications";
+"Собрание" = "Meeting";
+"Новой задачи" = "New task";
+"Конец задачи" = "End of task";
+"Безопасность" = "Security";
+"Политика кондифициальности" = "Privacy Policy";
+"Изменить пароль" = "Change password";
+
+
