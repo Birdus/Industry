@@ -10,7 +10,7 @@ struct Employee: Codable, Equatable {
     let oneCPass: Int?
     let post: String
     let division: Division
-    let laborCosts: [LaborCost]?
+    var laborCosts: [LaborCost]?
 }
 
 extension Employee: JSONDecodable {

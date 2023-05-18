@@ -281,7 +281,7 @@
 		A0F5E68329CD9843008E483A /* MenuScreens */ = {
 			isa = PBXGroup;
 			children = (
-				A578852E29F6B9CA00D26455 /* UserScreens */,
+				A578852E29F6B9CA00D26455 /* MenuUserScreens */,
 				A5916AB129BC9D8900285D79 /* TabBarController.swift */,
 				A5833D2029C0990200387240 /* MenuViewController.swift */,
 				A0569DE729DE85C500D25991 /* CalendarTaskViewController.swift */,
@@ -329,7 +329,7 @@
 			path = IndustryUITests;
 			sourceTree = "<group>";
 		};
-		A578852E29F6B9CA00D26455 /* UserScreens */ = {
+		A578852E29F6B9CA00D26455 /* MenuUserScreens */ = {
 			isa = PBXGroup;
 			children = (
 				A585FF1829BA178C00A0F0AF /* NotificationListViewController.swift */,
@@ -337,7 +337,7 @@
 				A578852B29F6B9C400D26455 /* SettingUserViewController.swift */,
 				A5AC15082A0BB50A008FB74C /* PrivacyPolicyViewController.swift */,
 			);
-			path = UserScreens;
+			path = MenuUserScreens;
 			sourceTree = "<group>";
 		};
 		A5833D0F29C0897000387240 /* Supporting Files */ = {
@@ -802,7 +802,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = B2BN3T2SCB;
 				INFOPLIST_FILE = IndustryTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -823,7 +823,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = B2BN3T2SCB;
 				INFOPLIST_FILE = IndustryTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -843,7 +843,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = B2BN3T2SCB;
 				INFOPLIST_FILE = IndustryUITests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -863,7 +863,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = B2BN3T2SCB;
 				INFOPLIST_FILE = IndustryUITests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

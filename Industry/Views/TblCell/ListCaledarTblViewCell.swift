@@ -49,7 +49,7 @@ class ListCaledarTblViewCell: UITableViewCell {
         
         if let date = deadLineAction {
             let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+            dateFormatter.dateFormat = "dd.MM"
             lblDeadLineAction.text = dateFormatter.string(from: date)
         }
         lblTypeAction.text = typeAction
@@ -64,8 +64,8 @@ class ListCaledarTblViewCell: UITableViewCell {
         NSLayoutConstraint.activate([
             lblTypeAction.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 5),
             lblTypeAction.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 5),
-            lblTypeAction.widthAnchor.constraint(equalTo: self.safeAreaLayoutGuide.widthAnchor, multiplier: 0.4),
-            lblTypeAction.heightAnchor.constraint(equalTo: lblTypeAction.widthAnchor, multiplier: 0.2),
+            lblTypeAction.widthAnchor.constraint(equalTo: self.safeAreaLayoutGuide.widthAnchor, multiplier: 0.8),
+            lblTypeAction.heightAnchor.constraint(equalTo: lblTypeAction.widthAnchor, multiplier: 0.1),
             
             
             lblDeadLineAction.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 10),

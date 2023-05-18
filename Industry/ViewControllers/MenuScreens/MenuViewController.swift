@@ -42,7 +42,6 @@ class MenuViewController: UIViewController {
     // MARK: - Private Methods
     /// Configures the view controller's UI.
     private func configureUI() {
-        
         view.backgroundColor = .white
         view.addSubview(menuTableView)
         navigationController?.isNavigationBarHidden = true
@@ -183,7 +182,6 @@ extension MenuViewController: UIImagePickerControllerDelegate, UINavigationContr
             picker.dismiss(animated: true, completion: nil)
             let alControl:UIAlertController = {
                 let alControl = UIAlertController(title: "Ошибка".localized, message: "Фотография не найденна".localized, preferredStyle: .alert)
-                
                 let btnOk: UIAlertAction = {
                     let btn = UIAlertAction(title: "Ok".localized,
                                             style: .default,
