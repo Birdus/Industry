@@ -32,7 +32,7 @@ This application has a minimum requirement for mobile devices running on iOS 10 
 # More. 😉
 This application utilizes an API.
 
-https://github.com/lookstep/Diplom
+[https://github.com/lookstep/Diplom](http://80.78.253.153/swagger/index.html)
 
 The "Diplom" repository appears to be a web application project that utilizes the ASP.NET framework and C# programming language. The project files include folders for Controllers, Models, Views, and various other components of an ASP.NET web application. It also appears that the project is using Entity Framework, a popular object-relational mapping (ORM) framework for .NET applications.
 
