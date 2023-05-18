@@ -21,9 +21,6 @@
  let calendarTaskVC = CalendarTaskViewController()
  self.navigationController?.pushViewController(calendarTaskVC, animated: true)
  
- swift
- Copy code
- 
  - Note: This view controller assumes that the user has already logged in and has access to the necessary data.
  */
 
@@ -33,7 +30,25 @@ import FSCalendar
 class CalendarTaskViewController: UIViewController {
     // MARK: - Private UI
     /// The calendar view.
-    lazy private var calendareTask: FSCalendar = FSCalendar()
+    lazy private var calendareTask: FSCalendar = {
+        var calendar: FSCalendar = FSCalendar()
+        calendar.scope = .week
+        calendar.appearance.headerMinimumDissolvedAlpha = 0.0
+        calendar.appearance.headerDateFormat = "MMMM yyyy"
+        calendar.translatesAutoresizingMaskIntoConstraints = false
+        calendar.delegate = self
+        return calendar
+    }()
+    
+    private lazy var tblListCalendar: UITableView = {
+        let tableView = UITableView()
+        tableView.register(ListCaledarTblViewCell.self, forCellReuseIdentifier: ListCaledarTblViewCell.indificatorCell)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.separatorStyle = .singleLine
+        tableView.dataSource = self
+        tableView.delegate = self
+        return tableView
+    }()
     
     /// The reload button for reloading the calendar.
     private lazy var btnReloadTask: UIBarButtonItem = {
@@ -53,10 +68,35 @@ class CalendarTaskViewController: UIViewController {
         return btn
     }()
     
+    
+    private lazy var calendareHeightConstraint: NSLayoutConstraint = {
+        let constraint = NSLayoutConstraint(item: calendareTask, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 300)
+        return constraint
+    }()
+    
+    private lazy var swipeUpCalendare: UISwipeGestureRecognizer = {
+        let swipe = UISwipeGestureRecognizer(target: self, action: #selector(swipecalendareTask_Swipe))
+        swipe.direction = .up
+        return swipe
+    }()
+    
+    private lazy var swipeDownCalendare: UISwipeGestureRecognizer = {
+        let swipe = UISwipeGestureRecognizer(target: self, action: #selector(swipecalendareTask_Swipe))
+        swipe.direction = .down
+        return swipe
+    }()
+    
+    
+    
     // MARK: - Lifecycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
+    }
+    
+    deinit {
+        calendareTask.removeGestureRecognizer(swipeUpCalendare)
+        calendareTask.removeGestureRecognizer(swipeDownCalendare)
     }
     
     // MARK: - Action
@@ -72,22 +112,51 @@ class CalendarTaskViewController: UIViewController {
         // TODO: Implement add task and reload functionality
     }
     
+    @objc
+    private func swipecalendareTask_Swipe(_ gesture: UISwipeGestureRecognizer) {
+        switch gesture.direction {
+        case .up:
+            if calendareTask.scope == .month {
+                calendareTask.setScope(.week, animated: true)
+            } else {
+                return
+            }
+        case .down:
+            if calendareTask.scope == .month {
+                return
+            } else {
+                calendareTask.setScope(.month, animated: true)
+            }
+        default:
+            break
+        }
+    }
+    
     // MARK: - Private func
+    
+    
     /// Configures the UI elements of the view controller.
     private func configureUI() {
         view.addSubview(calendareTask)
-        self.navigationItem.rightBarButtonItem = btnAddTask
-        self.navigationItem.leftBarButtonItem = btnReloadTask
-        self.view.backgroundColor = .white
-        calendareTask.delegate = self
+        view.addSubview(tblListCalendar)
+        navigationItem.rightBarButtonItem = btnAddTask
+        navigationItem.leftBarButtonItem = btnReloadTask
+        calendareTask.addGestureRecognizer(swipeUpCalendare)
+        calendareTask.addGestureRecognizer(swipeDownCalendare)
+        view.backgroundColor = .white
+        calendareTask.addConstraint(calendareHeightConstraint)
         NSLayoutConstraint.activate([
+            // Constraints for the calendar
             calendareTask.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            calendareTask.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            calendareTask.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            calendareTask.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -60)
+            calendareTask.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
+            calendareTask.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
+            
+            // Constraints for the calendar list table
+            tblListCalendar.topAnchor.constraint(equalTo: calendareTask.bottomAnchor, constant: 5),
+            tblListCalendar.leadingAnchor.constraint(equalTo: calendareTask.leadingAnchor),
+            tblListCalendar.trailingAnchor.constraint(equalTo: calendareTask.trailingAnchor),
+            tblListCalendar.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -10)
         ])
-        calendareTask.translatesAutoresizingMaskIntoConstraints = false
-        calendareTask.allowsMultipleSelection = true
     }
 }
 
@@ -101,4 +170,30 @@ extension CalendarTaskViewController: FSCalendarDelegate {
         let str = formatter.string(from: date)
         print("\(str)")
     }
+    
+    func calendar(_ calendar: FSCalendar, boundingRectWillChange bounds: CGRect, animated: Bool) {
+        calendareHeightConstraint.constant = bounds.height
+        view.layoutIfNeeded()
+    }
+}
+
+extension CalendarTaskViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 5
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: ListCaledarTblViewCell.indificatorCell, for: indexPath) as? ListCaledarTblViewCell else {
+            fatalError("Unable to dequeue cell.")
+        }
+        cell.fiillTable("DeadLine", "Задача заканчиваеться успейте в срок", "20.01.2023-25.01.2023")
+        cell.selectionStyle = .none
+        cell.backgroundColor = .clear
+        cell.contentView.backgroundColor = .clear
+        return cell
+    }
+}
+
+extension CalendarTaskViewController: UITableViewDelegate {
+    
 }
