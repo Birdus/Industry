@@ -7,19 +7,18 @@
 
 import Foundation
 
-struct Project: Codable, JSONDecodable {
+struct Project: Codable, Equatable {
     let id: Int
     let projectName: String
-    let assignments: [Assignment]
-    
+}
+
+extension Project: JSONDecodable {
     static func decodeJSON(json: [String: Any]) -> Self? {
         guard let id = json["id"] as? Int,
-              let projectName = json["projectName"] as? String,
-              let assignmentsJson = json["assignments"] as? [[String: Any]] else {
+              let projectName = json["projectName"] as? String else {
             return nil
         }
         
-        let assignments = assignmentsJson.compactMap { Assignment.decodeJSON(json: $0) }
-        return Project(id: id, projectName: projectName, assignments: assignments)
+        return Project(id: id, projectName: projectName)
     }
 }

@@ -29,6 +29,9 @@ import FSCalendar
 
 class CalendarTaskViewController: UIViewController {
     // MARK: - Private UI
+    private var issues: [Issues]!
+    private var employee: Employee!
+    
     /// The calendar view.
     lazy private var calendareTask: FSCalendar = {
         var calendar: FSCalendar = FSCalendar()
@@ -137,6 +140,7 @@ class CalendarTaskViewController: UIViewController {
     
     /// Configures the UI elements of the view controller.
     private func configureUI() {
+        
         view.addSubview(calendareTask)
         view.addSubview(tblListCalendar)
         navigationItem.rightBarButtonItem = btnAddTask
@@ -179,14 +183,14 @@ extension CalendarTaskViewController: FSCalendarDelegate {
 
 extension CalendarTaskViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        return issues.capacity
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: ListCaledarTblViewCell.indificatorCell, for: indexPath) as? ListCaledarTblViewCell else {
             fatalError("Unable to dequeue cell.")
         }
-        cell.fiillTable("DeadLine", "Задача заканчиваеться успейте в срок", "20.01.2023-25.01.2023")
+        cell.fiillTable(issues[indexPath.row].taskName, issues[indexPath.row].taskDiscribe, employee.laborCosts?[indexPath.row].date)
         cell.selectionStyle = .none
         cell.backgroundColor = .clear
         cell.contentView.backgroundColor = .clear
@@ -197,3 +201,13 @@ extension CalendarTaskViewController: UITableViewDataSource {
 extension CalendarTaskViewController: UITableViewDelegate {
     
 }
+
+extension CalendarTaskViewController: TabBarControllerDelegate {
+    func tabBarController(_ tabBarController: TabBarController, didSelectTabAtIndex index: Int, issues datas: [Issues], employee data: Employee) {
+        employee = data
+        issues = datas
+    }
+}
+
+
+

@@ -88,6 +88,9 @@ class RecovoryPasswordViewController: UIViewController {
     
     /// Configures the UI elements of the view controller.
     private func configureUI() {
+        btnBack.accessibilityIdentifier = "btnBack"
+        imgCompany.accessibilityIdentifier = "imgCompany"
+        collRecovery.accessibilityIdentifier = "collRecovery"
         self.view.addSubview(collRecovery)
         view.addSubview(imgCompany)
         self.navigationItem.leftBarButtonItem = btnBack
