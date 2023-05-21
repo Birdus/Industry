@@ -8,8 +8,8 @@
 import UIKit
 
 class RecovoryPasswordViewController: UIViewController {
-    // MARK: - Properties
     
+    // MARK: - Private UI
     // Collection view for displaying recovery options
     private lazy var collRecovery: UICollectionView = {
         let layout = UICollectionViewFlowLayout()

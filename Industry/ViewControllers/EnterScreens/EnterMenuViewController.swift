@@ -48,6 +48,7 @@ class EnterMenuViewController: UIViewController {
     private var usserLogin: String?
     private var usserPassword: String?
     
+    // MARK: - Private UI
     /// A button for entering the app.
     private lazy var btnEnter: UIButton = {
         let btn = UIButton()
@@ -187,14 +188,13 @@ class EnterMenuViewController: UIViewController {
         self.view.frame.origin.y = 0
     }
     
-    // MARK: - Keyboard Notifications
+    // MARK: - Privates func
     /// Register for keyboard notifications
     private func registerForKeyboardNotification() {
         NotificationCenter.default.addObserver(self, selector: #selector(kbWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(kbWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
-    // MARK: - Privates func
     /// Configures the UI elements of the view controller.
     private func configureUI() {
         btnEnter.accessibilityIdentifier = "btnEnter"

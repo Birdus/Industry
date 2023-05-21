@@ -9,8 +9,10 @@ import UIKit
 
 class ListCaledarTblViewCell: UITableViewCell {
     
+    // MARK: - Properties
     static let indificatorCell = "ListCaledarTblViewCell"
     
+    // MARK: - Private UI
     private lazy var lblTypeAction: UILabel = {
         let lbl: UILabel = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
@@ -45,8 +47,8 @@ class ListCaledarTblViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - Public func
     func fiillTable(_ typeAction: String, _ descriptinAction: String, _ deadLineAction: Date?) {
-        
         if let date = deadLineAction {
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "dd.MM"
@@ -54,9 +56,9 @@ class ListCaledarTblViewCell: UITableViewCell {
         }
         lblTypeAction.text = typeAction
         lblDescriptionAction.text = descriptinAction
-        
     }
     
+    // MARK: - Private func
     private func configureUI() {
         self.addSubview(lblDescriptionAction)
         self.addSubview(lblTypeAction)

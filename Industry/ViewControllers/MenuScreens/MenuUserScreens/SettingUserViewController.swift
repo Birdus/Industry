@@ -12,7 +12,7 @@ class SettingUserViewController: UIViewController {
     // MARK: - Properties
     private let indificatorDefaultCell = "indificatorDefaultCell"
 
-    // MARK: - UI
+    // MARK: - Private UI
     private lazy var tblMenuView: UITableView = {
         let tableView = UITableView()
         tableView.register(SetingUserTblViewCell.self, forCellReuseIdentifier: SetingUserTblViewCell.indificatorCell)

@@ -9,6 +9,7 @@ import UIKit
 
 class StatisticUserViewController: UIViewController {
     
+    // MARK: - Private UI
     private lazy var btnBack: UIBarButtonItem = {
         let btn = UIBarButtonItem(title: "Назад".localized, style: .plain, target: self, action: #selector(btnBack_Click))
         return btn
@@ -41,12 +42,14 @@ class StatisticUserViewController: UIViewController {
         return pieChart
     }()
     
+    // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
         showMenu()
     }
     
+    // MARK: - Actions
     @objc
     private func btnBack_Click(_ sender: UIButton) {
         navigationController?.popViewController(animated: true)
@@ -59,6 +62,7 @@ class StatisticUserViewController: UIViewController {
         showMenu()
     }
     
+    // MARK: - Private Methods
     private func showMenu() {
         let alControl:UIAlertController = {
             let alControl = UIAlertController(title: "Продолжительность статистики".localized, message: nil, preferredStyle: .alert)

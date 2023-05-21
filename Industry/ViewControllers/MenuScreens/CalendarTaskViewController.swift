@@ -27,15 +27,38 @@
 import UIKit
 import FSCalendar
 
+// MARK: - MenuTabBarControllerDelegate
+protocol CalendarTaskViewControllerDelegate: AnyObject {
+    /**
+     Called when a  CalendarTaskViewController change data .
+     
+     - Parameters:
+     - viewController: The calendar view controller.
+     - witchId: The id where deleate data.
+     */
+    func calendarTaskViewController(_ viewController: UIViewController, didDeleateData witchId: Int)
+    
+    /**
+     Called when a  CalendarTaskViewController  need to action to Ui and data .
+     
+     - Parameters:
+     - viewController: The calendar view controller.
+     */
+    func calendarTaskViewController(_ viewController: UIViewController)
+}
+
 class CalendarTaskViewController: UIViewController {
-    // MARK: - Private UI
+    // MARK: - Properties
     /// List of issue tasks
     private var issues: [Issues]!
     /// Employee details
     private var employee: Employee!
+    /// Delegate view controller
+    weak var delegete: CalendarTaskViewControllerDelegate?
     
+    // MARK: - Private UI
     /// The calendar view.
-    lazy private var calendareTask: FSCalendar = {
+    lazy private var clnEvent: FSCalendar = {
         var calendar: FSCalendar = FSCalendar()
         calendar.scope = .week
         calendar.appearance.headerMinimumDissolvedAlpha = 0.0
@@ -76,25 +99,25 @@ class CalendarTaskViewController: UIViewController {
         return btn
     }()
     
-    
-    private lazy var calendareHeightConstraint: NSLayoutConstraint = {
-        let constraint = NSLayoutConstraint(item: calendareTask, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 300)
+    /// The add task button for adding tasks to the calendar.
+    private lazy var clnHeightConstraint: NSLayoutConstraint = {
+        let constraint = NSLayoutConstraint(item: clnEvent, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 300)
         return constraint
     }()
     
+    /// The gesture recognizer for swipe up and change type  month calendar.
     private lazy var swipeUpCalendare: UISwipeGestureRecognizer = {
         let swipe = UISwipeGestureRecognizer(target: self, action: #selector(swipecalendareTask_Swipe))
         swipe.direction = .up
         return swipe
     }()
     
+    /// The gesture recognizer for swipe up and change type weak calendar.
     private lazy var swipeDownCalendare: UISwipeGestureRecognizer = {
         let swipe = UISwipeGestureRecognizer(target: self, action: #selector(swipecalendareTask_Swipe))
         swipe.direction = .down
         return swipe
     }()
-    
-    
     
     // MARK: - Lifecycle Methods
     override func viewDidLoad() {
@@ -103,8 +126,8 @@ class CalendarTaskViewController: UIViewController {
     }
     
     deinit {
-        calendareTask.removeGestureRecognizer(swipeUpCalendare)
-        calendareTask.removeGestureRecognizer(swipeDownCalendare)
+        clnEvent.removeGestureRecognizer(swipeUpCalendare)
+        clnEvent.removeGestureRecognizer(swipeDownCalendare)
     }
     
     // MARK: - Action
@@ -117,63 +140,24 @@ class CalendarTaskViewController: UIViewController {
     /// Handler for the  reload button.
     @objc
     private func btnReloadTask_Click(_ sender: UIBarButtonItem) {
-        let apiManagerIndustry: APIManagerIndustry = APIManagerIndustry()
-        let blurEffectView = setupBlurEffectView(style: .light, alpha: 0.6)
-        let activityIndicator = setupActivityIndicator(in: blurEffectView.contentView, style: .gray)
-        apiManagerIndustry.fetch(request: ForecastType.EmployeeWitchId(id: employee.id), HTTPMethod: .get) { (json: [String: Any]) -> Employee? in
-            return Employee.decodeJSON(json: json)
-        } completionHandler: { [weak self] (result: APIResult<Employee?>) in
-            guard let self = self else { return }
-            switch result {
-            case .success(let employees):
-                guard let employees = employees else {
-                    print("Failed to parse employees.")
-                    return
-                }
-                self.employee = employees
-                guard let idLaborCosts = employees.laborCosts?.compactMap({ $0.issueId }) else { return }
-                apiManagerIndustry.fetchIssues(HTTPMethod: .get, ids: idLaborCosts) { (json: [String: Any]) -> Issues? in
-                    return Issues.decodeJSON(json: json)
-                } completionHandler: { [weak self] (result: APIResult<[Issues]>) in
-                    guard let self = self else { return }
-                    
-                    switch result {
-                    case .success(let issues):
-                        self.issues = issues
-                        DispatchQueue.main.async {
-                            self.tblListCalendar.reloadData()
-                            self.calendareTask.reloadData()
-                            activityIndicator.stopAnimating()
-                            blurEffectView.removeFromSuperview()
-                        }
-                    case .failure(let error):
-                        print("Error: \(error)")
-                    case .successArray(_):
-                        print("Expected single objects, but got array.")
-                    }
-                }
-            case .failure(let error):
-                print("Error: \(error)")
-            case .successArray(_):
-                print("Expected single object, but got array.")
-            }
-        }
+        delegete?.calendarTaskViewController(self)
     }
     
+    /// Handler for swipe calendare.
     @objc
     private func swipecalendareTask_Swipe(_ gesture: UISwipeGestureRecognizer) {
         switch gesture.direction {
         case .up:
-            if calendareTask.scope == .month {
-                calendareTask.setScope(.week, animated: true)
+            if clnEvent.scope == .month {
+                clnEvent.setScope(.week, animated: true)
             } else {
                 return
             }
         case .down:
-            if calendareTask.scope == .month {
+            if clnEvent.scope == .month {
                 return
             } else {
-                calendareTask.setScope(.month, animated: true)
+                clnEvent.setScope(.month, animated: true)
             }
         default:
             break
@@ -181,48 +165,28 @@ class CalendarTaskViewController: UIViewController {
     }
     
     // MARK: - Private func
-    
-    private func setupBlurEffectView(style: UIBlurEffect.Style, alpha: CGFloat) -> UIVisualEffectView {
-        let blurEffect = UIBlurEffect(style: style)
-        let blurEffectView = UIVisualEffectView(effect: blurEffect)
-        blurEffectView.frame = self.view.bounds
-        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        blurEffectView.alpha = alpha
-        view.addSubview(blurEffectView)
-        return blurEffectView
-    }
-    
-    private func setupActivityIndicator(in view: UIView, style: UIActivityIndicatorView.Style) -> UIActivityIndicatorView {
-        let activityIndicator = UIActivityIndicatorView(style: style)
-        activityIndicator.center = view.center
-        activityIndicator.hidesWhenStopped = true
-        activityIndicator.startAnimating()
-        view.addSubview(activityIndicator)
-        return activityIndicator
-    }
-    
     /// Configures the UI elements of the view controller.
     private func configureUI() {
-        view.addSubview(calendareTask)
+        view.addSubview(clnEvent)
         view.addSubview(tblListCalendar)
         navigationItem.rightBarButtonItem = btnAddTask
         navigationItem.leftBarButtonItem = btnReloadTask
-        calendareTask.addGestureRecognizer(swipeUpCalendare)
-        calendareTask.addGestureRecognizer(swipeDownCalendare)
+        clnEvent.addGestureRecognizer(swipeUpCalendare)
+        clnEvent.addGestureRecognizer(swipeDownCalendare)
         view.backgroundColor = .white
-        calendareTask.addConstraint(calendareHeightConstraint)
-        calendareTask.delegate = self
-        calendareTask.dataSource = self
+        clnEvent.addConstraint(clnHeightConstraint)
+        clnEvent.delegate = self
+        clnEvent.dataSource = self
         NSLayoutConstraint.activate([
             // Constraints for the calendar
-            calendareTask.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            calendareTask.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
-            calendareTask.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
+            clnEvent.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            clnEvent.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
+            clnEvent.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
             
             // Constraints for the calendar list table
-            tblListCalendar.topAnchor.constraint(equalTo: calendareTask.bottomAnchor, constant: 5),
-            tblListCalendar.leadingAnchor.constraint(equalTo: calendareTask.leadingAnchor),
-            tblListCalendar.trailingAnchor.constraint(equalTo: calendareTask.trailingAnchor),
+            tblListCalendar.topAnchor.constraint(equalTo: clnEvent.bottomAnchor, constant: 5),
+            tblListCalendar.leadingAnchor.constraint(equalTo: clnEvent.leadingAnchor),
+            tblListCalendar.trailingAnchor.constraint(equalTo: clnEvent.trailingAnchor),
             tblListCalendar.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -10)
         ])
     }
@@ -230,7 +194,6 @@ class CalendarTaskViewController: UIViewController {
 
 // MARK: - FSCalendarDelegate
 extension CalendarTaskViewController: FSCalendarDelegate {
-    
     /// Handler for when a user selects a date on the calendar.
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         let formatter = DateFormatter()
@@ -240,11 +203,12 @@ extension CalendarTaskViewController: FSCalendarDelegate {
     }
     
     func calendar(_ calendar: FSCalendar, boundingRectWillChange bounds: CGRect, animated: Bool) {
-        calendareHeightConstraint.constant = bounds.height
+        clnHeightConstraint.constant = bounds.height
         view.layoutIfNeeded()
     }
 }
 
+// MARK: - FSCalendarDataSource
 extension CalendarTaskViewController: FSCalendarDataSource {
     func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
         guard let laborCosts = employee.laborCosts else { return 0 }
@@ -260,8 +224,8 @@ extension CalendarTaskViewController: FSCalendarDataSource {
     }
 }
 
+// MARK: - FSCalendarDelegateAppearance
 extension CalendarTaskViewController: FSCalendarDelegateAppearance {
-    
     func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, fillSelectionColorFor date: Date) -> UIColor? {
         return .white
     }
@@ -321,9 +285,9 @@ extension CalendarTaskViewController: FSCalendarDelegateAppearance {
         }
         return .white
     }
-    
 }
 
+// MARK: - UITableViewDataSource
 extension CalendarTaskViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return issues.count
@@ -343,12 +307,9 @@ extension CalendarTaskViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
     }
-    
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        
-    }
 }
 
+// MARK: - UITableViewDelegate
 extension CalendarTaskViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, titleForDeleteConfirmationButtonForRowAt indexPath: IndexPath) -> String? {
         return "Передать задачу".localized
@@ -356,34 +317,8 @@ extension CalendarTaskViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let action = UIContextualAction(style: .normal, title: "Завершить задачу".localized, handler: { (action, view, completionHandler) in
-            let blurEffectView = self.setupBlurEffectView(style: .light, alpha: 0.6)
-            let activityIndicator = self.setupActivityIndicator(in: blurEffectView.contentView, style: .gray)
-            let itemToDelete = self.issues[indexPath.row]
-            let apiManager = APIManagerIndustry()
-            apiManager.deleteItem(request: ForecastType.IssueWithId(id: itemToDelete.id)) { result in
-                switch result {
-                case .success:
-                    DispatchQueue.main.async {
-                        let issueToDelete = self.issues[indexPath.row]
-                        if let index = self.employee.laborCosts?.firstIndex(where: { $0.issueId == issueToDelete.id }) {
-                            self.employee.laborCosts?.remove(at: index)
-                        }
-                        self.issues.remove(at: indexPath.row)
-                        tableView.deleteRows(at: [indexPath], with: .automatic)
-                        self.tblListCalendar.reloadData()
-                        self.calendareTask.reloadData()
-                        activityIndicator.stopAnimating()
-                        blurEffectView.removeFromSuperview()
-                    }
-                    
-                case .failure(let error):
-                    // Обработка ошибки
-                    print("Error deleting item: \(error)")
-                case .successArray(_):
-                    print("Expected single object, but got array.")
-                }
-            }
-            completionHandler(true)
+            let issueToDelete = self.issues[indexPath.row]
+            self.delegete?.calendarTaskViewController(self, didDeleateData: issueToDelete.id)
         })
         action.backgroundColor = .systemGreen
         let configuration = UISwipeActionsConfiguration(actions: [action])
@@ -391,9 +326,12 @@ extension CalendarTaskViewController: UITableViewDelegate {
     }
 }
 
+// MARK: - TabBarControllerDelegate
 extension CalendarTaskViewController: TabBarControllerDelegate {
     func tabBarController(_ tabBarController: TabBarController, didSelectTabAtIndex index: Int, issues datas: [Issues], employee data: Employee) {
         employee = data
         issues = datas
+        tblListCalendar.reloadData()
+        clnEvent.reloadData()
     }
 }

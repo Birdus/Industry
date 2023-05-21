@@ -58,7 +58,6 @@ final class APIManagerIndustry: APIManager {
     func fetch<T>(request: ForecastType, HTTPMethod: HttpMethodsString, parse: @escaping ([String : Any]) -> T?, completionHandler: @escaping (APIResult<T>) -> Void) where T : Decodable {
         var requestToFetch = request.request
         requestToFetch.httpMethod = HTTPMethod.stringValue
-
         let task = JSONTaskWith(request: requestToFetch, HTTPMethod: HTTPMethod) { (json, response, error, _) in
             guard response != nil else {
                 let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.missingHTTPResponse.errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.missingHTTPResponse.localizedDescription])

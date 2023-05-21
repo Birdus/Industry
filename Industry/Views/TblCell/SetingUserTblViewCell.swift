@@ -9,8 +9,10 @@ import UIKit
 
 class SetingUserTblViewCell: UITableViewCell {
     
+    // MARK: - Properties
     static let indificatorCell = "MenuItemTblViewCell"
     
+    // MARK: - Private UI
     private lazy var swhSeting: UISwitch = {
         let swh: UISwitch = UISwitch()
         swh.translatesAutoresizingMaskIntoConstraints = false
@@ -28,6 +30,7 @@ class SetingUserTblViewCell: UITableViewCell {
         return lbl
     }()
     
+    // MARK: - Initialization
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         configureUI()
@@ -37,16 +40,19 @@ class SetingUserTblViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - Actions
     @objc
     private func switchValueDidChange(_ sender: UISwitch) {
         
     }
     
+    // MARK: - Public func
     func fiillTable(_ description: String, _ switchIsOn : Bool) {
         lblDescription.text = description
         swhSeting.isOn = switchIsOn
     }
     
+    // MARK: - Private func
     private func configureUI() {
         self.addSubview(lblDescription)
         self.addSubview(swhSeting)

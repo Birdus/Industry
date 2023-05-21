@@ -9,7 +9,7 @@ import UIKit
 
 class PrivacyPolicyViewController: UIViewController {
     
-    // MARK: - Ui
+    // MARK: - Private UI
     private lazy var btnBack: UIBarButtonItem = {
         let btn = UIBarButtonItem(title: "Назад".localized, style: .plain, target: self, action: #selector(btnBack_Click))
         return btn
