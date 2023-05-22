@@ -13,7 +13,7 @@ class SettingUserViewController: UIViewController {
     private let indificatorDefaultCell = "indificatorDefaultCell"
 
     // MARK: - Private UI
-    private lazy var tblMenuView: UITableView = {
+    private lazy var tblMenu: UITableView = {
         let tableView = UITableView()
         tableView.register(SetingUserTblViewCell.self, forCellReuseIdentifier: SetingUserTblViewCell.indificatorCell)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: indificatorDefaultCell)
@@ -50,12 +50,12 @@ class SettingUserViewController: UIViewController {
         self.navigationItem.leftBarButtonItem = btnBack
         self.navigationController?.isNavigationBarHidden = false
         self.view.backgroundColor = .white
-        self.view.addSubview(tblMenuView)
+        self.view.addSubview(tblMenu)
         NSLayoutConstraint.activate([
-            tblMenuView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
-            tblMenuView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor),
-            tblMenuView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor),
-            tblMenuView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor)
+            tblMenu.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
+            tblMenu.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor),
+            tblMenu.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor),
+            tblMenu.trailingAnchor.constraint(equalTo: self.view.trailingAnchor)
         ])
         self.navigationController?.isNavigationBarHidden = false
     }

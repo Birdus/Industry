@@ -29,6 +29,7 @@
 		A0F8A7BD29CC78DB00C81D80 /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0F8A7BC29CC78DB00C81D80 /* APIManager.swift */; };
 		A528206629F3EF19002FA269 /* RecovoryPasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A528206529F3EF19002FA269 /* RecovoryPasswordViewController.swift */; };
 		A528206929F3F244002FA269 /* RecovoryPasswordCollViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A528206829F3F244002FA269 /* RecovoryPasswordCollViewCell.swift */; };
+		A529736F2A1AE0EC00B4189F /* NewTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A529736E2A1AE0E600B4189F /* NewTaskViewController.swift */; };
 		A52D517729F95E20005DB97D /* Duration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52D517629F95E1F005DB97D /* Duration.swift */; };
 		A52F87972A1125FC00CE2E4E /* IndustryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52F87962A1125FC00CE2E4E /* IndustryTests.swift */; };
 		A52F87A12A11264200CE2E4E /* JSONModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52F87A02A11264200CE2E4E /* JSONModelTests.swift */; };
@@ -96,6 +97,7 @@
 		A0F8A7BC29CC78DB00C81D80 /* APIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIManager.swift; sourceTree = "<group>"; };
 		A528206529F3EF19002FA269 /* RecovoryPasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecovoryPasswordViewController.swift; sourceTree = "<group>"; };
 		A528206829F3F244002FA269 /* RecovoryPasswordCollViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecovoryPasswordCollViewCell.swift; sourceTree = "<group>"; };
+		A529736E2A1AE0E600B4189F /* NewTaskViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTaskViewController.swift; sourceTree = "<group>"; };
 		A52D517629F95E1F005DB97D /* Duration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Duration.swift; sourceTree = "<group>"; };
 		A52F87942A1125FC00CE2E4E /* IndustryTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IndustryTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A52F87962A1125FC00CE2E4E /* IndustryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndustryTests.swift; sourceTree = "<group>"; };
@@ -286,6 +288,7 @@
 				A5833D2029C0990200387240 /* MenuViewController.swift */,
 				A0569DE729DE85C500D25991 /* CalendarTaskViewController.swift */,
 				A578852829F6B82E00D26455 /* DocumentFlowViewController.swift */,
+				A529736E2A1AE0E600B4189F /* NewTaskViewController.swift */,
 			);
 			path = MenuScreens;
 			sourceTree = "<group>";
@@ -556,6 +559,7 @@
 				A5833D1E29C08D4400387240 /* AuthenticationTblViewCell.swift in Sources */,
 				A0E4AA3229A8E25600BDB4EF /* SplachViewController.swift in Sources */,
 				A0E4AA2E29A8E25600BDB4EF /* AppDelegate.swift in Sources */,
+				A529736F2A1AE0EC00B4189F /* NewTaskViewController.swift in Sources */,
 				A578852329F6887700D26455 /* MenuItemTblViewCell.swift in Sources */,
 				A07D45EC29C78F9000420463 /* APIClient .swift in Sources */,
 				A5833D2129C0990200387240 /* MenuViewController.swift in Sources */,
