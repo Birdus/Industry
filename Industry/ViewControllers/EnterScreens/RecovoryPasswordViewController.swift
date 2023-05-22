@@ -8,8 +8,8 @@
 import UIKit
 
 class RecovoryPasswordViewController: UIViewController {
-    // MARK: - Properties
     
+    // MARK: - Private UI
     // Collection view for displaying recovery options
     private lazy var collRecovery: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -88,6 +88,9 @@ class RecovoryPasswordViewController: UIViewController {
     
     /// Configures the UI elements of the view controller.
     private func configureUI() {
+        btnBack.accessibilityIdentifier = "btnBack"
+        imgCompany.accessibilityIdentifier = "imgCompany"
+        collRecovery.accessibilityIdentifier = "collRecovery"
         self.view.addSubview(collRecovery)
         view.addSubview(imgCompany)
         self.navigationItem.leftBarButtonItem = btnBack

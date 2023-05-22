@@ -27,7 +27,7 @@ enum INDNetworkingError: Error {
         case .notFound:
             return 404
         case .unexpectedResponse:
-            return 200
+            return 600 
         }
     }
     

@@ -10,8 +10,12 @@ import UIKit
 class MenuViewController: UIViewController {
     
     // MARK: - Properties
+    
+    private var employee: Employee!
+    
+    // MARK: - Private UI
     /// A table view that displays menu items.
-    private lazy var menuTableView: UITableView = {
+    private lazy var tblMenu: UITableView = {
         let tableView = UITableView()
         tableView.register(HeadMenuTblViewCell.self, forCellReuseIdentifier: HeadMenuTblViewCell.indificatorCell)
         tableView.register(UserCountTaskTblViewCell.self, forCellReuseIdentifier: UserCountTaskTblViewCell.indificatorCell)
@@ -25,6 +29,7 @@ class MenuViewController: UIViewController {
         return tableView
     }()
     
+    /// A image the user
     private lazy var imgChange: UIImage = {
         let imageView = UIImage(named: "userAvatar") ?? UIImage()
         return imageView
@@ -33,28 +38,26 @@ class MenuViewController: UIViewController {
     // MARK: - View Controller Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureUI()
+        self.configureUI()
+        view.backgroundColor = .white
     }
     
     // MARK: - Private Methods
     /// Configures the view controller's UI.
     private func configureUI() {
-        
         view.backgroundColor = .white
-        view.addSubview(menuTableView)
         navigationController?.isNavigationBarHidden = true
         NSLayoutConstraint.activate([
-            menuTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            menuTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            menuTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
-            menuTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            tblMenu.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            tblMenu.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            tblMenu.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
+            tblMenu.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
         ])
     }
 }
 
 // MARK: - UITableViewDelegate
 extension MenuViewController: UITableViewDelegate {
-    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let screenHeight = UIScreen.main.bounds.size.height
         let contentOffsetY = tableView.contentOffset.y
@@ -102,7 +105,6 @@ extension MenuViewController: UITableViewDelegate {
 
 // MARK: - UITableViewDataSource
 extension MenuViewController: UITableViewDataSource {
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 6
     }
@@ -116,7 +118,7 @@ extension MenuViewController: UITableViewDataSource {
             cell.selectionStyle = .none
             cell.backgroundColor = .clear
             cell.contentView.backgroundColor = .clear
-            cell.fiillTable("Гетманцев Даниил Олегович", "Directum", "Junior", imgChange)
+            cell.fiillTable("\(employee.lastName) \(employee.firstName) \(employee.secondName)", employee.division.divisionName, employee.role, imgChange)
             cell.separatorInset = UIEdgeInsets(top: 0, left: view.bounds.width / 4, bottom: 0, right: 0)
             cell.delegete = self
             return cell
@@ -127,7 +129,13 @@ extension MenuViewController: UITableViewDataSource {
             cell.selectionStyle = .none
             cell.backgroundColor = .clear
             cell.contentView.backgroundColor = .clear
-            cell.fiillTable(10, 20)
+            if let laborCost = employee.laborCosts {
+                var sumHour: Int = 0
+                laborCost.forEach { sumHour += $0.hourCount }
+                cell.fiillTable(laborCost.count, sumHour)
+            } else {
+                cell.fiillTable(0, 0)
+            }
             return cell
         default:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: MenuItemTblViewCell.indificatorCell, for: indexPath) as? MenuItemTblViewCell else {
@@ -154,6 +162,7 @@ extension MenuViewController: UITableViewDataSource {
     }
 }
 
+// MARK: - HeadMenuTblViewCellDelegate
 extension MenuViewController: HeadMenuTblViewCellDelegate {
     func headMenuTblViewCell(_ cell: HeadMenuTblViewCell, didFinishPickingImage avatar: UIImageView) {
         let picker = UIImagePickerController()
@@ -164,17 +173,17 @@ extension MenuViewController: HeadMenuTblViewCellDelegate {
     }
 }
 
+// MARK: - UIImagePickerControllerDelegate
 extension MenuViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
             imgChange = image
-            menuTableView.reloadData()
+            tblMenu.reloadData()
             dismiss(animated: true)
         } else {
             picker.dismiss(animated: true, completion: nil)
             let alControl:UIAlertController = {
                 let alControl = UIAlertController(title: "Ошибка".localized, message: "Фотография не найденна".localized, preferredStyle: .alert)
-                
                 let btnOk: UIAlertAction = {
                     let btn = UIAlertAction(title: "Ok".localized,
                                             style: .default,
@@ -190,5 +199,13 @@ extension MenuViewController: UIImagePickerControllerDelegate, UINavigationContr
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true, completion: nil)
+    }
+}
+
+// MARK: - TabBarControllerDelegate
+extension MenuViewController: TabBarControllerDelegate {
+    func tabBarController(_ tabBarController: TabBarController, didSelectTabAtIndex index: Int, issues datas: [Issues], employee data: Employee) {
+        self.employee = data
+        self.tblMenu.reloadData()
     }
 }

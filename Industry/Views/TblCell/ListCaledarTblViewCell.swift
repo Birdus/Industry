@@ -9,8 +9,10 @@ import UIKit
 
 class ListCaledarTblViewCell: UITableViewCell {
     
+    // MARK: - Properties
     static let indificatorCell = "ListCaledarTblViewCell"
     
+    // MARK: - Private UI
     private lazy var lblTypeAction: UILabel = {
         let lbl: UILabel = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
@@ -45,12 +47,18 @@ class ListCaledarTblViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func fiillTable(_ typeAction: String, _ descriptinAction: String, _ deadLineAction: String) {
+    // MARK: - Public func
+    func fiillTable(_ typeAction: String, _ descriptinAction: String, _ deadLineAction: Date?) {
+        if let date = deadLineAction {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "dd.MM"
+            lblDeadLineAction.text = dateFormatter.string(from: date)
+        }
         lblTypeAction.text = typeAction
         lblDescriptionAction.text = descriptinAction
-        lblDeadLineAction.text = deadLineAction
     }
     
+    // MARK: - Private func
     private func configureUI() {
         self.addSubview(lblDescriptionAction)
         self.addSubview(lblTypeAction)
@@ -58,8 +66,8 @@ class ListCaledarTblViewCell: UITableViewCell {
         NSLayoutConstraint.activate([
             lblTypeAction.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 5),
             lblTypeAction.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 5),
-            lblTypeAction.widthAnchor.constraint(equalTo: self.safeAreaLayoutGuide.widthAnchor, multiplier: 0.4),
-            lblTypeAction.heightAnchor.constraint(equalTo: lblTypeAction.widthAnchor, multiplier: 0.2),
+            lblTypeAction.widthAnchor.constraint(equalTo: self.safeAreaLayoutGuide.widthAnchor, multiplier: 0.8),
+            lblTypeAction.heightAnchor.constraint(equalTo: lblTypeAction.widthAnchor, multiplier: 0.1),
             
             
             lblDeadLineAction.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 10),

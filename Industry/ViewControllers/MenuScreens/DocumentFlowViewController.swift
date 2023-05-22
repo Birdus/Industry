@@ -14,3 +14,9 @@ class DocumentFlowViewController: UIViewController {
         self.view.backgroundColor = .white
     }
 }
+
+extension DocumentFlowViewController: TabBarControllerDelegate {
+    func tabBarController(_ tabBarController: TabBarController, didSelectTabAtIndex index: Int, issues datas: [Issues], employee data: Employee) {
+        return
+    }
+}

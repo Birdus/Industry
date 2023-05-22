@@ -15,7 +15,7 @@ import UIKit
 /// A view controller that displays a list of notifications.
 class NotificationListViewController: UIViewController {
     
-    // MARK: - Properties
+    // MARK: - Private UI
     /// The collection view that displays the notifications.
     private lazy var collNotification: UICollectionView = {
         let layout = UICollectionViewFlowLayout()

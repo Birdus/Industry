@@ -37,9 +37,18 @@ import UIKit
  let enterMenuVC = EnterMenuViewController()
  navigationController.pushViewController(enterMenuVC, animated: true)
  */
+protocol EnterMenuViewControllerDelegate: AnyObject {
+    func enterMenuViewController(_ enterMenuViewController: EnterMenuViewController, didLoadEmployeeWitch id: Int, completion: @escaping () -> Void, failer: @escaping (_ error : Error) -> Void)
+}
+
 class EnterMenuViewController: UIViewController {
     
     // MARK: - Properties
+    weak var delegete: EnterMenuViewControllerDelegate?
+    private var usserLogin: String?
+    private var usserPassword: String?
+    
+    // MARK: - Private UI
     /// A button for entering the app.
     private lazy var btnEnter: UIButton = {
         let btn = UIButton()
@@ -104,8 +113,11 @@ class EnterMenuViewController: UIViewController {
     /// Func click button recovery password
     @objc
     private func BtnRecoveryPass_Click(_ sender: UIButton) {
+        
         let vc = RecovoryPasswordViewController()
+        
         let vcNav = UINavigationController(rootViewController: vc)
+        
         vcNav.modalPresentationStyle = .fullScreen
         navigationController?.present(vcNav, animated: true, completion: nil)
     }
@@ -113,13 +125,49 @@ class EnterMenuViewController: UIViewController {
     /// Func click button enter to application
     @objc
     private func BtnEnter_Click(_ sender: UIButton) {
-        let vc = TabBarController()
-        let navigationController = UINavigationController(rootViewController: vc)
-        navigationController.modalPresentationStyle = .fullScreen
-        navigationController.isToolbarHidden = true
-        navigationController.isNavigationBarHidden = true
-        present(navigationController, animated: true, completion: nil)
         
+        let activityIndicator = UIActivityIndicatorView(style: .gray)
+        activityIndicator.center = view.center
+        activityIndicator.hidesWhenStopped = true
+        activityIndicator.startAnimating()
+        let blurEffect = UIBlurEffect(style: .light)
+        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView.frame = self.view.bounds
+        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        blurEffectView.alpha = 0.6
+        view.addSubview(blurEffectView)
+        blurEffectView.contentView.addSubview(activityIndicator)
+        // Загрузка данных
+        let vc = TabBarController()
+        self.delegete = vc
+        let navigationController = UINavigationController(rootViewController: vc)
+        delegete?.enterMenuViewController(self, didLoadEmployeeWitch: 2) {
+            DispatchQueue.main.async {
+                activityIndicator.stopAnimating()
+                blurEffectView.removeFromSuperview()
+                navigationController.modalPresentationStyle = .fullScreen
+                navigationController.isToolbarHidden = true
+                navigationController.isNavigationBarHidden = true
+                self.present(navigationController, animated: true, completion: nil)
+            }
+        } failer: {error in
+            DispatchQueue.main.async {
+                activityIndicator.stopAnimating()
+                blurEffectView.removeFromSuperview()
+                let alControl:UIAlertController = {
+                    let alControl = UIAlertController(title: "Ошибка".localized, message: "Не удалось подключиться к серверу!", preferredStyle: .alert)
+                    let btnOk: UIAlertAction = {
+                        let btn = UIAlertAction(title: "Ok".localized,
+                                                style: .default,
+                                                handler: nil )
+                        return btn
+                    }()
+                    alControl.addAction(btnOk)
+                    return alControl
+                }()
+                self.present(alControl, animated: true, completion: nil)
+            }
+        }
     }
     
     /// Keyboard will show notification handler
@@ -138,35 +186,28 @@ class EnterMenuViewController: UIViewController {
     @objc
     private func kbWillHide(_ notification: Notification) {
         self.view.frame.origin.y = 0
-        
     }
     
-    // MARK: - Keyboard Notifications
+    // MARK: - Privates func
     /// Register for keyboard notifications
     private func registerForKeyboardNotification() {
         NotificationCenter.default.addObserver(self, selector: #selector(kbWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(kbWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
-    // MARK: - Privates func
     /// Configures the UI elements of the view controller.
     private func configureUI() {
-        // TODO: The function is responsible for setting the UI
-        // Set background color
+        btnEnter.accessibilityIdentifier = "btnEnter"
+        btnRecoveryPass.accessibilityIdentifier = "btnRecoveryPass"
+        imgCompany.accessibilityIdentifier = "imgCompany"
+        tblAuthentication.accessibilityIdentifier = "tblAuthentication"
         view.backgroundColor = .white
-        // Add subviews
         view.addSubview(tblAuthentication)
         view.addSubview(btnEnter)
         view.addSubview(imgCompany)
         view.addSubview(btnRecoveryPass)
-
-        // Hide the navigation bar
         self.navigationController?.isNavigationBarHidden = true
-        
-        // Register for keyboard notifications
         registerForKeyboardNotification()
-        
-        // Activate constraints
         NSLayoutConstraint.activate([
             // Authentication table view
             tblAuthentication.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
@@ -197,7 +238,6 @@ class EnterMenuViewController: UIViewController {
 }
 
 // MARK: - Table View Data Source
-
 extension EnterMenuViewController: UITableViewDataSource {
     
     /// Returns the number of rows in the table view section.
@@ -217,6 +257,14 @@ extension EnterMenuViewController: UITableViewDataSource {
             fatalError("Unable to dequeue cell.")
         }
         let row = AuthenticationTableRow(rawValue: indexPath.row)!
+        switch indexPath.row {
+        case 0:
+            cell.accessibilityIdentifier = "cellLogin"
+        case 1:
+            cell.accessibilityIdentifier = "cellPassword"
+        default:
+            break
+        }
         cell.fillTable(row.title, row.isSecure)
         cell.selectionStyle = .none
         cell.backgroundColor = .clear
@@ -225,21 +273,26 @@ extension EnterMenuViewController: UITableViewDataSource {
         cell.separatorInset = .zero
         return cell
     }
-}
-
-// MARK: - Table View Data Source and Table View Delegate
-
-extension EnterMenuViewController: UITableViewDelegate {
     
 }
 
-// MARK: - AuthenticationTblViewCellDelegate
+// MARK: - Table View Data Source and Table View Delegate
+extension EnterMenuViewController: UITableViewDelegate {
+    
 
+}
+
+// MARK: - AuthenticationTblViewCellDelegate
 extension EnterMenuViewController: AuthenticationTblViewCellDelegate {
     /// Tells the delegate that the value of the text field has changed.
     /// - Parameter cell: The table view cell that contains the text field.
     /// - Parameter value: The new text for the text field.
     func authenticationTblViewCell(_ cell: AuthenticationTblViewCell, didChanged value: String) {
+        if cell.accessibilityIdentifier == "cellLogin" {
+            usserLogin = value
+        } else if cell.accessibilityIdentifier == "cellPassword" {
+            usserPassword = value
+        }
         return
     }
 }

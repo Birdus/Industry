@@ -37,5 +37,16 @@
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>80.78.253.153</key>
+			<dict>
+				<key>http://80.78.253.153/api/</key>
+				<string></string>
+			</dict>
+		</dict>
+	</dict>
 </dict>
 </plist>
