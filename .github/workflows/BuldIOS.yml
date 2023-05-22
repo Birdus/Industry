@@ -36,11 +36,10 @@ jobs:
       - name: Xcode Test
         uses: devbotsxyz/xcode-test@v1.1.0
         with:
-          workspace: "Industry.xcworkspace"
-          project: "Industry"
-          scheme: "Industry"
-          configuration: "Release"
-          destination: "platform=iOS Simulator,name=iPhone 11" 
+          workspace: Industry.xcworkspace
+          scheme: Industry
+          configuration: Release
+          destination: platform=iOS Simulator,name=iPhone 11
       - name: Test
         env:
           scheme: Industry
