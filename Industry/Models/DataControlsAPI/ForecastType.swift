@@ -34,6 +34,8 @@ enum ForecastType: FinalURLPoint {
     /// Endpoint for getting a specific labor cost by ID.
     case LaborCostWitchId(id: Int)
     
+    
+    
     /// The base URL for all endpoints.
     var baseURL: URL {
         return URL(string: "http://80.78.253.153/api/")!

@@ -69,6 +69,8 @@ class APIMangerTests: XCTestCase {
 /// Mock API Manager for testing
 final class MockAPIManager: APIManager {
     
+    
+    
     /// Session configuration for the manager
     var sessionConfiguration: URLSessionConfiguration
     /// Session for the manager
@@ -127,6 +129,10 @@ final class MockAPIManager: APIManager {
             }
         }
         task.resume()
+    }
+    
+    func deleteItem(request: ForecastType, completionHandler: @escaping (APIResult<Void>) -> Void) {
+        return
     }
 }
 

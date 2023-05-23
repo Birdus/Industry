@@ -16,7 +16,7 @@ class DocumentFlowViewController: UIViewController {
 }
 
 extension DocumentFlowViewController: TabBarControllerDelegate {
-    func tabBarController(_ tabBarController: TabBarController, didSelectTabAtIndex index: Int, employee data: Employee) {
+    func tabBarController(_ tabBarController: TabBarController, didSelectTabAtIndex index: Int, issues datas: [Issues], employee data: Employee) {
         return
     }
 }

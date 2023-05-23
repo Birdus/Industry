@@ -12,11 +12,9 @@
  */
 import UIKit
 
-// MARK: - SplachViewController
-
 class SplachViewController: UIViewController {
     
-    // MARK: - Properties
+    // MARK: - Private UI
     /// Text welcome application.
     private lazy var lblGreeting: UILabel = {
         let lbl = UILabel()
@@ -28,13 +26,14 @@ class SplachViewController: UIViewController {
         return lbl
     }()
     
+    // MARK: - View Controller Lifecycle
     // other properties and methods
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
     }
     
+    // MARK: - Privates func
     private func configureUI() {
         lblGreeting.accessibilityIdentifier = "lblGreeting"
         self.navigationController?.isNavigationBarHidden = true

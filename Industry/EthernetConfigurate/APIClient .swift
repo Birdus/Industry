@@ -53,6 +53,8 @@ protocol APIManager {
     func fetch<T: Decodable>(request: ForecastType, HTTPMethod: HttpMethodsString, parse: @escaping ([String: Any]) -> [T]?, completionHandler: @escaping (APIResult<T>) -> Void)
     
     func fetchIssues(request: ForecastType, HTTPMethod: HttpMethodsString, ids: [Int], parse: @escaping ([String : Any]) -> Issues?, completionHandler: @escaping (APIResult<Issues>) -> Void)
+    
+    func deleteItem(request: ForecastType, completionHandler: @escaping (APIResult<Void>) -> Void)
 }
 // MARK: - Default use of the function
 extension APIManager {
@@ -74,14 +76,22 @@ extension APIManager {
             do {
                 let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
                 completionHandler(json, HTTPResponse, nil, HTTPMethod.stringValue)
-            } catch let errorr{
-                print(errorr)
-                let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.badRequest.errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.badRequest.localizedDescription])
-                completionHandler(nil, HTTPResponse, error , HTTPMethod.stringValue)
+            } catch {
+                // Если ответ не может быть преобразован в JSON, попробуйте преобразовать его в строку.
+                if let stringResponse = String(data: data, encoding: .utf8) {
+                    // Оборачиваем строку в словарь перед возвратом обратно
+                    completionHandler(["response": stringResponse], HTTPResponse, nil, HTTPMethod.stringValue)
+                } else {
+                    // Если и это не получилось, то верните ошибку.
+                    let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.badRequest.errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.badRequest.localizedDescription])
+                    completionHandler(nil, HTTPResponse, error , HTTPMethod.stringValue)
+                }
             }
         }
         return task
     }
+
+
     
     /**
      fetch: Get data for a single item
@@ -185,6 +195,33 @@ extension APIManager {
             completionHandler(.successArray(results))
         }
     }
+
+    func deleteItem(request: ForecastType, completionHandler: @escaping (APIResult<Void>) -> Void) -> URLSessionDataTask {
+        var request = request.request
+        request.httpMethod = HttpMethodsString.delete.stringValue
+        let task = JSONTaskWith(request: request, HTTPMethod: .delete) { (_, response, error, _) in
+            guard let httpResponse = response, httpResponse.statusCode == 200 else {
+                let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.missingHTTPResponse.errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.missingHTTPResponse.localizedDescription])
+                completionHandler(.failure(error))
+                return
+            }
+            if let error = error {
+                completionHandler(.failure(error))
+                return
+            }
+            if response != nil {
+                completionHandler(.success(()))
+                return
+            } else {
+                let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.unexpectedResponse(message: "Unexpected response").errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.unexpectedResponse(message: "Unexpected response").errorMessage])
+                completionHandler(.failure(error))
+                return
+            }
+        }
+        task.resume()
+        return task
+    }
+
 
 
 }

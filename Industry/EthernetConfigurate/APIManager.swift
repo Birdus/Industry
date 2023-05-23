@@ -58,7 +58,6 @@ final class APIManagerIndustry: APIManager {
     func fetch<T>(request: ForecastType, HTTPMethod: HttpMethodsString, parse: @escaping ([String : Any]) -> T?, completionHandler: @escaping (APIResult<T>) -> Void) where T : Decodable {
         var requestToFetch = request.request
         requestToFetch.httpMethod = HTTPMethod.stringValue
-
         let task = JSONTaskWith(request: requestToFetch, HTTPMethod: HTTPMethod) { (json, response, error, _) in
             guard response != nil else {
                 let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.missingHTTPResponse.errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.missingHTTPResponse.localizedDescription])
@@ -85,25 +84,24 @@ final class APIManagerIndustry: APIManager {
     }
     
     func fetchIssues(HTTPMethod: HttpMethodsString, ids: [Int], parse: @escaping ([String : Any]) -> Issues?, completionHandler: @escaping (APIResult<[Issues]>) -> Void) {
-        
-        // Создаем DispatchGroup
+
         let dispatchGroup = DispatchGroup()
         
         // Массив для сохранения результатов
         var results: [Issues] = []
         
         for id in ids {
+            dispatchGroup.enter()
             // Обновляем URL запроса для каждого ID
             let requestToFetchIssues = ForecastType.IssueWithId(id: id)
             var requestToFetch = requestToFetchIssues.request
             requestToFetch.httpMethod = HTTPMethod.stringValue
-
-            dispatchGroup.enter()
             let task = JSONTaskWith(request: requestToFetch, HTTPMethod: HTTPMethod) { (json, response, error, _) in
+                defer { dispatchGroup.leave() }
+                
                 guard response != nil else {
                     let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.missingHTTPResponse.errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.missingHTTPResponse.localizedDescription])
                     completionHandler(.failure(error))
-                    dispatchGroup.leave()
                     return
                 }
                 guard let json = json else {
@@ -113,7 +111,6 @@ final class APIManagerIndustry: APIManager {
                         let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.unexpectedResponse(message: "Unexpected error: no error message provided").errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.unexpectedResponse(message: "Unexpected error: no error message provided").errorMessage])
                         completionHandler(.failure(error))
                     }
-                    dispatchGroup.leave()
                     return
                 }
                 if let result = parse(json) {
@@ -122,16 +119,34 @@ final class APIManagerIndustry: APIManager {
                     let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.unexpectedResponse(message: "Error parsing JSON").errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.unexpectedResponse(message: "Error parsing JSON").errorMessage])
                     completionHandler(.failure(error))
                 }
-                dispatchGroup.leave()
             }
             task.resume()
         }
         
-        // Вызовем completionHandler когда все запросы завершены
         dispatchGroup.notify(queue: .main) {
             completionHandler(.success(results))
         }
     }
+    
+    func deleteItem(request: ForecastType, completionHandler: @escaping (APIResult<Void>) -> Void) {
+        var request = request.request
+        request.httpMethod = HttpMethodsString.delete.stringValue
+        let task = JSONTaskWith(request: request, HTTPMethod: .delete) { (_, response, error, _) in
+            guard response != nil else {
+                let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.missingHTTPResponse.errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.missingHTTPResponse.localizedDescription])
+                completionHandler(.failure(error))
+                return
+            }
+            if let error = error {
+                completionHandler(.failure(error))
+            } else {
+                completionHandler(.success(()))
+            }
+        }
+        task.resume()
+    }
+
+
 
     
     /**
