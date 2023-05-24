@@ -83,13 +83,14 @@ class TabBarController: UITabBarController {
     
     /// The func configure tab controller and send data on api all view controller content the tab controller
     private func configure() {
+        
         let vcCalendar = CalendarTaskViewController()
         let navigationControllerCalendar = UINavigationController(rootViewController: vcCalendar)
         vcCalendar.delegete = self
         let vcDocumentFlow = DocumentFlowViewController()
         let navigationControllerDocumentFlow = UINavigationController(rootViewController: vcDocumentFlow)
         
-        let vcMenuUser = MenuViewController()
+        let vcMenuUser = ProfileUserViewController()
         delegete.append(vcMenuUser)
         delegete.append(vcDocumentFlow)
         delegete.append(vcCalendar)
@@ -162,6 +163,7 @@ class TabBarController: UITabBarController {
                         }
                     }
                 }
+                completion()
             case .failure(let error):
                 print("Error: \(error)")
                 DispatchQueue.main.async {

@@ -17,7 +17,7 @@ class ListCaledarTblViewCell: UITableViewCell {
         let lbl: UILabel = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
         lbl.textAlignment = .left
-        lbl.textColor = .black
+        lbl.textColor = .white
         return lbl
     }()
     
@@ -25,7 +25,7 @@ class ListCaledarTblViewCell: UITableViewCell {
         let lbl: UILabel = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
         lbl.textAlignment = .left
-        lbl.textColor = .black
+        lbl.textColor = .white
         return lbl
     }()
     
@@ -33,7 +33,7 @@ class ListCaledarTblViewCell: UITableViewCell {
         let lbl: UILabel = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
         lbl.textAlignment = .right
-        lbl.textColor = .black
+        lbl.textColor = .white
         return lbl
     }()
 

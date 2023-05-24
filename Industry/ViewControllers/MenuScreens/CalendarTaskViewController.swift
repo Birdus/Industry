@@ -75,26 +75,42 @@ class CalendarTaskViewController: UIViewController {
         let tableView = UITableView()
         tableView.register(ListCaledarTblViewCell.self, forCellReuseIdentifier: ListCaledarTblViewCell.indificatorCell)
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.separatorStyle = .singleLine
+        tableView.separatorInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+        let color = UIColor(red: 0.157, green: 0.535, blue: 0.821, alpha: 1)
+        
+        tableView.clipsToBounds = true
+        tableView.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5).cgColor
+        tableView.layer.shadowOpacity = 1
+        tableView.layer.shadowRadius = 4
+        tableView.layer.shadowOffset = CGSize(width: 4, height: 4)
+        tableView.layer.masksToBounds = false
+        
+        tableView.backgroundColor = color
+        tableView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        tableView.layer.cornerRadius = 10.0
+        
         tableView.dataSource = self
         tableView.delegate = self
         return tableView
     }()
+
     
     /// The reload button for reloading the calendar.
     private lazy var btnReloadTask: UIBarButtonItem = {
-        let btn = UIBarButtonItem(title: "🔃", style: UIBarButtonItem.Style.done, target: self, action: #selector(btnReloadTask_Click))
+        let btn = UIBarButtonItem(title: "↻", style: .plain, target: self, action: #selector(btnReloadTask_Click))
         btn.setTitleTextAttributes([
             NSAttributedString.Key.font : UIFont.monospacedDigitSystemFont(ofSize: CGFloat(UIScreen.main.bounds.width/8)/2, weight: .bold),
+            NSAttributedString.Key.foregroundColor: UIColor(ciColor: .black)
         ], for: .normal)
         return btn
     }()
     
     /// The add task button for adding tasks to the calendar.
     private lazy var btnAddTask: UIBarButtonItem = {
-        let btn = UIBarButtonItem(title: "➕", style: UIBarButtonItem.Style.done, target: self, action: #selector(btnAddTask_Click))
+        let btn = UIBarButtonItem(title: "+", style: UIBarButtonItem.Style.done, target: self, action: #selector(btnAddTask_Click))
         btn.setTitleTextAttributes([
-            NSAttributedString.Key.font : UIFont.monospacedDigitSystemFont(ofSize: CGFloat(UIScreen.main.bounds.width/8)/2, weight: .bold),
+            NSAttributedString.Key.font : UIFont.monospacedDigitSystemFont(ofSize: CGFloat(UIScreen.main.bounds.width/8)/1.5, weight: .bold),
+            NSAttributedString.Key.foregroundColor: UIColor(ciColor: .black)
         ], for: .normal)
         return btn
     }()
@@ -134,7 +150,10 @@ class CalendarTaskViewController: UIViewController {
     /// Handler for the add task and reload buttons.
     @objc
     private func btnAddTask_Click(_ sender: UIBarButtonItem) {
-        // TODO: Implement add task and reload functionality
+        let yourVC = NewTaskViewController()
+        yourVC.modalPresentationStyle = .custom
+        yourVC.transitioningDelegate = self
+        self.present(yourVC, animated: true, completion: nil)
     }
     
     /// Handler for the  reload button.
@@ -167,13 +186,24 @@ class CalendarTaskViewController: UIViewController {
     // MARK: - Private func
     /// Configures the UI elements of the view controller.
     private func configureUI() {
-        view.addSubview(clnEvent)
-        view.addSubview(tblListCalendar)
+        navigationController?.navigationBar.barTintColor = .white
+        navigationController?.navigationBar.shadowImage = UIImage()
+        navigationController?.navigationBar.barStyle = .default
         navigationItem.rightBarButtonItem = btnAddTask
         navigationItem.leftBarButtonItem = btnReloadTask
+        navigationItem.title = "Ближайщие события".localized
+        let titleFont = UIFont.systemFont(ofSize: 17.0, weight: .regular)
+        navigationController?.navigationBar.titleTextAttributes = [
+            .foregroundColor: UIColor.black,
+            .font: titleFont
+        ]
+        tabBarController?.tabBar.barTintColor = .white
+        tabBarController?.tabBar.barStyle = .blackOpaque
+        view.addSubview(clnEvent)
+        view.addSubview(tblListCalendar)
+        view.backgroundColor = .white
         clnEvent.addGestureRecognizer(swipeUpCalendare)
         clnEvent.addGestureRecognizer(swipeDownCalendare)
-        view.backgroundColor = .white
         clnEvent.addConstraint(clnHeightConstraint)
         clnEvent.delegate = self
         clnEvent.dataSource = self
@@ -185,9 +215,9 @@ class CalendarTaskViewController: UIViewController {
             
             // Constraints for the calendar list table
             tblListCalendar.topAnchor.constraint(equalTo: clnEvent.bottomAnchor, constant: 5),
-            tblListCalendar.leadingAnchor.constraint(equalTo: clnEvent.leadingAnchor),
-            tblListCalendar.trailingAnchor.constraint(equalTo: clnEvent.trailingAnchor),
-            tblListCalendar.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -10)
+            tblListCalendar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 5),
+            tblListCalendar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -5),
+            tblListCalendar.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -47)
         ])
     }
 }
@@ -333,5 +363,13 @@ extension CalendarTaskViewController: TabBarControllerDelegate {
         issues = datas
         tblListCalendar.reloadData()
         clnEvent.reloadData()
+    }
+}
+
+// MARK: - UIViewControllerTransitioningDelegate
+extension CalendarTaskViewController: UIViewControllerTransitioningDelegate {
+    
+    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+        PresentationController(presentedViewController: presented, presenting: presenting)
     }
 }

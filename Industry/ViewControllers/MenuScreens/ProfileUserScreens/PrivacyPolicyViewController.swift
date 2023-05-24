@@ -11,7 +11,10 @@ class PrivacyPolicyViewController: UIViewController {
     
     // MARK: - Private UI
     private lazy var btnBack: UIBarButtonItem = {
-        let btn = UIBarButtonItem(title: "Назад".localized, style: .plain, target: self, action: #selector(btnBack_Click))
+        let btn = UIBarButtonItem(title: "✖️", style: .plain, target: self, action: #selector(btnBack_Click))
+        btn.setTitleTextAttributes([
+            NSAttributedString.Key.font : UIFont.monospacedDigitSystemFont(ofSize: CGFloat(UIScreen.main.bounds.width/8)/2, weight: .bold),
+        ], for: .normal)
         return btn
     }()
     

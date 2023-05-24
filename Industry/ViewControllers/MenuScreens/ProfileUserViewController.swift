@@ -7,7 +7,7 @@
 import UIKit
 
 /// MenuViewController displays a menu of options that the user can select from.
-class MenuViewController: UIViewController {
+class ProfileUserViewController: UIViewController {
     
     // MARK: - Properties
     
@@ -47,6 +47,7 @@ class MenuViewController: UIViewController {
     private func configureUI() {
         view.backgroundColor = .white
         navigationController?.isNavigationBarHidden = true
+        self.view.addSubview(tblMenu)
         NSLayoutConstraint.activate([
             tblMenu.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             tblMenu.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
@@ -57,7 +58,7 @@ class MenuViewController: UIViewController {
 }
 
 // MARK: - UITableViewDelegate
-extension MenuViewController: UITableViewDelegate {
+extension ProfileUserViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let screenHeight = UIScreen.main.bounds.size.height
         let contentOffsetY = tableView.contentOffset.y
@@ -104,7 +105,7 @@ extension MenuViewController: UITableViewDelegate {
 }
 
 // MARK: - UITableViewDataSource
-extension MenuViewController: UITableViewDataSource {
+extension ProfileUserViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 6
     }
@@ -163,7 +164,7 @@ extension MenuViewController: UITableViewDataSource {
 }
 
 // MARK: - HeadMenuTblViewCellDelegate
-extension MenuViewController: HeadMenuTblViewCellDelegate {
+extension ProfileUserViewController: HeadMenuTblViewCellDelegate {
     func headMenuTblViewCell(_ cell: HeadMenuTblViewCell, didFinishPickingImage avatar: UIImageView) {
         let picker = UIImagePickerController()
         picker.delegate = self
@@ -174,7 +175,7 @@ extension MenuViewController: HeadMenuTblViewCellDelegate {
 }
 
 // MARK: - UIImagePickerControllerDelegate
-extension MenuViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+extension ProfileUserViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
             imgChange = image
@@ -203,7 +204,7 @@ extension MenuViewController: UIImagePickerControllerDelegate, UINavigationContr
 }
 
 // MARK: - TabBarControllerDelegate
-extension MenuViewController: TabBarControllerDelegate {
+extension ProfileUserViewController: TabBarControllerDelegate {
     func tabBarController(_ tabBarController: TabBarController, didSelectTabAtIndex index: Int, issues datas: [Issues], employee data: Employee) {
         self.employee = data
         self.tblMenu.reloadData()
