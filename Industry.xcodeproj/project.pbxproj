@@ -30,14 +30,16 @@
 		A528206629F3EF19002FA269 /* RecovoryPasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A528206529F3EF19002FA269 /* RecovoryPasswordViewController.swift */; };
 		A528206929F3F244002FA269 /* RecovoryPasswordCollViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A528206829F3F244002FA269 /* RecovoryPasswordCollViewCell.swift */; };
 		A529736F2A1AE0EC00B4189F /* NewTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A529736E2A1AE0E600B4189F /* NewTaskViewController.swift */; };
-		A529737E2A1BA33B00B4189F /* NameTaskTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A529737D2A1BA33B00B4189F /* NameTaskTblViewCell.swift */; };
-		A52973842A1CD87F00B4189F /* AddInfoTaskTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52973832A1CD87F00B4189F /* AddInfoTaskTblViewCell.swift */; };
+		A529737E2A1BA33B00B4189F /* EditNameDiscribeTaskTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A529737D2A1BA33B00B4189F /* EditNameDiscribeTaskTblViewCell.swift */; };
+		A52973842A1CD87F00B4189F /* EditDateTaskTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52973832A1CD87F00B4189F /* EditDateTaskTblViewCell.swift */; };
 		A52D517729F95E20005DB97D /* Duration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52D517629F95E1F005DB97D /* Duration.swift */; };
 		A52F87972A1125FC00CE2E4E /* IndustryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52F87962A1125FC00CE2E4E /* IndustryTests.swift */; };
 		A52F87A12A11264200CE2E4E /* JSONModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52F87A02A11264200CE2E4E /* JSONModelTests.swift */; };
 		A52F87AD2A12A6DC00CE2E4E /* IndustryUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52F87AC2A12A6DC00CE2E4E /* IndustryUITests.swift */; };
 		A52F87BE2A12A83D00CE2E4E /* Pods_Industry.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A52F87BD2A12A83D00CE2E4E /* Pods_Industry.framework */; platformFilter = ios; };
 		A5313FF62A1D295C009C557B /* PresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5313FF52A1D295C009C557B /* PresentationController.swift */; };
+		A5313FFE2A1E6A40009C557B /* EditHourTaskTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5313FFD2A1E6A40009C557B /* EditHourTaskTblViewCell.swift */; };
+		A53140072A1E6BF9009C557B /* EditEmployeeTaskTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53140062A1E6BF9009C557B /* EditEmployeeTaskTblViewCell.swift */; };
 		A578851B29F67E0D00D26455 /* HeadMenuTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A578851A29F67E0D00D26455 /* HeadMenuTblViewCell.swift */; };
 		A578852329F6887700D26455 /* MenuItemTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A578852229F6887700D26455 /* MenuItemTblViewCell.swift */; };
 		A578852629F6B7DE00D26455 /* StatisticUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A578852529F6B7DE00D26455 /* StatisticUserViewController.swift */; };
@@ -101,8 +103,8 @@
 		A528206529F3EF19002FA269 /* RecovoryPasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecovoryPasswordViewController.swift; sourceTree = "<group>"; };
 		A528206829F3F244002FA269 /* RecovoryPasswordCollViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecovoryPasswordCollViewCell.swift; sourceTree = "<group>"; };
 		A529736E2A1AE0E600B4189F /* NewTaskViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTaskViewController.swift; sourceTree = "<group>"; };
-		A529737D2A1BA33B00B4189F /* NameTaskTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameTaskTblViewCell.swift; sourceTree = "<group>"; };
-		A52973832A1CD87F00B4189F /* AddInfoTaskTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddInfoTaskTblViewCell.swift; sourceTree = "<group>"; };
+		A529737D2A1BA33B00B4189F /* EditNameDiscribeTaskTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditNameDiscribeTaskTblViewCell.swift; sourceTree = "<group>"; };
+		A52973832A1CD87F00B4189F /* EditDateTaskTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditDateTaskTblViewCell.swift; sourceTree = "<group>"; };
 		A52D517629F95E1F005DB97D /* Duration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Duration.swift; sourceTree = "<group>"; };
 		A52F87942A1125FC00CE2E4E /* IndustryTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IndustryTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A52F87962A1125FC00CE2E4E /* IndustryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndustryTests.swift; sourceTree = "<group>"; };
@@ -117,6 +119,8 @@
 		A52F87BD2A12A83D00CE2E4E /* Pods_Industry.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Pods_Industry.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A52F87E42A12B08800CE2E4E /* View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
 		A5313FF52A1D295C009C557B /* PresentationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentationController.swift; sourceTree = "<group>"; };
+		A5313FFD2A1E6A40009C557B /* EditHourTaskTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditHourTaskTblViewCell.swift; sourceTree = "<group>"; };
+		A53140062A1E6BF9009C557B /* EditEmployeeTaskTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditEmployeeTaskTblViewCell.swift; sourceTree = "<group>"; };
 		A578851A29F67E0D00D26455 /* HeadMenuTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadMenuTblViewCell.swift; sourceTree = "<group>"; };
 		A578852229F6887700D26455 /* MenuItemTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuItemTblViewCell.swift; sourceTree = "<group>"; };
 		A578852529F6B7DE00D26455 /* StatisticUserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticUserViewController.swift; sourceTree = "<group>"; };
@@ -331,8 +335,10 @@
 		A52973822A1CD79900B4189F /* NewTask */ = {
 			isa = PBXGroup;
 			children = (
-				A529737D2A1BA33B00B4189F /* NameTaskTblViewCell.swift */,
-				A52973832A1CD87F00B4189F /* AddInfoTaskTblViewCell.swift */,
+				A529737D2A1BA33B00B4189F /* EditNameDiscribeTaskTblViewCell.swift */,
+				A52973832A1CD87F00B4189F /* EditDateTaskTblViewCell.swift */,
+				A5313FFD2A1E6A40009C557B /* EditHourTaskTblViewCell.swift */,
+				A53140062A1E6BF9009C557B /* EditEmployeeTaskTblViewCell.swift */,
 			);
 			path = NewTask;
 			sourceTree = "<group>";
@@ -580,7 +586,7 @@
 				A0AF115B29E06D5700FBA975 /* NotificationCollRow.swift in Sources */,
 				A0E4AA4829A8E46F00BDB4EF /* EnterMenuViewController.swift in Sources */,
 				A578852929F6B82E00D26455 /* DocumentFlowViewController.swift in Sources */,
-				A529737E2A1BA33B00B4189F /* NameTaskTblViewCell.swift in Sources */,
+				A529737E2A1BA33B00B4189F /* EditNameDiscribeTaskTblViewCell.swift in Sources */,
 				A578852C29F6B9C400D26455 /* SettingUserViewController.swift in Sources */,
 				A5833D1E29C08D4400387240 /* AuthenticationTblViewCell.swift in Sources */,
 				A0E4AA3229A8E25600BDB4EF /* SplachViewController.swift in Sources */,
@@ -597,13 +603,15 @@
 				A07D45DE29C78DFF00420463 /* ProjectModel.swift in Sources */,
 				A528206929F3F244002FA269 /* RecovoryPasswordCollViewCell.swift in Sources */,
 				A5E0AF1D29B8F41E003B47D2 /* LocalizeController.swift in Sources */,
+				A5313FFE2A1E6A40009C557B /* EditHourTaskTblViewCell.swift in Sources */,
 				A070410A29CE014F00BD2839 /* JSONDecoables.swift in Sources */,
 				A578852629F6B7DE00D26455 /* StatisticUserViewController.swift in Sources */,
-				A52973842A1CD87F00B4189F /* AddInfoTaskTblViewCell.swift in Sources */,
+				A52973842A1CD87F00B4189F /* EditDateTaskTblViewCell.swift in Sources */,
 				A0569DE829DE85C500D25991 /* CalendarTaskViewController.swift in Sources */,
 				A5916AB229BC9D8900285D79 /* TabBarController.swift in Sources */,
 				A5AC14FD2A07C540008FB74C /* SetingUserTblViewCell.swift in Sources */,
 				A07D45D229C763CD00420463 /* UserCountTaskTblViewCell.swift in Sources */,
+				A53140072A1E6BF9009C557B /* EditEmployeeTaskTblViewCell.swift in Sources */,
 				A07D45E429C78E1C00420463 /* EmployeeModel.swift in Sources */,
 				A0CF9F8229CDF69800FE6A72 /* ForecastType.swift in Sources */,
 				A07D45E129C78E0F00420463 /* LaborCostModel.swift in Sources */,

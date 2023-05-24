@@ -54,7 +54,7 @@ class CalendarTaskViewController: UIViewController {
     /// Employee details
     private var employee: Employee!
     /// Delegate view controller
-    weak var delegete: CalendarTaskViewControllerDelegate?
+    weak var delegete: CalendarTaskViewControllerDelegate!
     
     // MARK: - Private UI
     /// The calendar view.
@@ -67,6 +67,7 @@ class CalendarTaskViewController: UIViewController {
         calendar.register(FSCalendarCell.self, forCellReuseIdentifier: "cell")
         calendar.allowsMultipleSelection = false
         calendar.select(nil)
+        calendar.accessibilityIdentifier = "clnEvent"
         return calendar
     }()
     
@@ -76,24 +77,21 @@ class CalendarTaskViewController: UIViewController {
         tableView.register(ListCaledarTblViewCell.self, forCellReuseIdentifier: ListCaledarTblViewCell.indificatorCell)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
-        let color = UIColor(red: 0.157, green: 0.535, blue: 0.821, alpha: 1)
-        
+        let color = UIColor(red: 0.157, green: 0.535, blue: 0.821, alpha: 0.8)
         tableView.clipsToBounds = true
         tableView.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5).cgColor
         tableView.layer.shadowOpacity = 1
         tableView.layer.shadowRadius = 4
         tableView.layer.shadowOffset = CGSize(width: 4, height: 4)
         tableView.layer.masksToBounds = false
-        
-        tableView.backgroundColor = color
+        tableView.backgroundColor = .white
         tableView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         tableView.layer.cornerRadius = 10.0
-        
         tableView.dataSource = self
         tableView.delegate = self
+        tableView.accessibilityIdentifier = "tblListCalendar"
         return tableView
     }()
-
     
     /// The reload button for reloading the calendar.
     private lazy var btnReloadTask: UIBarButtonItem = {
@@ -192,10 +190,9 @@ class CalendarTaskViewController: UIViewController {
         navigationItem.rightBarButtonItem = btnAddTask
         navigationItem.leftBarButtonItem = btnReloadTask
         navigationItem.title = "Ближайщие события".localized
-        let titleFont = UIFont.systemFont(ofSize: 17.0, weight: .regular)
         navigationController?.navigationBar.titleTextAttributes = [
             .foregroundColor: UIColor.black,
-            .font: titleFont
+            .font: UIFont.systemFont(ofSize: 17.0, weight: .regular)
         ]
         tabBarController?.tabBar.barTintColor = .white
         tabBarController?.tabBar.barStyle = .blackOpaque
@@ -212,7 +209,6 @@ class CalendarTaskViewController: UIViewController {
             clnEvent.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             clnEvent.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
             clnEvent.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
-            
             // Constraints for the calendar list table
             tblListCalendar.topAnchor.constraint(equalTo: clnEvent.bottomAnchor, constant: 5),
             tblListCalendar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 5),
@@ -368,7 +364,6 @@ extension CalendarTaskViewController: TabBarControllerDelegate {
 
 // MARK: - UIViewControllerTransitioningDelegate
 extension CalendarTaskViewController: UIViewControllerTransitioningDelegate {
-    
     func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
         PresentationController(presentedViewController: presented, presenting: presenting)
     }

@@ -24,9 +24,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 self.window?.rootViewController = navVc
                 self.window?.makeKeyAndVisible()
                 let transition = CATransition()
-                transition.duration = 0.5
-                transition.type = .push
-                transition.subtype = .fromRight
+                transition.duration = 0.7
+                transition.type = .fade
                 self.window?.layer.add(transition, forKey: kCATransition)
             })
         }

@@ -43,6 +43,7 @@ class TabBarController: UITabBarController {
         blurEffectView.frame = self.view.bounds
         blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         blurEffectView.alpha = 0.5
+        blurEffectView.accessibilityIdentifier = "blrLoad"
         return blurEffectView
     }()
     
@@ -51,6 +52,7 @@ class TabBarController: UITabBarController {
         let activityIndicator = UIActivityIndicatorView(style: .gray)
         activityIndicator.center = view.center
         activityIndicator.hidesWhenStopped = true
+        activityIndicator.accessibilityIdentifier = "activityIndicator"
         return activityIndicator
     }()
     
@@ -83,21 +85,17 @@ class TabBarController: UITabBarController {
     
     /// The func configure tab controller and send data on api all view controller content the tab controller
     private func configure() {
-        
         let vcCalendar = CalendarTaskViewController()
         let navigationControllerCalendar = UINavigationController(rootViewController: vcCalendar)
         vcCalendar.delegete = self
         let vcDocumentFlow = DocumentFlowViewController()
         let navigationControllerDocumentFlow = UINavigationController(rootViewController: vcDocumentFlow)
-        
         let vcMenuUser = ProfileUserViewController()
         delegete.append(vcMenuUser)
         delegete.append(vcDocumentFlow)
         delegete.append(vcCalendar)
-        
         navigationControllerCalendar.isNavigationBarHidden = false
         navigationControllerDocumentFlow.isNavigationBarHidden = false
-        
         navigationControllerCalendar.tabBarItem = UITabBarItem(title: "Календарь".localized,
                                                                image: UIImage(named: "iconTask")?.withRenderingMode(.alwaysOriginal),
                                                                selectedImage: UIImage(named: "iconTaskSelected")?.withRenderingMode(.alwaysOriginal))
@@ -112,7 +110,6 @@ class TabBarController: UITabBarController {
         
         setViewControllers([navigationControllerCalendar, navigationControllerDocumentFlow, vcMenuUser], animated: true)
         delegate = self
-        
         if let employee = employee, let issues = issues {
             delegete.compactMap { $0 }.forEach {
                 $0.tabBarController(self, didSelectTabAtIndex: selectedIndex, issues: issues, employee: employee)

@@ -21,7 +21,25 @@ class RecovoryPasswordViewController: UIViewController {
         collectionView.backgroundColor = .white
         collectionView.delegate = self
         collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.accessibilityIdentifier = "collRecovery"
+        collectionView.layer.borderWidth = 0
+        collectionView.layer.borderColor = UIColor.clear.cgColor
         return collectionView
+    }()
+    
+    private lazy var containerImg: UIView = {
+        let view = UIView()
+        view.accessibilityIdentifier = "containerImg"
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .white
+        view.layer.cornerRadius = 70
+        view.backgroundColor =  .white
+        view.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
+        view.layer.shadowOpacity = 0.2
+        view.layer.shadowRadius = 0.3
+        view.layer.shadowOffset = CGSize(width: 2, height: 2)
+        view.layer.masksToBounds = false
+        return view
     }()
     
     /// An image view displaying the company logo.
@@ -29,6 +47,9 @@ class RecovoryPasswordViewController: UIViewController {
         let icon = UIImageView()
         icon.image = UIImage(named: "logoCompany.png")
         icon.translatesAutoresizingMaskIntoConstraints = false
+        icon.contentMode = .scaleAspectFill
+        icon.clipsToBounds = true
+        icon.accessibilityIdentifier = "imgCompany"
         return icon
     }()
     
@@ -38,6 +59,7 @@ class RecovoryPasswordViewController: UIViewController {
         btn.setTitleTextAttributes([
             NSAttributedString.Key.font : UIFont.monospacedDigitSystemFont(ofSize: CGFloat(UIScreen.main.bounds.width/8)/2, weight: .bold),
         ], for: .normal)
+        btn.accessibilityIdentifier = "btnBack"
         return btn
     }()
     
@@ -45,6 +67,7 @@ class RecovoryPasswordViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
+        registerForKeyboardNotification()
     }
     
     deinit {
@@ -91,28 +114,29 @@ class RecovoryPasswordViewController: UIViewController {
     
     /// Configures the UI elements of the view controller.
     private func configureUI() {
-        btnBack.accessibilityIdentifier = "btnBack"
-        imgCompany.accessibilityIdentifier = "imgCompany"
-        collRecovery.accessibilityIdentifier = "collRecovery"
-        self.view.addSubview(collRecovery)
-        view.addSubview(imgCompany)
-        self.navigationItem.leftBarButtonItem = btnBack
-        self.navigationController?.isNavigationBarHidden = false
+        navigationController?.navigationBar.barTintColor = .white
+        navigationController?.navigationBar.shadowImage = UIImage()
+        navigationController?.navigationBar.barStyle = .default
+        navigationController?.isNavigationBarHidden = false
+        navigationItem.leftBarButtonItem = btnBack
         view.backgroundColor = .white
-        collRecovery.layer.borderWidth = 0
-        collRecovery.layer.borderColor = UIColor.clear.cgColor
-        registerForKeyboardNotification()
-        
+        view.addSubview(collRecovery)
+        view.addSubview(containerImg)
+        containerImg.addSubview(imgCompany)
         NSLayoutConstraint.activate([
-            collRecovery.topAnchor.constraint(equalTo: imgCompany.safeAreaLayoutGuide.bottomAnchor, constant: 10),
+            collRecovery.topAnchor.constraint(equalTo: containerImg.safeAreaLayoutGuide.bottomAnchor, constant: 10),
             collRecovery.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor),
             collRecovery.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor),
             collRecovery.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor),
             // Company logo
-            imgCompany.widthAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.widthAnchor, constant: -150),
-            imgCompany.heightAnchor.constraint(equalTo: imgCompany.widthAnchor),
-            imgCompany.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 10),
-            imgCompany.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor)
+            containerImg.widthAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.widthAnchor, multiplier: 0.45),
+            containerImg.heightAnchor.constraint(equalTo: containerImg.widthAnchor),
+            containerImg.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 10),
+            containerImg.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor),
+            imgCompany.topAnchor.constraint(equalTo: containerImg.topAnchor, constant: 15),
+            imgCompany.leadingAnchor.constraint(equalTo: containerImg.leadingAnchor, constant: 15),
+            imgCompany.trailingAnchor.constraint(equalTo: containerImg.trailingAnchor, constant: -15),
+            imgCompany.bottomAnchor.constraint(equalTo: containerImg.bottomAnchor, constant: -15),
         ])
     }
 }
@@ -132,7 +156,6 @@ extension RecovoryPasswordViewController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecovoryPasswordCollViewCell.indificatorCell, for: indexPath) as! RecovoryPasswordCollViewCell
         cell.backgroundColor = .white
         cell.layer.cornerRadius = 10
-        cell.backgroundColor =  UIColor(red: 233/255, green: 233/255, blue: 233/255, alpha: 0.5)
         return cell
     }
 }

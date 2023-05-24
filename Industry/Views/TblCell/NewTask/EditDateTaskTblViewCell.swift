@@ -1,5 +1,5 @@
 //
-//  AddInfoTaskTblViewCell.swift
+//  EditDateTaskTblViewCell.swift
 //  Industry
 //
 //  Created by  Даниил on 23.05.2023.
@@ -7,10 +7,14 @@
 
 import UIKit
 
-class AddInfoTaskTblViewCell: UITableViewCell {
+protocol EditDateTblViewCellDelegate: AnyObject {
+    func editDateTblViewCell(_ cell: EditDateTaskTblViewCell, didChanged value: Date)
+}
+
+class EditDateTaskTblViewCell: UITableViewCell {
     // MARK: - Properties
-    static let indificatorCell = "AddInfoTaskTblViewCell"
-    
+    static let indificatorCell = "EditDateTaskTblViewCell"
+    weak var delegete: EditDateTblViewCellDelegate!
     // MARK: - Private UI
     /// A UIView container image
     private lazy var containerIcon: UIView = {
@@ -25,7 +29,18 @@ class AddInfoTaskTblViewCell: UITableViewCell {
         view.layer.masksToBounds = false
         return view
     }()
-
+    
+    private lazy var picDateTime: UIDatePicker = {
+        let picDate = UIDatePicker()
+        picDate.translatesAutoresizingMaskIntoConstraints = false
+        if #available(iOS 13.4, *) {
+            picDate.preferredDatePickerStyle = .wheels
+        }
+        picDate.minimumDate = Date()
+        picDate.datePickerMode = .date
+        return picDate
+    }()
+    
     /// A UIImageView  image user
     private lazy var imgIcon: UIImageView = {
         let imageView = UIImageView()
@@ -35,16 +50,29 @@ class AddInfoTaskTblViewCell: UITableViewCell {
         return imageView
     }()
     
+    private lazy var tlBarDatePic: UIToolbar = {
+        let tlBar = UIToolbar(frame: CGRect(origin: .zero, size: CGSize(width: 100, height: 44.0)))
+        let doneButton = UIBarButtonItem(title: "Сохранить", style: .plain, target: self, action: #selector(btnDone_Click))
+        let cancelButton = UIBarButtonItem(title: "Отменить", style: .plain, target: self, action: #selector(btnCancel_click))
+        let spaceButton = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        tlBar.setItems([cancelButton, spaceButton, doneButton], animated: true)
+        tlBar.isUserInteractionEnabled = true
+        tlBar.sizeToFit()
+        tlBar.translatesAutoresizingMaskIntoConstraints = false
+        return tlBar
+    }()
+    
     private lazy var txtFld: UITextField = {
         let txt = UITextField()
         txt.translatesAutoresizingMaskIntoConstraints = false
         txt.textColor = .white
-        txt.font = UIFont(name: "San Francisco", size: 20)
+        txt.font = UIFont(name: "San Francisco", size: CGFloat(UIScreen.main.bounds.width/10)/2)
         txt.textAlignment = .left
         txt.delegate = self
+        txt.inputView = picDateTime
         return txt
     }()
-
+    
     // MARK: - Initialization
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -53,6 +81,20 @@ class AddInfoTaskTblViewCell: UITableViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Action
+    @objc
+    private func btnDone_Click(_ sender: UIBarButtonItem) {
+        let dateFormater = DateFormatter()
+        dateFormater.dateFormat = "dd.MM.yyyy"
+        txtFld.text = dateFormater.string(from: picDateTime.date)
+        txtFld.resignFirstResponder()
+    }
+    
+    @objc
+    private func btnCancel_click(_ sender: UIBarButtonItem) {
+        txtFld.resignFirstResponder()
     }
     
     // MARK: - Public Methods
@@ -65,6 +107,10 @@ class AddInfoTaskTblViewCell: UITableViewCell {
     func fiillTable(_ palcholder: String, _ iconName: UIImage?) {
         txtFld.placeholder = palcholder
         imgIcon.image = iconName
+        let placeholderAttributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: UIColor.lightGray,
+        ]
+        txtFld.attributedPlaceholder = NSAttributedString(string: palcholder, attributes: placeholderAttributes)
     }
     
     // MARK: - Private func
@@ -93,7 +139,20 @@ class AddInfoTaskTblViewCell: UITableViewCell {
 }
 
 // MARK: Text Field Delegate
-extension AddInfoTaskTblViewCell: UITextFieldDelegate {
+extension EditDateTaskTblViewCell: UITextFieldDelegate {
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        if textField == txtFld {
+            txtFld.inputAccessoryView = tlBarDatePic
+        }
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        if textField == txtFld {
+            txtFld.inputAccessoryView = nil
+            delegete.editDateTblViewCell(self, didChanged: picDateTime.date)
+        }
+    }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField == txtFld {

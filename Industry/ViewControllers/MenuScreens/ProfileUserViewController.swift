@@ -26,12 +26,14 @@ class ProfileUserViewController: UIViewController {
         tableView.isScrollEnabled = false
         tableView.dataSource = self
         tableView.delegate = self
+        tableView.accessibilityIdentifier = "tblMenu"
         return tableView
     }()
     
     /// A image the user
     private lazy var imgChange: UIImage = {
         let imageView = UIImage(named: "userAvatar") ?? UIImage()
+        imageView.accessibilityIdentifier = "imgChange"
         return imageView
     }()
     

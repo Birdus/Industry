@@ -13,7 +13,6 @@ import Foundation
  */
 final class APIManagerIndustry: APIManager {
     
-    
     /**
      Makes a network request to fetch an array of objects that conform to `JSONDecodable`.
      - Parameters:
