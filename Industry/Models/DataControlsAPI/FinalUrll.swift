@@ -15,5 +15,5 @@ protocol FinalURLPoint {
     /// The path component of the endpoint.
     var path: String { get }
     /// The URLRequest for the endpoint.
-    var request: URLRequest { get }
+    var requestWitchToken: URLRequest { get }
 }

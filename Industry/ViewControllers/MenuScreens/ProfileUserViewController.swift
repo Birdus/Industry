@@ -6,7 +6,9 @@
 
 import UIKit
 
-/// MenuViewController displays a menu of options that the user can select from.
+/**
+ ProfileUserViewController displays a user's profile with a menu of options.
+ */
 class ProfileUserViewController: UIViewController {
     
     // MARK: - Properties
@@ -14,6 +16,7 @@ class ProfileUserViewController: UIViewController {
     private var employee: Employee!
     
     // MARK: - Private UI
+    
     /// A table view that displays menu items.
     private lazy var tblMenu: UITableView = {
         let tableView = UITableView()
@@ -30,7 +33,7 @@ class ProfileUserViewController: UIViewController {
         return tableView
     }()
     
-    /// A image the user
+    /// An image for the user.
     private lazy var imgChange: UIImage = {
         let imageView = UIImage(named: "userAvatar") ?? UIImage()
         imageView.accessibilityIdentifier = "imgChange"
@@ -38,18 +41,22 @@ class ProfileUserViewController: UIViewController {
     }()
     
     // MARK: - View Controller Life Cycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.configureUI()
+        configureUI()
         view.backgroundColor = .white
     }
     
     // MARK: - Private Methods
-    /// Configures the view controller's UI.
+    
+    /**
+     Configures the view controller's UI.
+     */
     private func configureUI() {
         view.backgroundColor = .white
         navigationController?.isNavigationBarHidden = true
-        self.view.addSubview(tblMenu)
+        view.addSubview(tblMenu)
         NSLayoutConstraint.activate([
             tblMenu.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             tblMenu.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
@@ -60,17 +67,19 @@ class ProfileUserViewController: UIViewController {
 }
 
 // MARK: - UITableViewDelegate
+
 extension ProfileUserViewController: UITableViewDelegate {
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let screenHeight = UIScreen.main.bounds.size.height
         let contentOffsetY = tableView.contentOffset.y
         switch indexPath.row {
         case 0:
-            return ((screenHeight / 2 + contentOffsetY) / 2)/1.5
+            return ((screenHeight / 2 + contentOffsetY) / 2) / 1.5
         case 1:
-            return ((screenHeight / 2 + contentOffsetY) / 2)/2
+            return ((screenHeight / 2 + contentOffsetY) / 2) / 2
         default:
-            return ((screenHeight / 2 + contentOffsetY) / 2)/2.5
+            return ((screenHeight / 2 + contentOffsetY) / 2) / 2.5
         }
     }
     
@@ -97,6 +106,32 @@ extension ProfileUserViewController: UITableViewDelegate {
             vc = StatisticUserViewController()
         case 4:
             vc = SettingUserViewController()
+        case 5:
+            let alControl: UIAlertController = {
+                let alControl = UIAlertController(title: "Выход".localized, message: "Вы хотите выйти из акаунта?", preferredStyle: .alert)
+                let btnOk: UIAlertAction = {
+                    let btn = UIAlertAction(title: "Ok".localized, style: .default) { _ in
+                        let apiManager = APIManagerIndustry()
+                        apiManager.dropTokens()
+                        apiManager.dropAuthBody()
+                        let vc = EnterMenuViewController()
+                        let navVc = UINavigationController(rootViewController: vc)
+                        
+                        if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                            appDelegate.window?.rootViewController = navVc
+                        }
+                    }
+                    return btn
+                }()
+                let btnCancel: UIAlertAction = {
+                    let btn = UIAlertAction(title: "Отмена".localized, style: .default, handler: nil)
+                    return btn
+                }()
+                alControl.addAction(btnOk)
+                alControl.addAction(btnCancel)
+                return alControl
+            }()
+            self.present(alControl, animated: true, completion: nil)
         default:
             return
         }
@@ -107,7 +142,9 @@ extension ProfileUserViewController: UITableViewDelegate {
 }
 
 // MARK: - UITableViewDataSource
+
 extension ProfileUserViewController: UITableViewDataSource {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 6
     }
@@ -150,13 +187,13 @@ extension ProfileUserViewController: UITableViewDataSource {
             cell.contentView.backgroundColor = .clear
             switch indexPath.row {
             case 2:
-                cell.fiillTable("Уведомления".localized, UIImage(named:"iconNotification"))
+                cell.fiillTable("Уведомления".localized, UIImage(named: "iconNotification"))
             case 3:
-                cell.fiillTable("Статистика".localized, UIImage(named:"iconStatistic"))
+                cell.fiillTable("Статистика".localized, UIImage(named: "iconStatistic"))
             case 4:
-                cell.fiillTable("Настройки".localized, UIImage(named:"iconSetting"))
+                cell.fiillTable("Настройки".localized, UIImage(named: "iconSetting"))
             case 5:
-                cell.fiillTable("Выйти".localized, UIImage(named:"iconExit"))
+                cell.fiillTable("Выйти".localized, UIImage(named: "iconExit"))
             default:
                 cell.fiillTable("", UIImage())
             }
@@ -166,7 +203,9 @@ extension ProfileUserViewController: UITableViewDataSource {
 }
 
 // MARK: - HeadMenuTblViewCellDelegate
+
 extension ProfileUserViewController: HeadMenuTblViewCellDelegate {
+    
     func headMenuTblViewCell(_ cell: HeadMenuTblViewCell, didFinishPickingImage avatar: UIImageView) {
         let picker = UIImagePickerController()
         picker.delegate = self
@@ -177,20 +216,20 @@ extension ProfileUserViewController: HeadMenuTblViewCellDelegate {
 }
 
 // MARK: - UIImagePickerControllerDelegate
+
 extension ProfileUserViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
         if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
             imgChange = image
             tblMenu.reloadData()
             dismiss(animated: true)
         } else {
             picker.dismiss(animated: true, completion: nil)
-            let alControl:UIAlertController = {
+            let alControl: UIAlertController = {
                 let alControl = UIAlertController(title: "Ошибка".localized, message: "Фотография не найденна".localized, preferredStyle: .alert)
                 let btnOk: UIAlertAction = {
-                    let btn = UIAlertAction(title: "Ok".localized,
-                                            style: .default,
-                                            handler: nil)
+                    let btn = UIAlertAction(title: "Ok".localized, style: .default, handler: nil)
                     return btn
                 }()
                 alControl.addAction(btnOk)
@@ -206,7 +245,9 @@ extension ProfileUserViewController: UIImagePickerControllerDelegate, UINavigati
 }
 
 // MARK: - TabBarControllerDelegate
+
 extension ProfileUserViewController: TabBarControllerDelegate {
+    
     func tabBarController(_ tabBarController: TabBarController, didSelectTabAtIndex index: Int, issues datas: [Issues], employee data: Employee) {
         self.employee = data
         self.tblMenu.reloadData()

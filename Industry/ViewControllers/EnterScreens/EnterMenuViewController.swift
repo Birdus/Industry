@@ -47,6 +47,7 @@ class EnterMenuViewController: UIViewController {
     weak var delegete: EnterMenuViewControllerDelegate!
     private var usserLogin: String?
     private var usserPassword: String?
+    private var apiManagerIndustry: APIManagerIndustry?
     
     // MARK: - Private UI
     /// A button for entering the app.
@@ -66,6 +67,7 @@ class EnterMenuViewController: UIViewController {
         btn.layer.masksToBounds = false
         btn.translatesAutoresizingMaskIntoConstraints = false
         btn.addTarget(self, action: #selector(BtnEnter_Click), for: .touchUpInside)
+        
         return btn
     }()
     
@@ -129,15 +131,18 @@ class EnterMenuViewController: UIViewController {
     // MARK: - View Controller Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        apiManagerIndustry = APIManagerIndustry()
         configureUI()
         registerForKeyboardNotification()
     }
     
     deinit {
         NotificationCenter.default.removeObserver(self)
+        apiManagerIndustry = nil
     }
     
     // MARK: - Actions
+    
     /// Func click button recovery password
     @objc
     private func BtnRecoveryPass_Click(_ sender: UIButton) {
@@ -153,46 +158,53 @@ class EnterMenuViewController: UIViewController {
         let activityIndicator = UIActivityIndicatorView(style: .gray)
         activityIndicator.center = view.center
         activityIndicator.hidesWhenStopped = true
-        activityIndicator.startAnimating()
+        
         let blurEffect = UIBlurEffect(style: .light)
         let blurEffectView = UIVisualEffectView(effect: blurEffect)
-        blurEffectView.frame = self.view.bounds
+        blurEffectView.frame = view.bounds
         blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         blurEffectView.alpha = 0.6
-        view.addSubview(blurEffectView)
         blurEffectView.contentView.addSubview(activityIndicator)
-        let vc = TabBarController()
-        self.delegete = vc
-        let navigationController = UINavigationController(rootViewController: vc)
-        delegete?.enterMenuViewController(self, didLoadEmployeeWitch: 2) {
+        view.addSubview(blurEffectView)
+        
+        activityIndicator.startAnimating()
+        
+        guard let login = usserLogin, let password = usserPassword,
+              !login.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+              !password.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            showAlController(messege: "Вы не ввели данные для входа")
+            activityIndicator.stopAnimating()
+            blurEffectView.removeFromSuperview()
+            return
+        }
+        
+        let authBody = AuthBody(email: login, password: password)
+        
+        apiManagerIndustry?.validateCredentials(credentials: authBody) {result in
             DispatchQueue.main.async {
-                activityIndicator.stopAnimating()
-                blurEffectView.removeFromSuperview()
-                navigationController.modalPresentationStyle = .fullScreen
-                navigationController.isToolbarHidden = true
-                navigationController.isNavigationBarHidden = true
-                self.present(navigationController, animated: true, completion: nil)
-            }
-        } failer: {error in
-            DispatchQueue.main.async {
-                activityIndicator.stopAnimating()
-                blurEffectView.removeFromSuperview()
-                let alControl:UIAlertController = {
-                    let alControl = UIAlertController(title: "Ошибка".localized, message: "Не удалось подключиться к серверу!", preferredStyle: .alert)
-                    let btnOk: UIAlertAction = {
-                        let btn = UIAlertAction(title: "Ok".localized,
-                                                style: .default,
-                                                handler: nil )
-                        return btn
-                    }()
-                    alControl.addAction(btnOk)
-                    return alControl
-                }()
-                self.present(alControl, animated: true, completion: nil)
+                switch result {
+                case .failure(let error):
+                    self.showAlController(messege: error.localizedDescription)
+                    
+                case .success(let idEmployee):
+                    let vc = TabBarController()
+                    self.delegete = vc
+                    self.delegete?.enterMenuViewController(self, didLoadEmployeeWitch: idEmployee, completion: {
+                        let navigationController = UINavigationController(rootViewController: vc)
+                        navigationController.modalPresentationStyle = .fullScreen
+                        navigationController.isToolbarHidden = true
+                        navigationController.isNavigationBarHidden = true
+                        activityIndicator.stopAnimating()
+                        blurEffectView.removeFromSuperview()
+                        self.present(navigationController, animated: true, completion: nil)
+                    }, failer: { error in
+                        self.showAlController(messege: error.localizedDescription)
+                    })
+                }
             }
         }
     }
-    
+
     /// Keyboard will show notification handler
     @objc
     private func kbWillShow(_ notification: Notification) {
@@ -216,6 +228,21 @@ class EnterMenuViewController: UIViewController {
     private func registerForKeyboardNotification() {
         NotificationCenter.default.addObserver(self, selector: #selector(kbWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(kbWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    private func showAlController(messege: String) {
+        let alControl:UIAlertController = {
+            let alControl = UIAlertController(title: "Ошибка".localized, message: messege, preferredStyle: .alert)
+            let btnOk: UIAlertAction = {
+                let btn = UIAlertAction(title: "Ok".localized,
+                                        style: .default,
+                                        handler: nil )
+                return btn
+            }()
+            alControl.addAction(btnOk)
+            return alControl
+        }()
+        self.present(alControl, animated: true, completion: nil)
     }
     
     /// Configures the UI elements of the view controller.

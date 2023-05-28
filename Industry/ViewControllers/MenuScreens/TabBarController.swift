@@ -180,23 +180,67 @@ class TabBarController: UITabBarController {
 
 // MARK: - UITabBarControllerDelegate
 extension TabBarController: UITabBarControllerDelegate {
-    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-        refreshData() { [weak self] in
-            guard let self = self else { return }
-            DispatchQueue.main.async {
-                if let employee = self.employee, let issues = self.issues {
-                    self.delegete.forEach { $0.tabBarController(self, didSelectTabAtIndex: self.selectedIndex, issues: issues, employee: employee) }
-                }
-            }
-        }
-    }
+//    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+//        refreshData() { [weak self] in
+//            guard let self = self else { return }
+//            DispatchQueue.main.async {
+//                if let employee = self.employee, let issues = self.issues {
+//                    self.delegete.forEach { $0.tabBarController(self, didSelectTabAtIndex: self.selectedIndex, issues: issues, employee: employee) }
+//                }
+//            }
+//        }
+//    }
 }
 
 // MARK: - EnterMenuViewControllerDelegate
 extension TabBarController: EnterMenuViewControllerDelegate {
     func enterMenuViewController(_ enterMenuViewController: EnterMenuViewController, didLoadEmployeeWitch id: Int, completion: @escaping () -> Void, failer: @escaping (Error) -> Void) {
         let errorNetwork = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.missingHTTPResponse.errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.missingHTTPResponse.localizedDescription])
-        
+        apiManagerIndustry?.fetch(request: ForecastType.EmployeeWitchId(id: id), HTTPMethod: .get) {(json: [String: Any]) -> Employee? in
+            return Employee.decodeJSON(json: json)
+        } completionHandler: { [weak self] (result: APIResult<Employee?>) in
+            guard let self = self else { return }
+            switch result {
+            case .success(let employees):
+                guard let employees = employees else {
+                    print("Failed to parse employees.")
+                    failer(errorNetwork)
+                    return
+                }
+                self.employee = employees
+                let idLaborCosts = employees.laborCosts?.compactMap { $0.issueId } ?? []
+                self.apiManagerIndustry?.fetchIssues(HTTPMethod: .get, ids: idLaborCosts) {(json: [String: Any]) -> Issues? in
+                    return Issues.decodeJSON(json: json)
+                } completionHandler: {[weak self] (result: APIResult<[Issues]>) in
+                    guard let self = self else { return }
+                    switch result {
+                    case .success(let issues):
+                        self.issues = issues
+                        DispatchQueue.main.async {
+                            self.configure()
+                            completion()
+                        }
+                    case .failure(let error):
+                        print("Error: \(error)")
+                        failer(error)
+                    case .successArray(_):
+                        print("Expected single objects, but got array.")
+                        failer(errorNetwork)
+                    }
+                }
+            case .failure(let error):
+                print("Error: \(error)")
+                failer(error)
+            case .successArray(_):
+                print("Expected single object, but got array.")
+                failer(errorNetwork)
+            }
+        }
+    }
+}
+extension TabBarController: AppDelegateDelegate {
+    func appDelegate(_ appDelegate: AppDelegate, didLoadEmployeeWith id: Int, completion: @escaping () -> Void, failure failer: @escaping (Error) -> Void) {
+        let errorNetwork = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.missingHTTPResponse.errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.missingHTTPResponse.localizedDescription])
         apiManagerIndustry?.fetch(request: ForecastType.EmployeeWitchId(id: id), HTTPMethod: .get) {(json: [String: Any]) -> Employee? in
             return Employee.decodeJSON(json: json)
         } completionHandler: { [weak self] (result: APIResult<Employee?>) in

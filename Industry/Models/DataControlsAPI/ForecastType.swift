@@ -34,7 +34,7 @@ enum ForecastType: FinalURLPoint {
     /// Endpoint for getting a specific labor cost by ID.
     case LaborCostWitchId(id: Int)
     
-    
+    case Token(credentials: AuthBody)
     
     /// The base URL for all endpoints.
     var baseURL: URL {
@@ -69,14 +69,40 @@ enum ForecastType: FinalURLPoint {
             return "LaborCost/"
         case .LaborCostWitchId(id: let id):
             return "LaborCost/\(id)"
-            
+        case .Token:
+            return "Auth/token"
         }
     }
     
     /// The URL request for the endpoint.
-    var request: URLRequest {
+    var requestWitchToken: URLRequest {
+        let url = URL(string: path, relativeTo: baseURL)
+        var urlRequest = URLRequest(url: url!)
+        guard let accessToken = self.getAccessToken() else {return self.requestWitchOutToken}
+        urlRequest.setValue("Bearer \(accessToken.token)", forHTTPHeaderField: "Authorization")
+        if case .Token(let credentials) = self {
+            // Get access token
+            let accessToken = self.getAccessToken()
+            urlRequest.httpMethod = "POST"
+            urlRequest.setValue("Bearer \(String(describing: accessToken?.token))", forHTTPHeaderField: "Authorization")
+            do {
+                let jsonData = try JSONEncoder().encode(credentials)
+                urlRequest.httpBody = jsonData
+            } catch {
+                fatalError("Encoding credentials failed.")
+            }
+        }
+        return urlRequest
+    }
+    
+    var requestWitchOutToken: URLRequest {
         let url = URL(string: path, relativeTo: baseURL)
         return URLRequest(url: url!)
+    }
+    
+    
+    var absoluteURL: URL {
+        return URL(string: "\(self.baseURL) + \(self.path)")!
     }
     
     /// This URL dont work, this URL need to unit test
@@ -84,4 +110,14 @@ enum ForecastType: FinalURLPoint {
         let url = URL(string: path, relativeTo: baseURL)
         return URLRequest(url: url!)
     }
+}
+
+extension ForecastType: KeychainWorkerProtocol {
+    static var KEY_AUTH_BODY_EMAIL: String = "key_auth_body_email"
+    static var KEY_AUTH_BODY_PASSWORD: String = "key_auth_body_password"
+    static let KEY_ACCESS_TOKEN = "auth_token"
+    static let KEY_ACCESS_TOKEN_EXPIRE = "auth_token_expire"
+    static let KEY_REFRESH_TOKEN = "refresh_token"
+    static let KEY_REFRESH_TOKEN_EXPIRE = "refresh_token_expire"
+    static let ACCESS_TOKEN_LIFE_THRESHOLD_SECONDS: Int64 = 3600
 }

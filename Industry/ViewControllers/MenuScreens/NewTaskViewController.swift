@@ -7,10 +7,17 @@
 
 import UIKit
 
+protocol NewTaskViewControllerDelegate: AnyObject {
+    func newTaskViewController(_ viewController: NewTaskViewController, didLoad values: [Employee])
+}
+
 class NewTaskViewController: UIViewController {
     
+    private var selectionListEmployee: SelectionListEmployeeViewController!
     private var originYView: CGRect = CGRect()
-
+    private var delegete: NewTaskViewControllerDelegate!
+    private var apiManagerIndustry: APIManagerIndustry!
+    
     // MARK: - Private UI
     private lazy var tblNewTask: UITableView = {
         let tableView = UITableView()
@@ -52,6 +59,10 @@ class NewTaskViewController: UIViewController {
     // MARK: - Lifecycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
+        apiManagerIndustry = APIManagerIndustry()
+        selectionListEmployee = SelectionListEmployeeViewController()
+        delegete = selectionListEmployee
+        loadEmployees()
         registerForKeyboardNotification()
         configureUI()
     }
@@ -62,6 +73,9 @@ class NewTaskViewController: UIViewController {
     
     deinit {
         NotificationCenter.default.removeObserver(self)
+        selectionListEmployee = nil
+        apiManagerIndustry = nil
+        selectionListEmployee = nil
     }
     // MARK: - Acrion
     
@@ -83,11 +97,13 @@ class NewTaskViewController: UIViewController {
             view.frame.origin.y = self.originYView.origin.y - max(0, keyboardHeight - bottomSpace - 25)
         }
     }
-
+    
     @objc
     private func keyboardWillHide(_ notification: Notification) {
         self.view.frame.origin.y = originYView.origin.y
     }
+    
+    
     
     // MARK: - Privates func
     /// Register for keyboard notifications
@@ -96,8 +112,28 @@ class NewTaskViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
-    // MARK: - Private func
+    private func loadEmployees() {
+        self.apiManagerIndustry?.fetch(request: ForecastType.Employee, HTTPMethod: .get, parse: { (json) -> [Employee]? in
+            // Parse the JSON response into an array of Employee objects
+            // Return the parsed array or nil if parsing fails
+            // Replace Employee with the appropriate type for your employee model
+            return json.compactMap({Employee.decodeJSON(json: $0)})
+        }, completionHandler: { (result: APIResult<Employee>) in
+            // Handle the API result
+            switch result {
+            case .success(_):
+                print("Error this single object")
+            case .failure(let error):
+                // Handle the failure case where an error occurred
+                print(error)
+            case .successArray(let employees):
+                self.delegete.newTaskViewController(self, didLoad: employees)
+            }
+        })
+    }
+
     private func configureUI() {
+        
         self.view.backgroundColor = UIColor(red: 0.157, green: 0.535, blue: 0.821, alpha: 1)
         self.view.addSubview(tblNewTask)
         self.view.addSubview(btnSave)
@@ -107,13 +143,13 @@ class NewTaskViewController: UIViewController {
             tblNewTask.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 5),
             
             btnSave.topAnchor.constraint(equalTo: tblNewTask.bottomAnchor, constant: 5), // Изменено значение отступа
-
+            
             btnSave.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
             btnSave.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -10), // Изменено значение отступа
             btnSave.widthAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.widthAnchor, multiplier: 0.3)
         ])
     }
-
+    
 }
 
 // MARK: - UITableViewDataSource
@@ -196,7 +232,14 @@ extension NewTaskViewController: UITableViewDataSource {
 
 // MARK: - UITableViewDelegate
 extension NewTaskViewController: UITableViewDelegate {
-    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath.row == 4{
+            selectionListEmployee.modalPresentationStyle = .custom
+            selectionListEmployee.transitioningDelegate = self
+            let navigationController = UINavigationController(rootViewController: selectionListEmployee)
+            self.present(navigationController, animated: true, completion: nil)
+        }
+    }
 }
 
 // MARK: - EditNameDiscribeTaskTblViewCellDelegate
@@ -220,4 +263,7 @@ extension NewTaskViewController: EditHourTaskTblViewCellDelegate {
     }
 }
 
-
+// MARK: - UIViewControllerTransitioningDelegate
+extension NewTaskViewController: UIViewControllerTransitioningDelegate {
+    
+}

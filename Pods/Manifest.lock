@@ -4,23 +4,31 @@ PODS:
   - Charts/Core (4.1.0):
     - SwiftAlgorithms (~> 1.0)
   - FSCalendar (2.8.4)
+  - JWTDecode (3.0.1)
+  - KeychainSwift (20.0.0)
   - SwiftAlgorithms (1.0.0)
 
 DEPENDENCIES:
   - Charts
   - FSCalendar
+  - JWTDecode
+  - KeychainSwift
 
 SPEC REPOS:
   trunk:
     - Charts
     - FSCalendar
+    - JWTDecode
+    - KeychainSwift
     - SwiftAlgorithms
 
 SPEC CHECKSUMS:
   Charts: 354f86803d11d9c35de280587fef50d1af063978
   FSCalendar: 2d1d0d9398f12d439f55c1fe0f01525b151b8260
+  JWTDecode: 2eed97c2fa46ccaf3049a787004eedf0be474a87
+  KeychainSwift: 0ce6a4d13f7228054d1a71bb1b500448fb2ab837
   SwiftAlgorithms: 38dda4731d19027fdeee1125f973111bf3386b53
 
-PODFILE CHECKSUM: d184fb81177976ea481c045605d1843cce8fc152
+PODFILE CHECKSUM: 37c6e9bcbe107ba5910cb147956f648e89062d2c
 
 COCOAPODS: 1.12.1
