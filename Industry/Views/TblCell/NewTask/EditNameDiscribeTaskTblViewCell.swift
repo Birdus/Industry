@@ -8,6 +8,10 @@
 import UIKit
 
 protocol EditNameDiscribeTaskTblViewCellDelegate: AnyObject {
+    /// This method is called when the text in the cell has changed.
+        /// - Parameters:
+        ///   - cell: The cell in which the text has changed.
+        ///   - value: The new text value.
     func editNameDiscribeTaskTblViewCell(_ cell: EditNameDiscribeTaskTblViewCell, didChanged value: String)
 }
 
@@ -46,10 +50,16 @@ class EditNameDiscribeTaskTblViewCell: UITableViewCell {
      - Parameter palcholder: The palcholder of the add task item to display.
      - Parameter iconName: The name of the image to use as the add task item icon.
      */
-    func fillTable(_ palcholder: String) {
-        self.palcholder = palcholder
-        txtFld.text = palcholder
-        txtFld.textColor = UIColor.lightGray
+    func fillTable(_ palcholder: String?, _ text: String?) {
+        if let palcholder = palcholder {
+            self.palcholder = palcholder
+            txtFld.textColor = UIColor.lightGray
+            txtFld.text = palcholder
+        } else if let text = text {
+            txtFld.text = text
+            txtFld.textColor = .white
+            self.palcholder = "Описание задачи".localized
+        }
     }
     
     // MARK: - Private func
@@ -62,11 +72,11 @@ class EditNameDiscribeTaskTblViewCell: UITableViewCell {
             txtFld.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -5),
         ])
     }
-
 }
 
+// MARK: - UITextViewDelegate
 extension EditNameDiscribeTaskTblViewCell: UITextViewDelegate {
-    // Метод делегата UITextView, вызывается при начале редактирования текста
+    /// Called when the text view begins editing.
         func textViewDidBeginEditing(_ textView: UITextView) {
             if textView.textColor == UIColor.lightGray {
                 textView.text = nil
@@ -74,7 +84,7 @@ extension EditNameDiscribeTaskTblViewCell: UITextViewDelegate {
             }
         }
 
-        // Метод делегата UITextView, вызывается при окончании редактирования текста
+    /// Called when the text view ends editing.
         func textViewDidEndEditing(_ textView: UITextView) {
             if textView.text.isEmpty {
                 textView.text = palcholder
@@ -84,6 +94,7 @@ extension EditNameDiscribeTaskTblViewCell: UITextViewDelegate {
             }
         }
     
+    /// Asks the delegate whether the specified text should be replaced in the text view.
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
             if(text == "\n") {
                 textView.resignFirstResponder()
@@ -91,5 +102,15 @@ extension EditNameDiscribeTaskTblViewCell: UITextViewDelegate {
             }
             return true
         }
+}
+
+// MARK: - NewTaskViewControllerDelegate
+extension EditNameDiscribeTaskTblViewCell: NewTaskViewControllerDelegate {
+    /// This method is called when the NewTaskViewController is closed.
+    func newTaskViewController(_ viewController: NewTaskViewController, didClosed: Bool) {
+        if didClosed {
+            delegete.editNameDiscribeTaskTblViewCell(self, didChanged: txtFld.text)
+        }
+    }
 }
 

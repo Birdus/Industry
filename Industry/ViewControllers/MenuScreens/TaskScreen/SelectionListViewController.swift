@@ -12,7 +12,6 @@ protocol SelectionListViewControllerDelegete: AnyObject {
     func selectionListViewController(_ cell: SelectionListViewController, didSelected value: Project)
 }
 
-
 class SelectionListViewController: UIViewController {
     
     private var employees: [Employee]?

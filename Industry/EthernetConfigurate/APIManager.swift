@@ -103,6 +103,36 @@ final class APIManagerIndustry: APIManager {
         task.resume()
     }
     
+    func put<T>(request: ForecastType, data: T, completionHandler: @escaping (APIResult<Int>) -> Void) where T : Encodable {
+        refreshTokens { result in
+            if case .failure(let error) = result {
+                completionHandler(.failure(error))
+            }
+        }
+        var requestToPut = request.requestWitchToken
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        guard let data = try? encoder.encode(data) else {
+            let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.encodingFailed.errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.encodingFailed.errorMessage])
+            completionHandler(.failure(error))
+            return
+        }
+        requestToPut.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        requestToPut.httpMethod = HttpMethodsString.put.stringValue
+        requestToPut.httpBody = data
+        let task = JSONTaskWith(request: requestToPut, HTTPMethod: HttpMethodsString.put) { (json, response, error, _) in
+            guard let httpResponse = response,
+                  httpResponse.statusCode == 200 else {
+                let error = error ?? NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.unexpectedResponse(message: "Error parsing JSON").errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.unexpectedResponse(message: "Error parsing JSON").errorMessage])
+                completionHandler(.failure(error))
+                return
+            }
+            completionHandler(.success(httpResponse.statusCode))
+        }
+        task.resume()
+    }
+
+    
     func post<T>(request: ForecastType, data: T, completionHandler: @escaping (APIResult<Int>) -> Void) where T : Encodable {
         refreshTokens { result in
             if case .failure(let error) = result {
@@ -322,6 +352,27 @@ final class APIManagerIndustry: APIManager {
         task.resume()
     }
     
+    func loadImage(from url: URL, completion: @escaping (UIImage?) -> Void) {
+        let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+            if let error = error {
+                print("Error loading image: \(error)")
+                completion(nil)
+                return
+            }
+            
+            guard let data = data else {
+                print("No data returned from server")
+                completion(nil)
+                return
+            }
+            
+            let image = UIImage(data: data)
+            completion(image)
+        }
+        
+        task.resume()
+    }
+
     /**
      Checks if re-authorization is needed based on the expiration of the access token.
      - Returns: A boolean value indicating whether re-authorization is needed.

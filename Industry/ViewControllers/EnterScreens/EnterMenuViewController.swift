@@ -326,8 +326,6 @@ extension EnterMenuViewController: UITableViewDataSource {
 
 // MARK: - Table View Data Source and Table View Delegate
 extension EnterMenuViewController: UITableViewDelegate {
-    
-
 }
 
 // MARK: - AuthenticationTblViewCellDelegate

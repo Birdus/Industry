@@ -25,6 +25,8 @@ protocol TabBarControllerDelegate: AnyObject {
         - data: The data of Employee, load from api
      */
     func tabBarController(_ tabBarController: TabBarController, didSelectTabAtIndex index: Int, issues datas: [Issues], employee data: Employee)
+    
+    
 }
 
 class TabBarController: UITabBarController {
@@ -177,6 +179,7 @@ class TabBarController: UITabBarController {
 
 // MARK: - EnterMenuViewControllerDelegate
 extension TabBarController: EnterMenuViewControllerDelegate {
+    /// This method is called when the EnterMenuViewController has loaded an employee with a specific ID.
     func enterMenuViewController(_ enterMenuViewController: EnterMenuViewController, didLoadEmployeeWitch id: Int, completion: @escaping () -> Void, failer: @escaping (Error) -> Void) {
         let errorNetwork = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.missingHTTPResponse.errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.missingHTTPResponse.localizedDescription])
         apiManagerIndustry?.fetch(request: ForecastType.EmployeeWitchId(id: id)) {(json: [String: Any]) -> Employee? in
@@ -221,7 +224,10 @@ extension TabBarController: EnterMenuViewControllerDelegate {
         }
     }
 }
+
+// MARK: - AppDelegateDelegate
 extension TabBarController: AppDelegateDelegate {
+    /// This method is called when the AppDelegate has loaded an employee with a specific ID.
     func appDelegate(_ appDelegate: AppDelegate, didLoadEmployeeWith id: Int, completion: @escaping () -> Void, failure failer: @escaping (Error) -> Void) {
         let errorNetwork = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.missingHTTPResponse.errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.missingHTTPResponse.localizedDescription])
         apiManagerIndustry?.fetch(request: ForecastType.EmployeeWitchId(id: id)) {(json: [String: Any]) -> Employee? in
@@ -269,8 +275,8 @@ extension TabBarController: AppDelegateDelegate {
 
 // MARK: - CalendarTaskViewControllerDelegate
 extension TabBarController: CalendarTaskViewControllerDelegate {
-    
-    func calendarTaskViewController(_ viewController: UIViewController, didDeleateData witchId: Int) {
+    /// This method is called when the CalendarTaskViewController has deleted data with a specific ID.
+    func calendarTaskViewController(_ viewController: CalendarTaskViewController, didDeleateData witchId: Int) {
         apiManagerIndustry?.deleteItem(request: ForecastType.IssueWithId(id: witchId)) { result in
             switch result {
             case .success:
@@ -292,7 +298,8 @@ extension TabBarController: CalendarTaskViewControllerDelegate {
         }
     }
     
-    func calendarTaskViewController(_ viewController: UIViewController) {
+    /// This methodis called when the CalendarTaskViewController is loaded.
+    func calendarTaskViewController(_ viewController: CalendarTaskViewController) {
         self.view.addSubview(blrLoad)
         blrLoad.contentView.addSubview(activityIndicator)
         activityIndicator.startAnimating()

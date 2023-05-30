@@ -8,6 +8,10 @@
 import UIKit
 
 protocol EditHourTaskTblViewCellDelegate: AnyObject {
+    /// This method is called when the hour in the cell has changed.
+        /// - Parameters:
+        ///   - cell: The cell in which the hour has changed.
+        ///   - value: The new hour value.
     func editHourTaskTblViewCellTblViewCell(_ cell: EditHourTaskTblViewCell, didChanged value: Int)
 }
 
@@ -83,16 +87,28 @@ class EditHourTaskTblViewCell: UITableViewCell {
      - Parameter palcholder: The palcholder of the add task item to display.
      - Parameter iconName: The name of the image to use as the add task item icon.
      */
-    func fiillTable(_ palcholder: String, _ iconName: UIImage?) {
-        txtFld.placeholder = palcholder
+    func fillTable(placeholder: String?, hour: Int?, iconName: UIImage?) {
+        setupPlaceholder(placeholder)
+        setupDate(hour)
         imgIcon.image = iconName
-        let placeholderAttributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: UIColor.lightGray,
-        ]
-        txtFld.attributedPlaceholder = NSAttributedString(string: palcholder, attributes: placeholderAttributes)
     }
     
     // MARK: - Private func
+    
+    private func setupPlaceholder(_ text: String?) {
+        guard let text = text else { return }
+        let placeholderAttributes: [NSAttributedString.Key: Any] = [.foregroundColor: UIColor.lightGray]
+        txtFld.attributedPlaceholder = NSAttributedString(string: text, attributes: placeholderAttributes)
+        txtFld.placeholder = text
+    }
+
+    private func setupDate(_ hour: Int?) {
+        guard let hour = hour else { return }
+        txtFld.text = String(hour)
+        let placeholder = "Колличество часов на задачу".localized
+        setupPlaceholder(placeholder)
+    }
+    
     private func configureUI() {
         self.contentView.addSubview(containerIcon)
         self.contentView.addSubview(txtFld)
@@ -119,11 +135,7 @@ class EditHourTaskTblViewCell: UITableViewCell {
 
 // MARK: Text Field Delegate
 extension EditHourTaskTblViewCell: UITextFieldDelegate {
-    
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        
-    }
-    
+    /// Called when the text field ends editing.
     func textFieldDidEndEditing(_ textField: UITextField) {
         if let countHourString = txtFld.text, let countHour = Int(countHourString) {
             delegete.editHourTaskTblViewCellTblViewCell(self, didChanged: countHour)
@@ -132,11 +144,24 @@ extension EditHourTaskTblViewCell: UITextFieldDelegate {
         }
     }
     
+    /// Asks the delegate if the text field should process the pressing of the return button.
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField == txtFld {
             textField.resignFirstResponder()
             return false
         }
         return true
+    }
+}
+
+// MARK: Text Field Delegate
+extension EditHourTaskTblViewCell: NewTaskViewControllerDelegate {
+    /// This method is called when the NewTaskViewController is closed.
+    func newTaskViewController(_ viewController: NewTaskViewController, didClosed: Bool) {
+        if didClosed {
+            if let countHourString = txtFld.text, let countHour = Int(countHourString) {
+                delegete.editHourTaskTblViewCellTblViewCell(self, didChanged: countHour)
+            }
+        }
     }
 }
