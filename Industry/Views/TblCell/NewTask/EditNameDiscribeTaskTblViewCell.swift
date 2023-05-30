@@ -1,5 +1,5 @@
 //
-//  NameTaskTblViewCell.swift
+//  EditNameDiscribeTaskTblViewCell.swift
 //  Industry
 //
 //  Created by  Даниил on 22.05.2023.
@@ -7,12 +7,16 @@
 
 import UIKit
 
-class NameTaskTblViewCell: UITableViewCell {
+protocol EditNameDiscribeTaskTblViewCellDelegate: AnyObject {
+    func editNameDiscribeTaskTblViewCell(_ cell: EditNameDiscribeTaskTblViewCell, didChanged value: String)
+}
+
+class EditNameDiscribeTaskTblViewCell: UITableViewCell {
     
     // MARK: - Properties
-    static let indificatorCell = "NameTaskTblViewCell"
+    static let indificatorCell = "EditNameDiscribeTaskTblViewCell"
     private var palcholder: String = String()
-    
+    weak var delegete: EditNameDiscribeTaskTblViewCellDelegate!
     // MARK: - Private UI
     private lazy var txtFld: UITextView = {
         let txt = UITextView()
@@ -21,7 +25,6 @@ class NameTaskTblViewCell: UITableViewCell {
         txt.textAlignment = .left
         txt.font = UIFont.systemFont(ofSize: CGFloat(UIScreen.main.bounds.width/10)/2)
         txt.delegate = self
-        
         txt.backgroundColor = .clear
         return txt
     }()
@@ -62,7 +65,7 @@ class NameTaskTblViewCell: UITableViewCell {
 
 }
 
-extension NameTaskTblViewCell: UITextViewDelegate {
+extension EditNameDiscribeTaskTblViewCell: UITextViewDelegate {
     // Метод делегата UITextView, вызывается при начале редактирования текста
         func textViewDidBeginEditing(_ textView: UITextView) {
             if textView.textColor == UIColor.lightGray {
@@ -76,6 +79,8 @@ extension NameTaskTblViewCell: UITextViewDelegate {
             if textView.text.isEmpty {
                 textView.text = palcholder
                 textView.textColor = UIColor.lightGray
+            } else {
+                delegete.editNameDiscribeTaskTblViewCell(self, didChanged: textView.text)
             }
         }
     

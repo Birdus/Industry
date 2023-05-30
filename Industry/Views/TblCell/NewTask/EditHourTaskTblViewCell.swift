@@ -1,16 +1,20 @@
 //
-//  AddInfoTaskTblViewCell.swift
+//  EditHourTaskTblViewCell.swift
 //  Industry
 //
-//  Created by  Даниил on 23.05.2023.
+//  Created by  Даниил on 24.05.2023.
 //
 
 import UIKit
 
-class AddInfoTaskTblViewCell: UITableViewCell {
+protocol EditHourTaskTblViewCellDelegate: AnyObject {
+    func editHourTaskTblViewCellTblViewCell(_ cell: EditHourTaskTblViewCell, didChanged value: Int)
+}
+
+class EditHourTaskTblViewCell: UITableViewCell {
     // MARK: - Properties
-    static let indificatorCell = "AddInfoTaskTblViewCell"
-    
+    static let indificatorCell = "EditHourTaskTblViewCell"
+    weak var delegete: EditHourTaskTblViewCellDelegate!
     // MARK: - Private UI
     /// A UIView container image
     private lazy var containerIcon: UIView = {
@@ -25,7 +29,7 @@ class AddInfoTaskTblViewCell: UITableViewCell {
         view.layer.masksToBounds = false
         return view
     }()
-
+    
     /// A UIImageView  image user
     private lazy var imgIcon: UIImageView = {
         let imageView = UIImageView()
@@ -39,12 +43,14 @@ class AddInfoTaskTblViewCell: UITableViewCell {
         let txt = UITextField()
         txt.translatesAutoresizingMaskIntoConstraints = false
         txt.textColor = .white
-        txt.font = UIFont(name: "San Francisco", size: 20)
+        txt.font = UIFont.systemFont(ofSize: UIScreen.main.bounds.width / 10 / 2)
+        txt.keyboardType = .numberPad
         txt.textAlignment = .left
         txt.delegate = self
+        txt.addTarget(self, action: #selector(codeEntered), for: .editingChanged)
         return txt
     }()
-
+    
     // MARK: - Initialization
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -53,6 +59,21 @@ class AddInfoTaskTblViewCell: UITableViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Action
+    @objc
+    func codeEntered(_ textField: UITextField) {
+        guard let code = textField.text else { return }
+        switch code.count {
+        case 8...Int.max:
+            textField.deleteBackward()
+        case 7:
+            textField.resignFirstResponder()
+            print("Код: \(code)")
+        default:
+            break
+        }
     }
     
     // MARK: - Public Methods
@@ -65,6 +86,10 @@ class AddInfoTaskTblViewCell: UITableViewCell {
     func fiillTable(_ palcholder: String, _ iconName: UIImage?) {
         txtFld.placeholder = palcholder
         imgIcon.image = iconName
+        let placeholderAttributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: UIColor.lightGray,
+        ]
+        txtFld.attributedPlaceholder = NSAttributedString(string: palcholder, attributes: placeholderAttributes)
     }
     
     // MARK: - Private func
@@ -93,7 +118,19 @@ class AddInfoTaskTblViewCell: UITableViewCell {
 }
 
 // MARK: Text Field Delegate
-extension AddInfoTaskTblViewCell: UITextFieldDelegate {
+extension EditHourTaskTblViewCell: UITextFieldDelegate {
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        if let countHourString = txtFld.text, let countHour = Int(countHourString) {
+            delegete.editHourTaskTblViewCellTblViewCell(self, didChanged: countHour)
+        } else {
+            txtFld.text = ""
+        }
+    }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField == txtFld {

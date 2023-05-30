@@ -68,7 +68,9 @@ class APIMangerTests: XCTestCase {
 
 /// Mock API Manager for testing
 final class MockAPIManager: APIManager {
-    
+    func fetch<T>(request: ForecastType, HTTPMethod: HttpMethodsString, parse: @escaping ([[String : Any]]) -> [T]?, completionHandler: @escaping (APIResult<T>) -> Void) where T : Decodable {
+        return
+    }
     
     
     /// Session configuration for the manager

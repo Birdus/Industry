@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -30,14 +30,20 @@
 		A528206629F3EF19002FA269 /* RecovoryPasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A528206529F3EF19002FA269 /* RecovoryPasswordViewController.swift */; };
 		A528206929F3F244002FA269 /* RecovoryPasswordCollViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A528206829F3F244002FA269 /* RecovoryPasswordCollViewCell.swift */; };
 		A529736F2A1AE0EC00B4189F /* NewTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A529736E2A1AE0E600B4189F /* NewTaskViewController.swift */; };
-		A529737E2A1BA33B00B4189F /* NameTaskTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A529737D2A1BA33B00B4189F /* NameTaskTblViewCell.swift */; };
-		A52973842A1CD87F00B4189F /* AddInfoTaskTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52973832A1CD87F00B4189F /* AddInfoTaskTblViewCell.swift */; };
+		A529737E2A1BA33B00B4189F /* EditNameDiscribeTaskTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A529737D2A1BA33B00B4189F /* EditNameDiscribeTaskTblViewCell.swift */; };
+		A52973842A1CD87F00B4189F /* EditDateTaskTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52973832A1CD87F00B4189F /* EditDateTaskTblViewCell.swift */; };
 		A52D517729F95E20005DB97D /* Duration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52D517629F95E1F005DB97D /* Duration.swift */; };
 		A52F87972A1125FC00CE2E4E /* IndustryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52F87962A1125FC00CE2E4E /* IndustryTests.swift */; };
 		A52F87A12A11264200CE2E4E /* JSONModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52F87A02A11264200CE2E4E /* JSONModelTests.swift */; };
 		A52F87AD2A12A6DC00CE2E4E /* IndustryUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52F87AC2A12A6DC00CE2E4E /* IndustryUITests.swift */; };
-		A52F87BE2A12A83D00CE2E4E /* Pods_Industry.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A52F87BD2A12A83D00CE2E4E /* Pods_Industry.framework */; platformFilter = ios; };
 		A5313FF62A1D295C009C557B /* PresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5313FF52A1D295C009C557B /* PresentationController.swift */; };
+		A5313FFE2A1E6A40009C557B /* EditHourTaskTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5313FFD2A1E6A40009C557B /* EditHourTaskTblViewCell.swift */; };
+		A53140072A1E6BF9009C557B /* EditEmployeeAndTaskTaskTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53140062A1E6BF9009C557B /* EditEmployeeAndTaskTaskTblViewCell.swift */; };
+		A531401A2A1F94F5009C557B /* SelectionListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53140192A1F94F5009C557B /* SelectionListViewController.swift */; };
+		A531401F2A1FA6B1009C557B /* ListTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A531401E2A1FA6B1009C557B /* ListTblViewCell.swift */; };
+		A53140292A22371F009C557B /* AuthBodyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53140282A22371F009C557B /* AuthBodyModel.swift */; };
+		A53140332A223771009C557B /* TokenInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53140322A223771009C557B /* TokenInfo.swift */; };
+		A53140402A223902009C557B /* KeychainWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A531403F2A223902009C557B /* KeychainWorker.swift */; };
 		A578851B29F67E0D00D26455 /* HeadMenuTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A578851A29F67E0D00D26455 /* HeadMenuTblViewCell.swift */; };
 		A578852329F6887700D26455 /* MenuItemTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A578852229F6887700D26455 /* MenuItemTblViewCell.swift */; };
 		A578852629F6B7DE00D26455 /* StatisticUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A578852529F6B7DE00D26455 /* StatisticUserViewController.swift */; };
@@ -101,8 +107,8 @@
 		A528206529F3EF19002FA269 /* RecovoryPasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecovoryPasswordViewController.swift; sourceTree = "<group>"; };
 		A528206829F3F244002FA269 /* RecovoryPasswordCollViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecovoryPasswordCollViewCell.swift; sourceTree = "<group>"; };
 		A529736E2A1AE0E600B4189F /* NewTaskViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTaskViewController.swift; sourceTree = "<group>"; };
-		A529737D2A1BA33B00B4189F /* NameTaskTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameTaskTblViewCell.swift; sourceTree = "<group>"; };
-		A52973832A1CD87F00B4189F /* AddInfoTaskTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddInfoTaskTblViewCell.swift; sourceTree = "<group>"; };
+		A529737D2A1BA33B00B4189F /* EditNameDiscribeTaskTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditNameDiscribeTaskTblViewCell.swift; sourceTree = "<group>"; };
+		A52973832A1CD87F00B4189F /* EditDateTaskTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditDateTaskTblViewCell.swift; sourceTree = "<group>"; };
 		A52D517629F95E1F005DB97D /* Duration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Duration.swift; sourceTree = "<group>"; };
 		A52F87942A1125FC00CE2E4E /* IndustryTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IndustryTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A52F87962A1125FC00CE2E4E /* IndustryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndustryTests.swift; sourceTree = "<group>"; };
@@ -114,9 +120,15 @@
 		A52F87B72A12A82D00CE2E4E /* Algorithms.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Algorithms.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A52F87B92A12A83300CE2E4E /* Charts.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Charts.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A52F87BB2A12A83900CE2E4E /* FSCalendar.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FSCalendar.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		A52F87BD2A12A83D00CE2E4E /* Pods_Industry.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Pods_Industry.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A52F87E42A12B08800CE2E4E /* View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
 		A5313FF52A1D295C009C557B /* PresentationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentationController.swift; sourceTree = "<group>"; };
+		A5313FFD2A1E6A40009C557B /* EditHourTaskTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditHourTaskTblViewCell.swift; sourceTree = "<group>"; };
+		A53140062A1E6BF9009C557B /* EditEmployeeAndTaskTaskTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditEmployeeAndTaskTaskTblViewCell.swift; sourceTree = "<group>"; };
+		A53140192A1F94F5009C557B /* SelectionListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionListViewController.swift; sourceTree = "<group>"; };
+		A531401E2A1FA6B1009C557B /* ListTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListTblViewCell.swift; sourceTree = "<group>"; };
+		A53140282A22371F009C557B /* AuthBodyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthBodyModel.swift; sourceTree = "<group>"; };
+		A53140322A223771009C557B /* TokenInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenInfo.swift; sourceTree = "<group>"; };
+		A531403F2A223902009C557B /* KeychainWorker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainWorker.swift; sourceTree = "<group>"; };
 		A578851A29F67E0D00D26455 /* HeadMenuTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadMenuTblViewCell.swift; sourceTree = "<group>"; };
 		A578852229F6887700D26455 /* MenuItemTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuItemTblViewCell.swift; sourceTree = "<group>"; };
 		A578852529F6B7DE00D26455 /* StatisticUserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticUserViewController.swift; sourceTree = "<group>"; };
@@ -156,7 +168,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A52F87BE2A12A83D00CE2E4E /* Pods_Industry.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -166,7 +177,6 @@
 		02AA78E4BB83A47D9FD677C0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				A52F87BD2A12A83D00CE2E4E /* Pods_Industry.framework */,
 				A52F87BB2A12A83900CE2E4E /* FSCalendar.framework */,
 				A52F87B92A12A83300CE2E4E /* Charts.framework */,
 				A52F87B72A12A82D00CE2E4E /* Algorithms.framework */,
@@ -213,6 +223,7 @@
 				A0CF9F7E29CDF65200FE6A72 /* FinalUrll.swift */,
 				A0CF9F8129CDF69800FE6A72 /* ForecastType.swift */,
 				A0CF9F8429CDF6C300FE6A72 /* HttpMetods.swift */,
+				A531403F2A223902009C557B /* KeychainWorker.swift */,
 			);
 			path = DataControlsAPI;
 			sourceTree = "<group>";
@@ -270,6 +281,8 @@
 				A07D45E329C78E1C00420463 /* EmployeeModel.swift */,
 				A07D45E729C78E3200420463 /* DivisionModel.swift */,
 				A070410929CE014F00BD2839 /* JSONDecoables.swift */,
+				A53140282A22371F009C557B /* AuthBodyModel.swift */,
+				A53140322A223771009C557B /* TokenInfo.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -288,12 +301,12 @@
 		A0F5E68329CD9843008E483A /* MenuScreens */ = {
 			isa = PBXGroup;
 			children = (
+				A5AE1B452A255558002426AC /* TaskScreen */,
 				A578852E29F6B9CA00D26455 /* ProfileUserScreens */,
 				A5916AB129BC9D8900285D79 /* TabBarController.swift */,
 				A5833D2029C0990200387240 /* ProfileUserViewController.swift */,
 				A0569DE729DE85C500D25991 /* CalendarTaskViewController.swift */,
 				A578852829F6B82E00D26455 /* DocumentFlowViewController.swift */,
-				A529736E2A1AE0E600B4189F /* NewTaskViewController.swift */,
 			);
 			path = MenuScreens;
 			sourceTree = "<group>";
@@ -331,8 +344,11 @@
 		A52973822A1CD79900B4189F /* NewTask */ = {
 			isa = PBXGroup;
 			children = (
-				A529737D2A1BA33B00B4189F /* NameTaskTblViewCell.swift */,
-				A52973832A1CD87F00B4189F /* AddInfoTaskTblViewCell.swift */,
+				A529737D2A1BA33B00B4189F /* EditNameDiscribeTaskTblViewCell.swift */,
+				A52973832A1CD87F00B4189F /* EditDateTaskTblViewCell.swift */,
+				A5313FFD2A1E6A40009C557B /* EditHourTaskTblViewCell.swift */,
+				A53140062A1E6BF9009C557B /* EditEmployeeAndTaskTaskTblViewCell.swift */,
+				A531401E2A1FA6B1009C557B /* ListTblViewCell.swift */,
 			);
 			path = NewTask;
 			sourceTree = "<group>";
@@ -376,6 +392,15 @@
 				A0E4AA3B29A8E25700BDB4EF /* Info.plist */,
 			);
 			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		A5AE1B452A255558002426AC /* TaskScreen */ = {
+			isa = PBXGroup;
+			children = (
+				A529736E2A1AE0E600B4189F /* NewTaskViewController.swift */,
+				A53140192A1F94F5009C557B /* SelectionListViewController.swift */,
+			);
+			path = TaskScreen;
 			sourceTree = "<group>";
 		};
 		A5E0AF1B29B8F3EB003B47D2 /* Localisation */ = {
@@ -580,7 +605,7 @@
 				A0AF115B29E06D5700FBA975 /* NotificationCollRow.swift in Sources */,
 				A0E4AA4829A8E46F00BDB4EF /* EnterMenuViewController.swift in Sources */,
 				A578852929F6B82E00D26455 /* DocumentFlowViewController.swift in Sources */,
-				A529737E2A1BA33B00B4189F /* NameTaskTblViewCell.swift in Sources */,
+				A529737E2A1BA33B00B4189F /* EditNameDiscribeTaskTblViewCell.swift in Sources */,
 				A578852C29F6B9C400D26455 /* SettingUserViewController.swift in Sources */,
 				A5833D1E29C08D4400387240 /* AuthenticationTblViewCell.swift in Sources */,
 				A0E4AA3229A8E25600BDB4EF /* SplachViewController.swift in Sources */,
@@ -597,20 +622,27 @@
 				A07D45DE29C78DFF00420463 /* ProjectModel.swift in Sources */,
 				A528206929F3F244002FA269 /* RecovoryPasswordCollViewCell.swift in Sources */,
 				A5E0AF1D29B8F41E003B47D2 /* LocalizeController.swift in Sources */,
+				A5313FFE2A1E6A40009C557B /* EditHourTaskTblViewCell.swift in Sources */,
+				A531401A2A1F94F5009C557B /* SelectionListViewController.swift in Sources */,
 				A070410A29CE014F00BD2839 /* JSONDecoables.swift in Sources */,
+				A53140332A223771009C557B /* TokenInfo.swift in Sources */,
+				A53140292A22371F009C557B /* AuthBodyModel.swift in Sources */,
 				A578852629F6B7DE00D26455 /* StatisticUserViewController.swift in Sources */,
-				A52973842A1CD87F00B4189F /* AddInfoTaskTblViewCell.swift in Sources */,
+				A52973842A1CD87F00B4189F /* EditDateTaskTblViewCell.swift in Sources */,
 				A0569DE829DE85C500D25991 /* CalendarTaskViewController.swift in Sources */,
 				A5916AB229BC9D8900285D79 /* TabBarController.swift in Sources */,
 				A5AC14FD2A07C540008FB74C /* SetingUserTblViewCell.swift in Sources */,
 				A07D45D229C763CD00420463 /* UserCountTaskTblViewCell.swift in Sources */,
+				A53140072A1E6BF9009C557B /* EditEmployeeAndTaskTaskTblViewCell.swift in Sources */,
 				A07D45E429C78E1C00420463 /* EmployeeModel.swift in Sources */,
 				A0CF9F8229CDF69800FE6A72 /* ForecastType.swift in Sources */,
+				A53140402A223902009C557B /* KeychainWorker.swift in Sources */,
 				A07D45E129C78E0F00420463 /* LaborCostModel.swift in Sources */,
 				A07D45E829C78E3200420463 /* DivisionModel.swift in Sources */,
 				A5AC15122A0FDE2B008FB74C /* ListCaledarTblViewCell.swift in Sources */,
 				A0CF9F7F29CDF65200FE6A72 /* FinalUrll.swift in Sources */,
 				A02EDA4B29CB5D180084BEBA /* ErrorManager.swift in Sources */,
+				A531401F2A1FA6B1009C557B /* ListTblViewCell.swift in Sources */,
 				A585FF1929BA178C00A0F0AF /* NotificationListViewController.swift in Sources */,
 				A585FF1C29BA1A3600A0F0AF /* NotificationUserViewCell.swift in Sources */,
 				A07D45DA29C78DEE00420463 /* IssuesModel.swift in Sources */,

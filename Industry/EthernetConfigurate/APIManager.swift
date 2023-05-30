@@ -6,6 +6,9 @@
 //
 
 import Foundation
+import KeychainSwift
+import JWTDecode
+
 // MARK: - APIManagerIndustry
 
 /**
@@ -13,6 +16,8 @@ import Foundation
  */
 final class APIManagerIndustry: APIManager {
     
+    private var accessToken: TokenInfo?
+    private var refreshToken: TokenInfo?
     
     /**
      Makes a network request to fetch an array of objects that conform to `JSONDecodable`.
@@ -22,43 +27,58 @@ final class APIManagerIndustry: APIManager {
      -  parse: A closure that takes a dictionary of `[String: Any]` as input and returns an array of objects that conform to `JSONDecodable`.
      -  completionHandler: A closure that takes an `APIResult` object as input and has no return value.
      */
-    func fetch<T>(request: ForecastType, HTTPMethod: HttpMethodsString, parse: @escaping ([String : Any]) -> [T]?, completionHandler: @escaping (APIResult<T>) -> Void) where T : Decodable {
-        let task = JSONTaskWith(request: request.request, HTTPMethod: HTTPMethod) { (json, response, error, _) in
-            DispatchQueue.main.async {
-                guard let json = json else {
-                    if let error = error {
-                        let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.unexpectedResponse(message: error.localizedDescription).errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.badRequest.localizedDescription])
-                        completionHandler(.failure(error))
-                    } else {
-                        let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.unexpectedResponse(message: "Error: JSON empty").errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.badRequest.localizedDescription])
-                        completionHandler(.failure(error))
-                    }
-                    return
-                }
-                if let result = parse(json) {
-                    completionHandler(.success(result as! T))
-                } else {
-                    let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.unexpectedResponse(message: "Error: JSON failed copy").errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.badRequest.localizedDescription])
-                    completionHandler(.failure(error))
-                }
+    func fetch<T>(request: ForecastType, parse: @escaping ([[String: Any]]) -> [T]?, completionHandler: @escaping (APIResult<T>) -> Void) where T: Decodable {
+        refreshTokens { result in
+            if case .failure(let error) = result {
+                completionHandler(.failure(error))
             }
         }
-        task.resume()
+        var requestToFetch = request.requestWitchToken
+        requestToFetch.httpMethod = HttpMethodsString.get.stringValue
+        let dataTask = JSONTaskWithArray(request: requestToFetch, HTTPMethod: HttpMethodsString.get) { (json, response, error, _) in
+            guard response != nil else {
+                let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.missingHTTPResponse.errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.missingHTTPResponse.localizedDescription])
+                completionHandler(.failure(error))
+                return
+            }
+            if let error = error {
+                completionHandler(.failure(error))
+                return
+            }
+            guard let json = json else {
+                let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.unexpectedResponse(message: "Unexpected error: no JSON response").errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.unexpectedResponse(message: "Unexpected error: no JSON response").errorMessage])
+                completionHandler(.failure(error))
+                return
+            }
+            let compactedJSON = json.compactMap { $0 }
+            if let result = parse(compactedJSON) {
+                completionHandler(.successArray(result))
+            } else {
+                let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.unexpectedResponse(message: "Error parsing JSON").errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.unexpectedResponse(message: "Error parsing JSON").errorMessage])
+                completionHandler(.failure(error))
+            }
+        }
+        dataTask.resume()
     }
     
     /**
      Makes a network request to fetch a single object that conforms to `JSONDecodable`.
      - Parameters:
-     - request: The `URLRequest` object that defines the network request to be made.
-     - HTTPMethod: The HTTP method used to make the request.
-     - id: An optional `Int` value that represents the ID of the object to be fetched.
-     - parse: A closure that takes a dictionary of `[String: Any]` as input and returns an object that conforms to `JSONDecodable`.
-     - completionHandler: A closure that takes an `APIResult` object as input and has no return value.
+        - request: The `URLRequest` object that defines the network request to be made.
+        - HTTPMethod: The HTTP method used to make the request.
+        - id: An optional `Int` value that represents the ID of the object to be fetched.
+        - parse: A closure that takes a dictionary of `[String: Any]` as input and returns an object that conforms to `JSONDecodable`.
+        - completionHandler: A closure that takes an `APIResult` object as input and has no return value.
      */
-    func fetch<T>(request: ForecastType, HTTPMethod: HttpMethodsString, parse: @escaping ([String : Any]) -> T?, completionHandler: @escaping (APIResult<T>) -> Void) where T : Decodable {
-        var requestToFetch = request.request
-        requestToFetch.httpMethod = HTTPMethod.stringValue
-        let task = JSONTaskWith(request: requestToFetch, HTTPMethod: HTTPMethod) { (json, response, error, _) in
+    func fetch<T>(request: ForecastType, parse: @escaping ([String : Any]) -> T?, completionHandler: @escaping (APIResult<T>) -> Void) where T : Decodable {
+        refreshTokens { result in
+            if case .failure(let error) = result {
+                completionHandler(.failure(error))
+            }
+        }
+        var requestToFetch = request.requestWitchToken
+        requestToFetch.httpMethod = HttpMethodsString.get.stringValue
+        let task = JSONTaskWith(request: requestToFetch, HTTPMethod: HttpMethodsString.get) { (json, response, error, _) in
             guard response != nil else {
                 let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.missingHTTPResponse.errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.missingHTTPResponse.localizedDescription])
                 completionHandler(.failure(error))
@@ -83,10 +103,48 @@ final class APIManagerIndustry: APIManager {
         task.resume()
     }
     
-    func fetchIssues(HTTPMethod: HttpMethodsString, ids: [Int], parse: @escaping ([String : Any]) -> Issues?, completionHandler: @escaping (APIResult<[Issues]>) -> Void) {
+    func post<T>(request: ForecastType, data: T, completionHandler: @escaping (APIResult<Int>) -> Void) where T : Encodable {
+        refreshTokens { result in
+            if case .failure(let error) = result {
+                completionHandler(.failure(error))
+            }
+        }
+        var requestToPost = request.requestWitchToken
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        guard let data = try? encoder.encode(data) else {
+            let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.encodingFailed.errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.encodingFailed.errorMessage])
+            completionHandler(.failure(error))
+            return
+        }
+        requestToPost.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        requestToPost.httpMethod = HttpMethodsString.post.stringValue
+        requestToPost.httpBody = data
+        let task = JSONTaskWith(request: requestToPost, HTTPMethod: HttpMethodsString.post) { (json, response, error, _) in
+            guard let httpResponse = response,
+                  httpResponse.statusCode == 201,
+                  let locationHeader = httpResponse.allHeaderFields["Location"] as? String,
+                  let url = URL(string: locationHeader),
+                  let id = Int(url.lastPathComponent) else {
+                let error = error ?? NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.unexpectedResponse(message: "Error parsing JSON").errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.unexpectedResponse(message: "Error parsing JSON").errorMessage])
+                completionHandler(.failure(error))
+                return
+            }
+            completionHandler(.success(id))
+        }
+        task.resume()
+    }
 
+
+
+    
+    func fetchIssues(ids: [Int], parse: @escaping ([String : Any]) -> Issues?, completionHandler: @escaping (APIResult<[Issues]>) -> Void) {
+        refreshTokens { result in
+            if case .failure(let error) = result {
+                completionHandler(.failure(error))
+            }
+        }
         let dispatchGroup = DispatchGroup()
-        
         // Массив для сохранения результатов
         var results: [Issues] = []
         
@@ -94,9 +152,9 @@ final class APIManagerIndustry: APIManager {
             dispatchGroup.enter()
             // Обновляем URL запроса для каждого ID
             let requestToFetchIssues = ForecastType.IssueWithId(id: id)
-            var requestToFetch = requestToFetchIssues.request
-            requestToFetch.httpMethod = HTTPMethod.stringValue
-            let task = JSONTaskWith(request: requestToFetch, HTTPMethod: HTTPMethod) { (json, response, error, _) in
+            var requestToFetch = requestToFetchIssues.requestWitchToken
+            requestToFetch.httpMethod = HttpMethodsString.get.stringValue
+            let task = JSONTaskWith(request: requestToFetch, HTTPMethod: HttpMethodsString.get) { (json, response, error, _) in
                 defer { dispatchGroup.leave() }
                 
                 guard response != nil else {
@@ -128,8 +186,67 @@ final class APIManagerIndustry: APIManager {
         }
     }
     
+    func validateCredentials(credentials: AuthBody, completion: @escaping (Result<Int, Error>) -> Void) {
+        
+        var request = ForecastType.Token(credentials: credentials).requestWitchOutToken
+        request.httpMethod = HttpMethodsString.post.stringValue
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        do {
+            let jsonData = try JSONEncoder().encode(credentials)
+            request.httpBody = jsonData
+        } catch {
+            completion(.failure(INDNetworkingError.encodingFailed))
+            return
+        }
+        let task = URLSession.shared.dataTask(with: request) { [weak self] (data, response, error) in
+            guard let self = self else { return }
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            guard let httpResponse = response as? HTTPURLResponse else {
+                completion(.failure(INDNetworkingError.missingHTTPResponse))
+                return
+            }
+            guard (200...299).contains(httpResponse.statusCode) else {
+                completion(.failure(INDNetworkingError.init(statusCode: httpResponse.statusCode)))
+                return
+            }
+            // Валидация успешна, сохраняем токены
+            guard let data = data else {
+                completion(.failure(INDNetworkingError.decodingFailed))
+                return
+            }
+            do {
+                if let jsonString = String(data: data, encoding: .utf8) {
+                    let jwt = try decode(jwt: jsonString)
+                    let idEmployee = jwt.claim(name: "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").integer
+                    let exp = jwt.claim(name: "exp").integer
+                    if let id = idEmployee, let exp = exp {
+                        self.saveAuthTokens(tokens: TokenInfo(token: jsonString, expiresAt: Int64(exp)))
+                        self.saveAuthBody(authBody: credentials)
+                        self.accessToken = self.getAccessToken()
+                        completion(.success(id))
+                    } else {
+                        completion(.failure(INDNetworkingError.decodingFailed))
+                    }
+                } else {
+                    completion(.failure(INDNetworkingError.decodingFailed))
+                }
+            } catch {
+                completion(.failure(error))
+            }
+        }
+        task.resume()
+    }
+    
     func deleteItem(request: ForecastType, completionHandler: @escaping (APIResult<Void>) -> Void) {
-        var request = request.request
+        refreshTokens { result in
+            if case .failure(let error) = result {
+                completionHandler(.failure(error))
+            }
+        }
+        var request = request.requestWitchToken
         request.httpMethod = HttpMethodsString.delete.stringValue
         let task = JSONTaskWith(request: request, HTTPMethod: .delete) { (_, response, error, _) in
             guard response != nil else {
@@ -145,10 +262,81 @@ final class APIManagerIndustry: APIManager {
         }
         task.resume()
     }
-
-
-
     
+    func refreshTokens(completion: @escaping (Result<Void, Error>) -> Void) {
+        if !needReAuth {
+            completion(.success(()))
+            return
+        }
+        
+        guard let authBody = self.getAccessAuthBody() else {
+            let error = INDNetworkingError.invalidAccessToken
+            completion(.failure(error))
+            return
+        }
+        
+        var refreshRequest = ForecastType.Token(credentials: authBody).requestWitchOutToken
+        refreshRequest.httpMethod = HttpMethodsString.post.stringValue
+        refreshRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        do {
+            if let authBody = getAccessAuthBody() {
+                let jsonData = try JSONEncoder().encode(authBody)
+                refreshRequest.httpBody = jsonData
+            }
+        } catch {
+            completion(.failure(INDNetworkingError.encodingFailed))
+            return
+        }
+        let task = URLSession.shared.dataTask(with: refreshRequest) { [weak self] (data, response, error) in
+            guard let self = self else { return }
+            
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
+                let error = INDNetworkingError.invalidAccessToken
+                completion(.failure(error))
+                return
+            }
+            
+            guard let data = data else {
+                let error = INDNetworkingError.decodingFailed
+                completion(.failure(error))
+                return
+            }
+            
+            if let jsonString = String(data: data, encoding: .utf8),
+               let jwt = try? decode(jwt: jsonString),
+               let exp = jwt.claim(name: "exp").integer {
+                self.saveAuthTokens(tokens: TokenInfo(token: jsonString, expiresAt: Int64(exp)))
+                self.saveAuthBody(authBody: authBody)
+                self.accessToken = self.getAccessToken()
+                completion(.success(()))
+            } else {
+                let error = INDNetworkingError.decodingFailed
+                completion(.failure(error))
+            }
+        }
+        task.resume()
+    }
+    
+    /**
+     Checks if re-authorization is needed based on the expiration of the access token.
+     - Returns: A boolean value indicating whether re-authorization is needed.
+     */
+    private var needReAuth: Bool {
+        guard let expiresAt = accessToken?.expiresAt else {
+            return true
+        }
+        let currentTimestamp = Date().timeIntervalSince1970
+        let currentTimestamps = TimeInterval(currentTimestamp)
+        let expiresAtTimestamp = TimeInterval(expiresAt)
+
+        return currentTimestamps > expiresAtTimestamp
+    }
+
     /**
      The configuration object used to create the session.
      */
@@ -167,6 +355,10 @@ final class APIManagerIndustry: APIManager {
      */
     init(sessionConfiguration: URLSessionConfiguration) {
         self.sessionConfiguration = sessionConfiguration
+        accessToken = TokenInfo(token: "", expiresAt: 0)
+        refreshToken = TokenInfo(token: "", expiresAt: 0)
+        accessToken = getAccessToken()
+        refreshToken = getRefreshToken()
     }
     
     /**
@@ -174,5 +366,28 @@ final class APIManagerIndustry: APIManager {
      */
     convenience init() {
         self.init(sessionConfiguration: URLSessionConfiguration.default)
+    }
+}
+
+extension APIManagerIndustry: KeychainWorkerProtocol {
+    
+    static var KEY_AUTH_BODY_EMAIL: String = "key_auth_body_email"
+    static var KEY_AUTH_BODY_PASSWORD: String = "key_auth_body_password"
+    static let KEY_ACCESS_TOKEN = "auth_token"
+    static let KEY_ACCESS_TOKEN_EXPIRE = "auth_token_expire"
+    static let KEY_REFRESH_TOKEN = "refresh_token"
+    static let KEY_REFRESH_TOKEN_EXPIRE = "refresh_token_expire"
+    static let ACCESS_TOKEN_LIFE_THRESHOLD_SECONDS: Int64 = 3600
+    
+    private func onTokensRefreshed(tokens: TokenInfo) {
+        saveAuthTokens(tokens: tokens)
+        accessToken = getAccessToken()
+        refreshToken = getRefreshToken()
+    }
+    
+    private func dropToken() {
+        accessToken = TokenInfo(token: "", expiresAt: 0)
+        refreshToken = TokenInfo(token: "", expiresAt: 0)
+        dropTokens()
     }
 }

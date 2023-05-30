@@ -17,7 +17,7 @@ class ListCaledarTblViewCell: UITableViewCell {
         let lbl: UILabel = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
         lbl.textAlignment = .left
-        lbl.textColor = .white
+        lbl.textColor = .black
         return lbl
     }()
     
@@ -25,7 +25,7 @@ class ListCaledarTblViewCell: UITableViewCell {
         let lbl: UILabel = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
         lbl.textAlignment = .left
-        lbl.textColor = .white
+        lbl.textColor = .black
         return lbl
     }()
     
@@ -33,7 +33,7 @@ class ListCaledarTblViewCell: UITableViewCell {
         let lbl: UILabel = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
         lbl.textAlignment = .right
-        lbl.textColor = .white
+        lbl.textColor = .black
         return lbl
     }()
 
@@ -73,7 +73,6 @@ class ListCaledarTblViewCell: UITableViewCell {
             lblDeadLineAction.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 10),
             lblDeadLineAction.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -10),
             lblDeadLineAction.leadingAnchor.constraint(equalTo: lblTypeAction.trailingAnchor, constant: 5),
-            
             
             lblDescriptionAction.topAnchor.constraint(equalTo: lblTypeAction.bottomAnchor, constant: 5),
             lblDescriptionAction.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -5),

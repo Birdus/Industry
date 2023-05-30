@@ -9,10 +9,10 @@ import Foundation
 
 
 public struct Issues: Codable, Equatable {
-    let id: Int
-    let taskName: String
-    let projectId: Int
-    let taskDiscribe: String
+    var id: Int?
+    var taskName: String
+    var projectId: Int
+    var taskDiscribe: String
 }
 
 extension Issues: JSONDecodable {

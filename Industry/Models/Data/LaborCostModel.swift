@@ -8,11 +8,11 @@
 import Foundation
 
 struct LaborCost: Codable, Equatable {
-    let id: Int
-    let date: Date
-    let employeeId: Int
-    let issueId: Int
-    let hourCount: Int
+    var id: Int?
+    var date: Date
+    var employeeId: Int
+    var issueId: Int
+    var hourCount: Int
 }
 
 extension LaborCost {

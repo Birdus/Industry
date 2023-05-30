@@ -47,6 +47,15 @@ class AuthenticationTblViewCell: UITableViewCell {
         txt.isSecureTextEntry = true
         txt.textAlignment = .left
         txt.delegate = self
+        let tlBar = UIToolbar(frame: CGRect(origin: .zero, size: CGSize(width: 100, height: 44.0)))
+        let doneButton = UIBarButtonItem(title: "Сохранить", style: .plain, target: self, action: #selector(btnDone_Click))
+        let cancelButton = UIBarButtonItem(title: "Отменить", style: .plain, target: self, action: #selector(btnCancel_click))
+        let spaceButton = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        tlBar.setItems([cancelButton, spaceButton, doneButton], animated: true)
+        tlBar.isUserInteractionEnabled = true
+        tlBar.sizeToFit()
+        tlBar.translatesAutoresizingMaskIntoConstraints = false
+        txt.inputAccessoryView = tlBar
         return txt
     }()
     
