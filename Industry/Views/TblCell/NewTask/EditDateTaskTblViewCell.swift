@@ -66,7 +66,8 @@ class EditDateTaskTblViewCell: UITableViewCell {
         let txt = UITextField()
         txt.translatesAutoresizingMaskIntoConstraints = false
         txt.textColor = .white
-        txt.font = UIFont(name: "San Francisco", size: CGFloat(UIScreen.main.bounds.width/10)/2)
+        txt.font = UIFont.systemFont(ofSize: UIScreen.main.bounds.width / 10 / 2)
+        txt.textAlignment = .left
         txt.textAlignment = .left
         txt.delegate = self
         txt.inputView = picDateTime

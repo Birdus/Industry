@@ -9,21 +9,40 @@ import UIKit
 
 protocol NewTaskViewControllerDelegate: AnyObject {
     func newTaskViewController(_ viewController: NewTaskViewController, didLoad values: [Employee])
+    func newTaskViewController(_ viewController: NewTaskViewController, didLoad values: [Project])
+    func newTaskViewController(_ viewController: NewTaskViewController, isChande values: Bool)
+}
+
+extension NewTaskViewControllerDelegate {
+    func newTaskViewController(_ viewController: NewTaskViewController, didLoad values: [Employee]) {
+        return
+    }
+    
+    func newTaskViewController(_ viewController: NewTaskViewController, didLoad values: [Project]) {
+        return
+    }
+    
+    func newTaskViewController(_ viewController: NewTaskViewController, isChande values: Bool) {
+        return
+    }
 }
 
 class NewTaskViewController: UIViewController {
-    
-    private var selectionListEmployee: SelectionListEmployeeViewController!
     private var originYView: CGRect = CGRect()
-    private var delegete: NewTaskViewControllerDelegate!
+    weak var delegete: NewTaskViewControllerDelegate!
     private var apiManagerIndustry: APIManagerIndustry!
+    private var employees: [Employee]?
+    private var employee: Employee!
+    private var issues: Issues?
+    private var laborCoast: LaborCost?
+    private var project: Project?
     
     // MARK: - Private UI
     private lazy var tblNewTask: UITableView = {
         let tableView = UITableView()
         tableView.register(EditNameDiscribeTaskTblViewCell.self, forCellReuseIdentifier: EditNameDiscribeTaskTblViewCell.indificatorCell)
         tableView.register(EditHourTaskTblViewCell.self, forCellReuseIdentifier: EditHourTaskTblViewCell.indificatorCell)
-        tableView.register(EditEmployeeTaskTblViewCell.self, forCellReuseIdentifier: EditEmployeeTaskTblViewCell.indificatorCell)
+        tableView.register(EditEmployeeAndTaskTaskTblViewCell.self, forCellReuseIdentifier: EditEmployeeAndTaskTaskTblViewCell.indificatorCell)
         tableView.register(EditDateTaskTblViewCell.self, forCellReuseIdentifier: EditDateTaskTblViewCell.indificatorCell)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.separatorStyle = .singleLine
@@ -59,10 +78,9 @@ class NewTaskViewController: UIViewController {
     // MARK: - Lifecycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
+        issues = Issues(id: nil, taskName: "", projectId: 0, taskDiscribe: "")
+        laborCoast = LaborCost(id: nil, date: Date(), employeeId: 0, issueId: 0, hourCount: 0)
         apiManagerIndustry = APIManagerIndustry()
-        selectionListEmployee = SelectionListEmployeeViewController()
-        delegete = selectionListEmployee
-        loadEmployees()
         registerForKeyboardNotification()
         configureUI()
     }
@@ -73,16 +91,82 @@ class NewTaskViewController: UIViewController {
     
     deinit {
         NotificationCenter.default.removeObserver(self)
-        selectionListEmployee = nil
         apiManagerIndustry = nil
-        selectionListEmployee = nil
     }
+    
     // MARK: - Acrion
     
     @objc
     private func btnSave_Click(_ notification: UIButton) {
+        let activityIndicator = UIActivityIndicatorView(style: .gray)
+        activityIndicator.center = view.center
+        activityIndicator.hidesWhenStopped = true
         
+        let blurEffect = UIBlurEffect(style: .light)
+        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView.frame = view.bounds
+        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        blurEffectView.alpha = 0.6
+        blurEffectView.contentView.addSubview(activityIndicator)
+        view.addSubview(blurEffectView)
+        
+        activityIndicator.startAnimating()
+        guard let taskName = issues?.taskName, !taskName.isEmpty,
+              let taskDiscribe = issues?.taskDiscribe, !taskDiscribe.isEmpty,
+              laborCoast != nil,
+              let hourCount = laborCoast?.hourCount, hourCount > 0,
+              var laborCoasts = laborCoast,
+              var isues = issues,
+              let project = project,
+              let employee = employees else {
+            activityIndicator.stopAnimating()
+            blurEffectView.removeFromSuperview()
+            showAlController(message: "Не удалось преобразовать данные".localized)
+            return
+        }
+        
+        isues.projectId = project.id
+        laborCoasts.employeeId = employee.first?.id ?? 0
+        
+        apiManagerIndustry.post(request: ForecastType.Issue, data: isues) { result in
+            switch result {
+            case .success(let id):
+                laborCoasts.issueId = id
+                self.apiManagerIndustry.post(request: ForecastType.LaborCost, data: laborCoasts) { result in
+                    switch result {
+                    case .success(_):
+                        DispatchQueue.main.async {
+                            self.delegete.newTaskViewController(self, isChande: true)
+                            activityIndicator.stopAnimating()
+                            blurEffectView.removeFromSuperview()
+                            self.dismiss(animated: true, completion: nil)
+                        }
+                    case .failure(let error):
+                        activityIndicator.stopAnimating()
+                        blurEffectView.removeFromSuperview()
+                        self.showAlController(message: "Не удалось загрузить трудозатраты: \(error.localizedDescription)")
+                        
+                    case .successArray(_):
+                        activityIndicator.stopAnimating()
+                        blurEffectView.removeFromSuperview()
+                        let laborCostError = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Unexpected response"])
+                        self.showAlController(message: "Не удалось загрузить трудозатраты: \(laborCostError.localizedDescription)")
+                    }
+                }
+            case .failure(let error):
+                activityIndicator.stopAnimating()
+                blurEffectView.removeFromSuperview()
+                self.showAlController(message: "Не удалось загрузить задачу: \(error.localizedDescription)")
+            case .successArray(_):
+                activityIndicator.stopAnimating()
+                blurEffectView.removeFromSuperview()
+                let issueError = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Unexpected response"])
+                self.showAlController(message: "Не удалось загрузить задачу: \(issueError.localizedDescription)")
+            }
+        }
     }
+    
+    
     
     /// Keyboard will show notification handler
     @objc
@@ -104,7 +188,6 @@ class NewTaskViewController: UIViewController {
     }
     
     
-    
     // MARK: - Privates func
     /// Register for keyboard notifications
     private func registerForKeyboardNotification() {
@@ -112,8 +195,23 @@ class NewTaskViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
+    private func showAlController(message: String) {
+        let alControl:UIAlertController = {
+            let alControl = UIAlertController(title: "Ошибка".localized, message: message, preferredStyle: .alert)
+            let btnOk: UIAlertAction = {
+                let btn = UIAlertAction(title: "Ok".localized,
+                                        style: .default,
+                                        handler: nil )
+                return btn
+            }()
+            alControl.addAction(btnOk)
+            return alControl
+        }()
+        self.present(alControl, animated: true, completion: nil)
+    }
+    
     private func loadEmployees() {
-        self.apiManagerIndustry?.fetch(request: ForecastType.Employee, HTTPMethod: .get, parse: { (json) -> [Employee]? in
+        self.apiManagerIndustry?.fetch(request: ForecastType.Employee, parse: { (json) -> [Employee]? in
             // Parse the JSON response into an array of Employee objects
             // Return the parsed array or nil if parsing fails
             // Replace Employee with the appropriate type for your employee model
@@ -131,7 +229,26 @@ class NewTaskViewController: UIViewController {
             }
         })
     }
-
+    
+    private func loadProject() {
+        self.apiManagerIndustry?.fetch(request: ForecastType.Project, parse: { (json) -> [Project]? in
+            // Parse the JSON response into an array of Project objects
+            // Return the parsed array or nil if parsing fails
+            // Replace Employee with the appropriate type for your employee model
+            return json.compactMap({Project.decodeJSON(json: $0)})
+        }, completionHandler: { (result: APIResult<Project>) in
+            // Handle the API result
+            switch result {
+            case .success(_):
+                print("Error this single object")
+            case .failure(let error):
+                print(error)
+            case .successArray(let project):
+                self.delegete.newTaskViewController(self, didLoad: project)
+            }
+        })
+    }
+    
     private func configureUI() {
         
         self.view.backgroundColor = UIColor(red: 0.157, green: 0.535, blue: 0.821, alpha: 1)
@@ -157,14 +274,14 @@ extension NewTaskViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.row {
         case 1:
-            return self.view.bounds.height/4
+            return self.view.bounds.height/5.5
         default:
-            return self.view.bounds.height/6.5
+            return self.view.bounds.height/7.5
         }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        return 6
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -212,10 +329,27 @@ extension NewTaskViewController: UITableViewDataSource {
             cell.delegete = self
             return cell
         case 4:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: EditEmployeeTaskTblViewCell.indificatorCell, for: indexPath) as? EditEmployeeTaskTblViewCell else {
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: EditEmployeeAndTaskTaskTblViewCell.indificatorCell, for: indexPath) as? EditEmployeeAndTaskTaskTblViewCell else {
                 fatalError("Unable to dequeue HeadMenuTableViewCell.")
             }
-            cell.fiillTable("Сотрудник", UIImage(named: "Vector (1)"))
+            if let employess = employees {
+                cell.fiillTable(UIImage(named: "Vector (1)"), nil, employee: employess)
+            } else {
+                cell.fiillTable(UIImage(named: "Vector (1)"), "Сотрудник".localized, employee: nil)
+            }
+            cell.selectionStyle = .none
+            cell.backgroundColor = .clear
+            cell.contentView.backgroundColor = .clear
+            return cell
+        case 5:
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: EditEmployeeAndTaskTaskTblViewCell.indificatorCell, for: indexPath) as? EditEmployeeAndTaskTaskTblViewCell else {
+                fatalError("Unable to dequeue HeadMenuTableViewCell.")
+            }
+            if let project = project {
+                cell.fiillTable(UIImage(named: "Vector (1)"), nil, project: project)
+            } else {
+                cell.fiillTable(UIImage(named: "Vector (1)"), "Проект".localized, project: nil)
+            }
             cell.selectionStyle = .none
             cell.backgroundColor = .clear
             cell.contentView.backgroundColor = .clear
@@ -233,11 +367,27 @@ extension NewTaskViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 extension NewTaskViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.row == 4{
-            selectionListEmployee.modalPresentationStyle = .custom
-            selectionListEmployee.transitioningDelegate = self
-            let navigationController = UINavigationController(rootViewController: selectionListEmployee)
+        switch indexPath.row {
+        case 4:
+            let vc = SelectionListViewController()
+            delegete = vc
+            loadEmployees()
+            vc.modalPresentationStyle = .custom
+            vc.transitioningDelegate = self
+            vc.delegete = self
+            let navigationController = UINavigationController(rootViewController: vc)
             self.present(navigationController, animated: true, completion: nil)
+        case 5:
+            let vc = SelectionListViewController()
+            delegete = vc
+            loadProject()
+            vc.modalPresentationStyle = .custom
+            vc.transitioningDelegate = self
+            vc.delegete = self
+            let navigationController = UINavigationController(rootViewController: vc)
+            self.present(navigationController, animated: true, completion: nil)
+        default:
+            return
         }
     }
 }
@@ -245,25 +395,46 @@ extension NewTaskViewController: UITableViewDelegate {
 // MARK: - EditNameDiscribeTaskTblViewCellDelegate
 extension NewTaskViewController: EditNameDiscribeTaskTblViewCellDelegate {
     func editNameDiscribeTaskTblViewCell(_ cell: EditNameDiscribeTaskTblViewCell, didChanged value: String) {
-        
+        let indexPatch = tblNewTask.indexPath(for: cell)
+        switch indexPatch?.row {
+        case 0:
+            issues?.taskName = value
+        case 1:
+            issues?.taskDiscribe = value
+        default:
+            return
+        }
     }
 }
 
 // MARK: - EditDateTblViewCellDelegate
 extension NewTaskViewController: EditDateTblViewCellDelegate {
     func editDateTblViewCell(_ cell: EditDateTaskTblViewCell, didChanged value: Date) {
-        
+        laborCoast?.date = value
     }
 }
 
 // MARK: - EditHourTaskTblViewCellDelegate
 extension NewTaskViewController: EditHourTaskTblViewCellDelegate {
     func editHourTaskTblViewCellTblViewCell(_ cell: EditHourTaskTblViewCell, didChanged value: Int) {
-        
+        laborCoast?.hourCount = value
     }
 }
 
 // MARK: - UIViewControllerTransitioningDelegate
 extension NewTaskViewController: UIViewControllerTransitioningDelegate {
     
+}
+
+extension NewTaskViewController: SelectionListViewControllerDelegete {
+    
+    func selectionListViewController(_ cell: SelectionListViewController, didSelected value: Project) {
+        self.project = value
+        tblNewTask.reloadData()
+    }
+    
+    func selectionListViewController(_ cell: SelectionListViewController, didSelected value: [Employee]) {
+        self.employees = value
+        tblNewTask.reloadData()
+    }
 }

@@ -54,21 +54,21 @@ enum ForecastType: FinalURLPoint {
         case .IssueWithId(let id):
             return "Issues/\(id)"
         case .Division:
-            return "Division"
+            return "Divisions"
         case .DivisionWitchId(let id):
-            return "Division/\(id)"
+            return "Divisions/\(id)"
         case .Employee:
             return "Employees"
         case .EmployeeWitchId(let id):
             return "Employees/\(id)"
         case .Project:
-            return "Project"
+            return "Projects"
         case .ProjectWitchId(let id):
-            return "Project/\(id)"
+            return "Projects/\(id)"
         case .LaborCost:
-            return "LaborCost/"
+            return "LaborCosts/"
         case .LaborCostWitchId(id: let id):
-            return "LaborCost/\(id)"
+            return "LaborCosts/\(id)"
         case .Token:
             return "Auth/token"
         }

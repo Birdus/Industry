@@ -25,7 +25,7 @@ class PresentationController: UIPresentationController {
     
     override var frameOfPresentedViewInContainerView: CGRect {
         let containerHeight = self.containerView!.frame.height
-        let presentedHeight = containerHeight * 0.6 // Увеличение размеров представления до 90%
+        let presentedHeight = containerHeight * 0.7 // Увеличение размеров представления до 90%
         let originY = (containerHeight - presentedHeight)
         return CGRect(origin: CGPoint(x: 0, y: originY),
                       size: CGSize(width: self.containerView!.frame.width, height: presentedHeight))

@@ -46,7 +46,7 @@ protocol CalendarTaskViewControllerDelegate: AnyObject {
      */
     func calendarTaskViewController(_ viewController: UIViewController)
 }
-
+    
 class CalendarTaskViewController: UIViewController {
     // MARK: - Properties
     /// List of issue tasks
@@ -79,11 +79,6 @@ class CalendarTaskViewController: UIViewController {
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
         let color = UIColor(red: 0.157, green: 0.535, blue: 0.821, alpha: 0.8)
         tableView.clipsToBounds = true
-        tableView.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5).cgColor
-        tableView.layer.shadowOpacity = 1
-        tableView.layer.shadowRadius = 4
-        tableView.layer.shadowOffset = CGSize(width: 4, height: 4)
-        tableView.layer.masksToBounds = false
         tableView.backgroundColor = .white
         tableView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         tableView.layer.cornerRadius = 10.0
@@ -148,10 +143,11 @@ class CalendarTaskViewController: UIViewController {
     /// Handler for the add task and reload buttons.
     @objc
     private func btnAddTask_Click(_ sender: UIBarButtonItem) {
-        let yourVC = NewTaskViewController()
-        yourVC.modalPresentationStyle = .custom
-        yourVC.transitioningDelegate = self
-        self.present(yourVC, animated: true, completion: nil)
+        let vc = NewTaskViewController()
+        vc.delegete = self
+        vc.modalPresentationStyle = .custom
+        vc.transitioningDelegate = self
+        self.present(vc, animated: true, completion: nil)
     }
     
     /// Handler for the  reload button.
@@ -213,7 +209,9 @@ class CalendarTaskViewController: UIViewController {
             tblListCalendar.topAnchor.constraint(equalTo: clnEvent.bottomAnchor, constant: 5),
             tblListCalendar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 5),
             tblListCalendar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -5),
-            tblListCalendar.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -47)
+            tblListCalendar.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -(self.tabBarController?.tabBar.frame.height ?? 0) - 5)
+
+
         ])
     }
 }
@@ -344,11 +342,15 @@ extension CalendarTaskViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let action = UIContextualAction(style: .normal, title: "Завершить задачу".localized, handler: { (action, view, completionHandler) in
             let issueToDelete = self.issues[indexPath.row]
-            self.delegete?.calendarTaskViewController(self, didDeleateData: issueToDelete.id)
+            self.delegete?.calendarTaskViewController(self, didDeleateData: issueToDelete.id ?? 0)
         })
         action.backgroundColor = .systemGreen
         let configuration = UISwipeActionsConfiguration(actions: [action])
         return configuration
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return self.view.bounds.height/9.5
     }
 }
 
@@ -367,4 +369,14 @@ extension CalendarTaskViewController: UIViewControllerTransitioningDelegate {
     func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
         PresentationController(presentedViewController: presented, presenting: presenting)
     }
+}
+
+// MARK: - NewTaskViewControllerDelegate
+extension CalendarTaskViewController: NewTaskViewControllerDelegate {
+    func newTaskViewController(_ viewController: NewTaskViewController, isChande values: Bool) {
+        if values {
+                self.delegete?.calendarTaskViewController(self)
+        }
+    }
+    
 }

@@ -43,7 +43,7 @@ class EditHourTaskTblViewCell: UITableViewCell {
         let txt = UITextField()
         txt.translatesAutoresizingMaskIntoConstraints = false
         txt.textColor = .white
-        txt.font = UIFont.systemFont(ofSize: UIScreen.main.bounds.width / 16)
+        txt.font = UIFont.systemFont(ofSize: UIScreen.main.bounds.width / 10 / 2)
         txt.keyboardType = .numberPad
         txt.textAlignment = .left
         txt.delegate = self

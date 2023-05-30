@@ -24,7 +24,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let splashNavController = UINavigationController(rootViewController: splashViewController)
         window?.rootViewController = splashNavController
         window?.makeKeyAndVisible()
-        
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
             if apiManager.haveAuthTokens && apiManager.haveAuthBody {
                 apiManager.refreshTokens { [weak self] result in
@@ -64,24 +63,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     private func loadEmployeeWithID(_ id: Int) {
-        let tabBarController = TabBarController()
-        delegate = tabBarController
-        
-        delegate.appDelegate(self, didLoadEmployeeWith: id, completion: { [weak self] in
-            guard let self = self else { return }
-            let navController = UINavigationController(rootViewController: tabBarController)
-            navController.modalPresentationStyle = .fullScreen
-            navController.isToolbarHidden = true
-            navController.isNavigationBarHidden = true
-            self.window?.rootViewController = navController
-            self.window?.makeKeyAndVisible()
-            
-            let transition = CATransition()
-            transition.duration = 0.7
-            transition.type = .fade
-            self.window?.layer.add(transition, forKey: kCATransition)
-        }, failure: { error in
-            print(error)
-        })
+        DispatchQueue.main.async {
+            let tabBarController = TabBarController()
+            self.delegate = tabBarController
+            self.delegate.appDelegate(self, didLoadEmployeeWith: id, completion: { [weak self] in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    
+                    let navController = UINavigationController(rootViewController: tabBarController)
+                    navController.modalPresentationStyle = .fullScreen
+                    navController.isToolbarHidden = true
+                    navController.isNavigationBarHidden = true
+                    self.window?.rootViewController = navController
+                    self.window?.makeKeyAndVisible()
+                    
+                    let transition = CATransition()
+                    transition.duration = 0.7
+                    transition.type = .fade
+                    self.window?.layer.add(transition, forKey: kCATransition)
+                }
+            }, failure: { error in
+                print(error)
+            })
+        }
     }
 }

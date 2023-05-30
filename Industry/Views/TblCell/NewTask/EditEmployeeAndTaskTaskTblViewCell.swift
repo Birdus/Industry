@@ -7,9 +7,9 @@
 
 import UIKit
 
-class EditEmployeeTaskTblViewCell: UITableViewCell {
+class EditEmployeeAndTaskTaskTblViewCell: UITableViewCell {
     // MARK: - Properties
-    static let indificatorCell = "EditEmployeeTaskTblViewCell"
+    static let indificatorCell = "EditEmployeeAndTaskTaskTblViewCell"
     
     // MARK: - Private UI
     /// A UIView container image
@@ -35,15 +35,14 @@ class EditEmployeeTaskTblViewCell: UITableViewCell {
         return imageView
     }()
     
-    private lazy var lblEmployee: UILabel = {
+    private lazy var lblInfo: UILabel = {
         let lbl = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
         lbl.textColor = .white
-        lbl.font = UIFont(name: "San Francisco", size: CGFloat(UIScreen.main.bounds.width/10)/2)
+        lbl.font = UIFont.systemFont(ofSize: CGFloat(UIScreen.main.bounds.width/10)/2)
         lbl.textAlignment = .left
         return lbl
     }()
-    
     // MARK: - Initialization
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -61,16 +60,30 @@ class EditEmployeeTaskTblViewCell: UITableViewCell {
      - Parameter palcholder: The palcholder of the add task item to display.
      - Parameter iconName: The name of the image to use as the add task item icon.
      */
-    func fiillTable(_ palcholder: String, _ iconName: UIImage?) {
-        lblEmployee.text = palcholder
+    func fiillTable(_ iconName: UIImage?, _ placholder: String?, employee: [Employee]?) {
+        if let placholders = placholder {
+            lblInfo.textColor = UIColor.lightGray
+            lblInfo.text = placholders.localized
+        } else if let employee = employee {
+            lblInfo.text = "В задаче \(employee.count) сотрудник(ов)"
+        }
         imgIcon.image = iconName
-        lblEmployee.textColor = UIColor.lightGray
+    }
+    
+    func fiillTable(_ iconName: UIImage?, _ placholder: String?, project: Project?) {
+        if let placholders = placholder {
+            lblInfo.textColor = UIColor.lightGray
+            lblInfo.text = placholders.localized
+        } else if let project = project {
+            lblInfo.text = "\(project.projectName)".localized
+        }
+        imgIcon.image = iconName
     }
     
     // MARK: - Private func
     private func configureUI() {
         self.contentView.addSubview(containerIcon)
-        self.contentView.addSubview(lblEmployee)
+        self.contentView.addSubview(lblInfo)
         containerIcon.addSubview(imgIcon)
         NSLayoutConstraint.activate([
             containerIcon.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 5),
@@ -78,16 +91,34 @@ class EditEmployeeTaskTblViewCell: UITableViewCell {
             containerIcon.heightAnchor.constraint(equalTo: containerIcon.widthAnchor, multiplier: 1.0),
             containerIcon.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             
-            lblEmployee.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            lblEmployee.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5),
-            lblEmployee.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -5),
-            lblEmployee.leadingAnchor.constraint(equalTo: imgIcon.trailingAnchor, constant: 10),
-            lblEmployee.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
+            lblInfo.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            lblInfo.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5),
+            lblInfo.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -5),
+            lblInfo.leadingAnchor.constraint(equalTo: imgIcon.trailingAnchor, constant: 10),
+            lblInfo.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
             
             imgIcon.topAnchor.constraint(equalTo: containerIcon.topAnchor, constant: 5),
             imgIcon.leadingAnchor.constraint(equalTo: containerIcon.leadingAnchor, constant: 5),
             imgIcon.trailingAnchor.constraint(equalTo: containerIcon.trailingAnchor, constant: -5),
             imgIcon.bottomAnchor.constraint(equalTo: containerIcon.bottomAnchor, constant: -5),
         ])
+    }
+}
+
+extension EditEmployeeAndTaskTaskTblViewCell: UITextViewDelegate {
+    // Метод делегата UITextView, вызывается при начале редактирования текста
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.textColor == UIColor.lightGray {
+            textView.text = nil
+            textView.textColor = UIColor.white
+        }
+    }
+    
+    // Метод делегата UITextView, вызывается при окончании редактирования текста
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.isEmpty {
+            textView.text = "Сотрудник".localized
+            textView.textColor = UIColor.lightGray
+        }
     }
 }

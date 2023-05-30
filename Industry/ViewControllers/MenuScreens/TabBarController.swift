@@ -109,7 +109,6 @@ class TabBarController: UITabBarController {
                                              selectedImage: UIImage(named: "iconAccountSelected")?.withRenderingMode(.alwaysOriginal))
         
         setViewControllers([navigationControllerCalendar, navigationControllerDocumentFlow, vcMenuUser], animated: true)
-        delegate = self
         if let employee = employee, let issues = issues {
             delegete.compactMap { $0 }.forEach {
                 $0.tabBarController(self, didSelectTabAtIndex: selectedIndex, issues: issues, employee: employee)
@@ -120,7 +119,7 @@ class TabBarController: UITabBarController {
     /// The func need to refresh data in all view controller
     private func refreshData(completion: @escaping () -> Void) {
         guard let employee = employee else { return }
-        apiManagerIndustry?.fetch(request: ForecastType.EmployeeWitchId(id: employee.id), HTTPMethod: .get) {(json: [String: Any]) -> Employee? in
+        apiManagerIndustry?.fetch(request: ForecastType.EmployeeWitchId(id: employee.id)) {(json: [String: Any]) -> Employee? in
             return Employee.decodeJSON(json: json)
         } completionHandler: { [weak self] (result: APIResult<Employee?>) in
             guard let self = self else { return }
@@ -130,32 +129,31 @@ class TabBarController: UITabBarController {
                     print("Failed to parse employees.")
                     DispatchQueue.main.async {
                         self.showAlController()
-                        completion() // Вызываем замыкание после завершения обновления данных
                     }
                     return
                 }
                 if employees != self.employee {
                     self.employee = employees
                     let idLaborCosts = employees.laborCosts?.compactMap { $0.issueId } ?? []
-                    self.apiManagerIndustry?.fetchIssues(HTTPMethod: .get, ids: idLaborCosts) {(json: [String: Any]) -> Issues? in
+                    self.apiManagerIndustry?.fetchIssues(ids: idLaborCosts) {(json: [String: Any]) -> Issues? in
                         return Issues.decodeJSON(json: json)
                     } completionHandler: { [weak self] (result: APIResult<[Issues]>) in
                         guard let self = self else { return }
                         switch result {
                         case .success(let issues):
                             self.issues = issues
-                            completion()
+                            DispatchQueue.main.async {
+                                completion() // Вызываем замыкание после завершения обновления данных
+                            }
                         case .failure(let error):
                             print("Error: \(error)")
                             DispatchQueue.main.async {
                                 self.showAlController()
-                                completion()
                             }
                         case .successArray(_):
                             print("Expected single objects, but got array.")
                             DispatchQueue.main.async {
                                 self.showAlController()
-                                completion()
                             }
                         }
                     }
@@ -165,38 +163,23 @@ class TabBarController: UITabBarController {
                 print("Error: \(error)")
                 DispatchQueue.main.async {
                     self.showAlController()
-                    completion()
                 }
             case .successArray(_):
                 print("Expected single object, but got array.")
                 DispatchQueue.main.async {
                     self.showAlController()
-                    completion()
                 }
             }
         }
     }
 }
 
-// MARK: - UITabBarControllerDelegate
-extension TabBarController: UITabBarControllerDelegate {
-//    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-//        refreshData() { [weak self] in
-//            guard let self = self else { return }
-//            DispatchQueue.main.async {
-//                if let employee = self.employee, let issues = self.issues {
-//                    self.delegete.forEach { $0.tabBarController(self, didSelectTabAtIndex: self.selectedIndex, issues: issues, employee: employee) }
-//                }
-//            }
-//        }
-//    }
-}
 
 // MARK: - EnterMenuViewControllerDelegate
 extension TabBarController: EnterMenuViewControllerDelegate {
     func enterMenuViewController(_ enterMenuViewController: EnterMenuViewController, didLoadEmployeeWitch id: Int, completion: @escaping () -> Void, failer: @escaping (Error) -> Void) {
         let errorNetwork = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.missingHTTPResponse.errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.missingHTTPResponse.localizedDescription])
-        apiManagerIndustry?.fetch(request: ForecastType.EmployeeWitchId(id: id), HTTPMethod: .get) {(json: [String: Any]) -> Employee? in
+        apiManagerIndustry?.fetch(request: ForecastType.EmployeeWitchId(id: id)) {(json: [String: Any]) -> Employee? in
             return Employee.decodeJSON(json: json)
         } completionHandler: { [weak self] (result: APIResult<Employee?>) in
             guard let self = self else { return }
@@ -209,7 +192,7 @@ extension TabBarController: EnterMenuViewControllerDelegate {
                 }
                 self.employee = employees
                 let idLaborCosts = employees.laborCosts?.compactMap { $0.issueId } ?? []
-                self.apiManagerIndustry?.fetchIssues(HTTPMethod: .get, ids: idLaborCosts) {(json: [String: Any]) -> Issues? in
+                self.apiManagerIndustry?.fetchIssues(ids: idLaborCosts) {(json: [String: Any]) -> Issues? in
                     return Issues.decodeJSON(json: json)
                 } completionHandler: {[weak self] (result: APIResult<[Issues]>) in
                     guard let self = self else { return }
@@ -241,7 +224,7 @@ extension TabBarController: EnterMenuViewControllerDelegate {
 extension TabBarController: AppDelegateDelegate {
     func appDelegate(_ appDelegate: AppDelegate, didLoadEmployeeWith id: Int, completion: @escaping () -> Void, failure failer: @escaping (Error) -> Void) {
         let errorNetwork = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.missingHTTPResponse.errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.missingHTTPResponse.localizedDescription])
-        apiManagerIndustry?.fetch(request: ForecastType.EmployeeWitchId(id: id), HTTPMethod: .get) {(json: [String: Any]) -> Employee? in
+        apiManagerIndustry?.fetch(request: ForecastType.EmployeeWitchId(id: id)) {(json: [String: Any]) -> Employee? in
             return Employee.decodeJSON(json: json)
         } completionHandler: { [weak self] (result: APIResult<Employee?>) in
             guard let self = self else { return }
@@ -254,7 +237,7 @@ extension TabBarController: AppDelegateDelegate {
                 }
                 self.employee = employees
                 let idLaborCosts = employees.laborCosts?.compactMap { $0.issueId } ?? []
-                self.apiManagerIndustry?.fetchIssues(HTTPMethod: .get, ids: idLaborCosts) {(json: [String: Any]) -> Issues? in
+                self.apiManagerIndustry?.fetchIssues(ids: idLaborCosts) {(json: [String: Any]) -> Issues? in
                     return Issues.decodeJSON(json: json)
                 } completionHandler: { [weak self] (result: APIResult<[Issues]>) in
                     guard let self = self else { return }
@@ -286,6 +269,7 @@ extension TabBarController: AppDelegateDelegate {
 
 // MARK: - CalendarTaskViewControllerDelegate
 extension TabBarController: CalendarTaskViewControllerDelegate {
+    
     func calendarTaskViewController(_ viewController: UIViewController, didDeleateData witchId: Int) {
         apiManagerIndustry?.deleteItem(request: ForecastType.IssueWithId(id: witchId)) { result in
             switch result {

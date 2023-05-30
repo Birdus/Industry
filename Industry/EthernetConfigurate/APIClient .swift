@@ -35,6 +35,13 @@ protocol APIManager {
     /// - Returns: A JSON task for the given request.
     func JSONTaskWith(request: URLRequest, HTTPMethod: HttpMethodsString, completionHandler: @escaping JSONCompletionHandler) -> JSONTask
     
+    /// Creates a array JSON task for given request, HTTP method, and completion handler.
+    ///
+    /// - Parameters:
+    ///   - request: The URL request.
+    ///   - HTTPMethod: The HTTP method to use for the request.
+    ///   - completionHandler: The completion handler to call when the request is complete.
+    /// - Returns: A JSON task for the given request.
     func JSONTaskWithArray(request: URLRequest, HTTPMethod: HttpMethodsString, completionHandler: @escaping JSONCompletionHandlerArray) -> JSONTask
     
     /// Fetches a single object of type T for given request, HTTP method, ID, parsing function, and completion handler.
@@ -45,7 +52,7 @@ protocol APIManager {
     ///   - id: The ID of the object to fetch.
     ///   - parse: The function to use for parsing the JSON response.
     ///   - completionHandler: The completion handler to call when the request is complete.
-    func fetch<T: Decodable>(request: ForecastType, HTTPMethod: HttpMethodsString, id: Int?, parse: @escaping ([String: Any]) -> T?, completionHandler: @escaping (APIResult<T>) -> Void)
+    func fetch<T: Decodable>(request: ForecastType, id: Int?, parse: @escaping ([String: Any]) -> T?, completionHandler: @escaping (APIResult<T>) -> Void)
     
     /// Fetches an array of objects of type T for given request, HTTP method, parsing function, and completion handler.
     ///
@@ -54,7 +61,7 @@ protocol APIManager {
     ///   - HTTPMethod: The HTTP method to use for the request.
     ///   - parse: The function to use for parsing the JSON response.
     ///   - completionHandler: The completion handler to call when the request is complete.
-    func fetch<T: Decodable>(request: ForecastType, HTTPMethod: HttpMethodsString, parse: @escaping ([[String: Any]]) -> [T]?, completionHandler: @escaping (APIResult<T>) -> Void)
+    func fetch<T: Decodable>(request: ForecastType, parse: @escaping ([[String: Any]]) -> [T]?, completionHandler: @escaping (APIResult<T>) -> Void)
 }
 
 // MARK: - Default use of the function
@@ -63,34 +70,56 @@ extension APIManager {
      JSONTaskWith: HTTP request with JSON data
      
      - Parameters:
-     - request: The HTTP request object.
-     - HTTPMethod: The HTTP request method.
-     - completionHandler: The completion handler to be called when the task is complete.
+        - request: The HTTP request object.
+        - HTTPMethod: The HTTP request method.
+        - completionHandler: The completion handler to be called when the task is complete.
      - Returns: A URLSessionDataTask object
      */
     func JSONTaskWith(request: URLRequest, HTTPMethod: HttpMethodsString, completionHandler: @escaping JSONCompletionHandler) -> JSONTask {
         let task = session.dataTask(with: request) { (data, response, error) in
-            guard let data = data, error == nil, let HTTPResponse = response as? HTTPURLResponse else {
+            guard let HTTPResponse = response as? HTTPURLResponse, error == nil else {
                 let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.missingHTTPResponse.errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.missingHTTPResponse.localizedDescription])
                 return completionHandler(nil, nil, error, nil)
             }
+            
+            if HTTPResponse.statusCode == 201 {
+                completionHandler(nil, HTTPResponse, nil, HTTPMethod.stringValue)
+                return
+            }
+            
+            guard let data = data else {
+                let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.badRequest.errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.badRequest.localizedDescription])
+                return completionHandler(nil, HTTPResponse, error, HTTPMethod.stringValue)
+            }
+            
             do {
                 if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
                     completionHandler(json, HTTPResponse, nil, HTTPMethod.stringValue)
-                } else if let stringResponse = String(data: data, encoding: .utf8) {
+                } else {
+                    throw NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.badRequest.errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.badRequest.localizedDescription])
+                }
+            } catch {
+                if let stringResponse = String(data: data, encoding: .utf8) {
                     completionHandler(["response": stringResponse], HTTPResponse, nil, HTTPMethod.stringValue)
                 } else {
                     let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.badRequest.errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.badRequest.localizedDescription])
                     completionHandler(nil, HTTPResponse, error, HTTPMethod.stringValue)
                 }
-            } catch {
-                let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.badRequest.errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.badRequest.localizedDescription])
-                completionHandler(nil, HTTPResponse, error, HTTPMethod.stringValue)
             }
         }
         return task
     }
-    
+
+
+    /**
+     JSONTaskWith: HTTP request with JSON array data
+     
+     - Parameters:
+        - request: The HTTP request object.
+        - HTTPMethod: The HTTP request method.
+        - completionHandler: The completion handler to be called when the task is complete.
+     - Returns: A URLSessionDataTask object
+     */
     func JSONTaskWithArray(request: URLRequest, HTTPMethod: HttpMethodsString, completionHandler: @escaping JSONCompletionHandlerArray) -> JSONTask {
         let task = session.dataTask(with: request) { (data, response, error) in
             guard let data = data, error == nil, let HTTPResponse = response as? HTTPURLResponse else {
@@ -116,17 +145,15 @@ extension APIManager {
     
     /**
      fetch: Get data for a single item
-     
      - Parameters:
-     - request: The HTTP request object
-     - HTTPMethod: The HTTP request method
-     - id: The id of the item to fetch
-     - parse: The function used to parse the JSON data
-     - completionHandler: The completion handler to be called when the task is complete
-     
+        - request: The HTTP request object
+        - HTTPMethod: The HTTP request method
+        - id: The id of the item to fetch
+        - parse: The function used to parse the JSON data
+        - completionHandler: The completion handler to be called when the task is complete
      */
-    func fetch<T>(request: ForecastType, HTTPMethod: HttpMethodsString, id: Int?, parse: @escaping ([String: Any]) -> T?, completionHandler: @escaping (APIResult<T>) -> Void) {
-        let dataTask = JSONTaskWith(request: request.requestWitchToken, HTTPMethod: HTTPMethod) { (json, response, error, _) in
+    func fetch<T>(request: ForecastType, id: Int?, parse: @escaping ([String: Any]) -> T?, completionHandler: @escaping (APIResult<T>) -> Void) {
+        let dataTask = JSONTaskWith(request: request.requestWitchToken, HTTPMethod: HttpMethodsString.get) { (json, response, error, _) in
             guard response != nil else {
                 let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.missingHTTPResponse.errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.missingHTTPResponse.localizedDescription])
                 completionHandler(.failure(error))
@@ -149,17 +176,17 @@ extension APIManager {
     
     /**
      Fetches API data with the given request and HTTP method, parses the response data to an array of generic type T and calls the completion handler with the parsed data or error.
-     
+
      - Parameters:
-     - request: The URLRequest object representing the API request.
-     - HTTPMethod: The HttpMethodsString object representing the HTTP method of the API request.
-     - id: The primary key found.
-     - parse: The closure that takes a dictionary object of JSON response data and returns an array of generic type T.
-     - completionHandler: The closure that takes an APIResult object that holds either the parsed data or the error.
-     - Returns: The JSONTask object representing the data task for the API request.
+        - request: The URLRequest object representing the API request.
+        - HTTPMethod: The HttpMethodsString object representing the HTTP method of the API request.
+        - id: The primary key found.
+        - parse: The closure that takes a dictionary object of JSON response data and returns an array of generic type T.
+        - completionHandler: The closure that takes an APIResult object that holds either the parsed data or the error.
+        - Returns: The JSONTask object representing the data task for the API request.
      */
-    func fetch<T>(request: ForecastType, HTTPMethod: HttpMethodsString, id: Int?, parse: @escaping ([[String: Any]]) -> [T]?, completionHandler: @escaping (APIResult<T>) -> Void) -> JSONTask {
-        let dataTask = JSONTaskWithArray(request: request.requestWitchToken, HTTPMethod: HTTPMethod) { (json, response, error, _) in
+    func fetch<T>(request: ForecastType, id: Int?, parse: @escaping ([[String: Any]]) -> [T]?, completionHandler: @escaping (APIResult<T>) -> Void) -> JSONTask {
+        let dataTask = JSONTaskWithArray(request: request.requestWitchToken, HTTPMethod: HttpMethodsString.get) { (json, response, error, _) in
             guard response != nil else {
                 let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.missingHTTPResponse.errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.missingHTTPResponse.localizedDescription])
                 completionHandler(.failure(error))
@@ -168,11 +195,11 @@ extension APIManager {
             if let json = json {
                 let compactedJSON = json.compactMap { $0 }
                 if let items = parse(compactedJSON) {
-                        completionHandler(.successArray(items))
-                    } else {
-                        let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.unexpectedResponse(message: "Error: Parse array data").errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.badRequest.localizedDescription])
-                        completionHandler(.failure(error))
-                    }
+                    completionHandler(.successArray(items))
+                } else {
+                    let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.unexpectedResponse(message: "Error: Parse array data").errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.badRequest.localizedDescription])
+                    completionHandler(.failure(error))
+                }
             } else {
                 let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.unexpectedResponse(message: "Error: Parse array data").errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.badRequest.localizedDescription])
                 completionHandler(.failure(error))

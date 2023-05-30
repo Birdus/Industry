@@ -7,9 +7,16 @@
 
 import UIKit
 
+protocol ListEmployeesTblViewCellDelegete: AnyObject {
+    func listEmployeesTblViewCell(_ cell: ListEmployeesTblViewCell, didSelected employeeId: Int, isEnclude task: Bool)
+}
+
+
 class ListEmployeesTblViewCell: UITableViewCell {
     // MARK: - Properties
     static let indificatorCell = "ListEmployeesTblViewCell"
+    private var idEmployee: Int!
+    public var delegete: ListEmployeesTblViewCellDelegete!
     
     // MARK: - Private UI
     /// A UIView container image
@@ -42,11 +49,12 @@ class ListEmployeesTblViewCell: UITableViewCell {
     
     @objc
     private func switchValueDidChange(_ sender: UISwitch) {
-        
+        delegete.listEmployeesTblViewCell(self, didSelected: idEmployee, isEnclude: sender.isOn)
     }
     // MARK: - Public func
-    public func fillTable(fullName employee: String) {
-        lblEmployee.text = employee
+    public func fillTable(employee fullName: String,employee id: Int) {
+        idEmployee = id
+        lblEmployee.text = fullName
     }
     
     // MARK: - Private func

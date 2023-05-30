@@ -38,10 +38,9 @@
 		A52F87AD2A12A6DC00CE2E4E /* IndustryUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52F87AC2A12A6DC00CE2E4E /* IndustryUITests.swift */; };
 		A5313FF62A1D295C009C557B /* PresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5313FF52A1D295C009C557B /* PresentationController.swift */; };
 		A5313FFE2A1E6A40009C557B /* EditHourTaskTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5313FFD2A1E6A40009C557B /* EditHourTaskTblViewCell.swift */; };
-		A53140072A1E6BF9009C557B /* EditEmployeeTaskTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53140062A1E6BF9009C557B /* EditEmployeeTaskTblViewCell.swift */; };
-		A531401A2A1F94F5009C557B /* SelectionListEmployeeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53140192A1F94F5009C557B /* SelectionListEmployeeViewController.swift */; };
-		A531401F2A1FA6B1009C557B /* ListEmployeesTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A531401E2A1FA6B1009C557B /* ListEmployeesTblViewCell.swift */; };
-		A53140242A2236F4009C557B /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53140232A2236F3009C557B /* UserModel.swift */; };
+		A53140072A1E6BF9009C557B /* EditEmployeeAndTaskTaskTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53140062A1E6BF9009C557B /* EditEmployeeAndTaskTaskTblViewCell.swift */; };
+		A531401A2A1F94F5009C557B /* SelectionListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53140192A1F94F5009C557B /* SelectionListViewController.swift */; };
+		A531401F2A1FA6B1009C557B /* ListTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A531401E2A1FA6B1009C557B /* ListTblViewCell.swift */; };
 		A53140292A22371F009C557B /* AuthBodyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53140282A22371F009C557B /* AuthBodyModel.swift */; };
 		A53140332A223771009C557B /* TokenInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53140322A223771009C557B /* TokenInfo.swift */; };
 		A53140402A223902009C557B /* KeychainWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A531403F2A223902009C557B /* KeychainWorker.swift */; };
@@ -124,10 +123,9 @@
 		A52F87E42A12B08800CE2E4E /* View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
 		A5313FF52A1D295C009C557B /* PresentationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentationController.swift; sourceTree = "<group>"; };
 		A5313FFD2A1E6A40009C557B /* EditHourTaskTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditHourTaskTblViewCell.swift; sourceTree = "<group>"; };
-		A53140062A1E6BF9009C557B /* EditEmployeeTaskTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditEmployeeTaskTblViewCell.swift; sourceTree = "<group>"; };
-		A53140192A1F94F5009C557B /* SelectionListEmployeeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionListEmployeeViewController.swift; sourceTree = "<group>"; };
-		A531401E2A1FA6B1009C557B /* ListEmployeesTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListEmployeesTblViewCell.swift; sourceTree = "<group>"; };
-		A53140232A2236F3009C557B /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
+		A53140062A1E6BF9009C557B /* EditEmployeeAndTaskTaskTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditEmployeeAndTaskTaskTblViewCell.swift; sourceTree = "<group>"; };
+		A53140192A1F94F5009C557B /* SelectionListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionListViewController.swift; sourceTree = "<group>"; };
+		A531401E2A1FA6B1009C557B /* ListTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListTblViewCell.swift; sourceTree = "<group>"; };
 		A53140282A22371F009C557B /* AuthBodyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthBodyModel.swift; sourceTree = "<group>"; };
 		A53140322A223771009C557B /* TokenInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenInfo.swift; sourceTree = "<group>"; };
 		A531403F2A223902009C557B /* KeychainWorker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainWorker.swift; sourceTree = "<group>"; };
@@ -283,7 +281,6 @@
 				A07D45E329C78E1C00420463 /* EmployeeModel.swift */,
 				A07D45E729C78E3200420463 /* DivisionModel.swift */,
 				A070410929CE014F00BD2839 /* JSONDecoables.swift */,
-				A53140232A2236F3009C557B /* UserModel.swift */,
 				A53140282A22371F009C557B /* AuthBodyModel.swift */,
 				A53140322A223771009C557B /* TokenInfo.swift */,
 			);
@@ -304,13 +301,12 @@
 		A0F5E68329CD9843008E483A /* MenuScreens */ = {
 			isa = PBXGroup;
 			children = (
+				A5AE1B452A255558002426AC /* TaskScreen */,
 				A578852E29F6B9CA00D26455 /* ProfileUserScreens */,
 				A5916AB129BC9D8900285D79 /* TabBarController.swift */,
 				A5833D2029C0990200387240 /* ProfileUserViewController.swift */,
 				A0569DE729DE85C500D25991 /* CalendarTaskViewController.swift */,
 				A578852829F6B82E00D26455 /* DocumentFlowViewController.swift */,
-				A529736E2A1AE0E600B4189F /* NewTaskViewController.swift */,
-				A53140192A1F94F5009C557B /* SelectionListEmployeeViewController.swift */,
 			);
 			path = MenuScreens;
 			sourceTree = "<group>";
@@ -351,8 +347,8 @@
 				A529737D2A1BA33B00B4189F /* EditNameDiscribeTaskTblViewCell.swift */,
 				A52973832A1CD87F00B4189F /* EditDateTaskTblViewCell.swift */,
 				A5313FFD2A1E6A40009C557B /* EditHourTaskTblViewCell.swift */,
-				A53140062A1E6BF9009C557B /* EditEmployeeTaskTblViewCell.swift */,
-				A531401E2A1FA6B1009C557B /* ListEmployeesTblViewCell.swift */,
+				A53140062A1E6BF9009C557B /* EditEmployeeAndTaskTaskTblViewCell.swift */,
+				A531401E2A1FA6B1009C557B /* ListTblViewCell.swift */,
 			);
 			path = NewTask;
 			sourceTree = "<group>";
@@ -396,6 +392,15 @@
 				A0E4AA3B29A8E25700BDB4EF /* Info.plist */,
 			);
 			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		A5AE1B452A255558002426AC /* TaskScreen */ = {
+			isa = PBXGroup;
+			children = (
+				A529736E2A1AE0E600B4189F /* NewTaskViewController.swift */,
+				A53140192A1F94F5009C557B /* SelectionListViewController.swift */,
+			);
+			path = TaskScreen;
 			sourceTree = "<group>";
 		};
 		A5E0AF1B29B8F3EB003B47D2 /* Localisation */ = {
@@ -618,7 +623,7 @@
 				A528206929F3F244002FA269 /* RecovoryPasswordCollViewCell.swift in Sources */,
 				A5E0AF1D29B8F41E003B47D2 /* LocalizeController.swift in Sources */,
 				A5313FFE2A1E6A40009C557B /* EditHourTaskTblViewCell.swift in Sources */,
-				A531401A2A1F94F5009C557B /* SelectionListEmployeeViewController.swift in Sources */,
+				A531401A2A1F94F5009C557B /* SelectionListViewController.swift in Sources */,
 				A070410A29CE014F00BD2839 /* JSONDecoables.swift in Sources */,
 				A53140332A223771009C557B /* TokenInfo.swift in Sources */,
 				A53140292A22371F009C557B /* AuthBodyModel.swift in Sources */,
@@ -628,7 +633,7 @@
 				A5916AB229BC9D8900285D79 /* TabBarController.swift in Sources */,
 				A5AC14FD2A07C540008FB74C /* SetingUserTblViewCell.swift in Sources */,
 				A07D45D229C763CD00420463 /* UserCountTaskTblViewCell.swift in Sources */,
-				A53140072A1E6BF9009C557B /* EditEmployeeTaskTblViewCell.swift in Sources */,
+				A53140072A1E6BF9009C557B /* EditEmployeeAndTaskTaskTblViewCell.swift in Sources */,
 				A07D45E429C78E1C00420463 /* EmployeeModel.swift in Sources */,
 				A0CF9F8229CDF69800FE6A72 /* ForecastType.swift in Sources */,
 				A53140402A223902009C557B /* KeychainWorker.swift in Sources */,
@@ -637,13 +642,12 @@
 				A5AC15122A0FDE2B008FB74C /* ListCaledarTblViewCell.swift in Sources */,
 				A0CF9F7F29CDF65200FE6A72 /* FinalUrll.swift in Sources */,
 				A02EDA4B29CB5D180084BEBA /* ErrorManager.swift in Sources */,
-				A531401F2A1FA6B1009C557B /* ListEmployeesTblViewCell.swift in Sources */,
+				A531401F2A1FA6B1009C557B /* ListTblViewCell.swift in Sources */,
 				A585FF1929BA178C00A0F0AF /* NotificationListViewController.swift in Sources */,
 				A585FF1C29BA1A3600A0F0AF /* NotificationUserViewCell.swift in Sources */,
 				A07D45DA29C78DEE00420463 /* IssuesModel.swift in Sources */,
 				A5831B2729BBC91700A3A8F8 /* AuthenticationTableRow.swift in Sources */,
 				A0CF9F8529CDF6C300FE6A72 /* HttpMetods.swift in Sources */,
-				A53140242A2236F4009C557B /* UserModel.swift in Sources */,
 				A5313FF62A1D295C009C557B /* PresentationController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

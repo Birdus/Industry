@@ -184,8 +184,9 @@ class EnterMenuViewController: UIViewController {
             DispatchQueue.main.async {
                 switch result {
                 case .failure(let error):
+                    activityIndicator.stopAnimating()
+                    blurEffectView.removeFromSuperview()
                     self.showAlController(messege: error.localizedDescription)
-                    
                 case .success(let idEmployee):
                     let vc = TabBarController()
                     self.delegete = vc
@@ -199,6 +200,8 @@ class EnterMenuViewController: UIViewController {
                         self.present(navigationController, animated: true, completion: nil)
                     }, failer: { error in
                         self.showAlController(messege: error.localizedDescription)
+                        activityIndicator.stopAnimating()
+                        blurEffectView.removeFromSuperview()
                     })
                 }
             }
