@@ -46,22 +46,8 @@ protocol CalendarTaskViewControllerDelegate: AnyObject {
      */
     func calendarTaskViewController(_ viewController: CalendarTaskViewController)
     
-    func calendarTaskViewController(_ viewController: CalendarTaskViewController, didLoadEmployee: Employee, isues: Issues, laborCoast: LaborCost, project: Project)
+    func calendarTaskViewController(_ viewController: CalendarTaskViewController, didLoadEmployees: [Employee], isues: Issues, laborCoast: LaborCost, project: Project)
     
-}
-
-extension CalendarTaskViewControllerDelegate {
-    func calendarTaskViewController(_ viewController: CalendarTaskViewController, didLoadEmployee: Employee, isues: Issues, laborCoast: LaborCost, project: Project) {
-        return
-    }
-    
-    func calendarTaskViewController(_ viewController: CalendarTaskViewController) {
-        return
-    }
-    
-    func calendarTaskViewController(_ viewController: CalendarTaskViewController, didDeleateData witchId: Int) {
-        return
-    }
 }
 
 class CalendarTaskViewController: UIViewController {
@@ -212,7 +198,7 @@ class CalendarTaskViewController: UIViewController {
     
     // MARK: - Private func
     
-
+    
     private func isViewLoad(_ isShow: Bool) {
         if isShow {
             blurEffectView.contentView.addSubview(activityIndicator)
@@ -299,16 +285,27 @@ extension CalendarTaskViewController: FSCalendarDelegate {
             }, completionHandler: { (result: APIResult<Project>) in
                 switch result {
                 case .success(let project):
-                    DispatchQueue.main.async {
-                        self.isViewLoad(false)
-                        let vc = NewTaskViewController()
-                        self.delegete = vc
-                        vc.delegete = self
-                        self.delegete.calendarTaskViewController(self, didLoadEmployee: self.employee, isues: isuses, laborCoast: selectedDate, project: project)
-                        vc.modalPresentationStyle = .custom
-                        vc.transitioningDelegate = self
-                        self.present(vc, animated: true, completion: nil)
-                    }
+                        apiManager.fetch(request: ForecastType.Employee, parse: { (json) -> [Employee]? in
+                            return json.compactMap({Employee.decodeJSON(json: $0)})
+                        }, completionHandler: { (result: APIResult<Employee>) in
+                            switch result {
+                            case .success(_):
+                                print("Error this single object")
+                            case .failure(let error):
+                                print(error)
+                            case .successArray(let employees):
+                                DispatchQueue.main.async {
+                                self.isViewLoad(false)
+                                let vc = NewTaskViewController()
+                                self.delegete = vc
+                                vc.delegete = self
+                                self.delegete.calendarTaskViewController(self, didLoadEmployees: employees, isues: isuses, laborCoast: selectedDate, project: project)
+                                vc.modalPresentationStyle = .custom
+                                vc.transitioningDelegate = self
+                                self.present(vc, animated: true, completion: nil)
+                                }
+                            }
+                        })
                 case .failure(let error):
                     DispatchQueue.main.async {
                         self.isViewLoad(false)
@@ -422,16 +419,27 @@ extension CalendarTaskViewController: UITableViewDataSource {
             }, completionHandler: { (result: APIResult<Project>) in
                 switch result {
                 case .success(let project):
-                    DispatchQueue.main.async {
-                        self.isViewLoad(false)
-                        let vc = NewTaskViewController()
-                        vc.delegete = self
-                        self.delegete = vc
-                        self.delegete.calendarTaskViewController(self, didLoadEmployee: self.employee, isues: isuses, laborCoast: selectedDate, project: project)
-                        vc.modalPresentationStyle = .custom
-                        vc.transitioningDelegate = self
-                        self.present(vc, animated: true, completion: nil)
-                    }
+                    apiManager.fetch(request: ForecastType.Employee, parse: { (json) -> [Employee]? in
+                        return json.compactMap({Employee.decodeJSON(json: $0)})
+                    }, completionHandler: { (result: APIResult<Employee>) in
+                        switch result {
+                        case .success(_):
+                            print("Error this single object")
+                        case .failure(let error):
+                            print(error)
+                        case .successArray(let employees):
+                            DispatchQueue.main.async {
+                            self.isViewLoad(false)
+                            let vc = NewTaskViewController()
+                            self.delegete = vc
+                            vc.delegete = self
+                            self.delegete.calendarTaskViewController(self, didLoadEmployees: employees, isues: isuses, laborCoast: selectedDate, project: project)
+                            vc.modalPresentationStyle = .custom
+                            vc.transitioningDelegate = self
+                            self.present(vc, animated: true, completion: nil)
+                            }
+                        }
+                    })
                 case .failure(let error):
                     DispatchQueue.main.async {
                         self.isViewLoad(false)
@@ -459,10 +467,8 @@ extension CalendarTaskViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let action = UIContextualAction(style: .normal, title: "Завершить задачу".localized, handler: { (action, view, completionHandler) in
             let issueToDelete = self.issues[indexPath.row]
-            self.issues.remove(at: indexPath.row)
-            self.employee.laborCosts?.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .automatic)
-            self.delegete?.calendarTaskViewController(self, didDeleateData: issueToDelete.id ?? 0)
+            guard let idIssues = issueToDelete.id else {return}
+            self.delegete?.calendarTaskViewController(self, didDeleateData: idIssues)
         })
         action.backgroundColor = .systemGreen
         let configuration = UISwipeActionsConfiguration(actions: [action])
@@ -493,9 +499,22 @@ extension CalendarTaskViewController: UIViewControllerTransitioningDelegate {
 
 // MARK: - NewTaskViewControllerDelegate
 extension CalendarTaskViewController: NewTaskViewControllerDelegate {
+    func newTaskViewController(_ viewController: NewTaskViewController, didLoad values: [Employee], selected employees: [Employee]?) {
+        return
+    }
+    
     func newTaskViewController(_ viewController: NewTaskViewController, isChande values: Bool) {
         if values {
             self.delegete?.calendarTaskViewController(self)
         }
     }
+    
+    func newTaskViewController(_ viewController: NewTaskViewController, didClosed: Bool) {
+        return
+    }
+    
+    func newTaskViewController(_ viewController: NewTaskViewController, didLoad values: [Project]) {
+        return
+    }
+    
 }

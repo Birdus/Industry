@@ -189,10 +189,24 @@ extension EditDateTaskTblViewCell: UITextFieldDelegate {
 
 // MARK: NewTaskViewControllerDelegate
 extension EditDateTaskTblViewCell: NewTaskViewControllerDelegate {
-    /// This method is called when the NewTaskViewController is closed.
+    func newTaskViewController(_ viewController: NewTaskViewController, didLoad values: [Employee], selected employees: [Employee]?) {
+        return
+    }
+    
+    func newTaskViewController(_ viewController: NewTaskViewController, isChande values: Bool) {
+        return
+    }
+    
     func newTaskViewController(_ viewController: NewTaskViewController, didClosed: Bool) {
         if didClosed {
             delegete.editDateTblViewCell(self, didChanged: picDateTime.date)
         }
     }
+    
+    func newTaskViewController(_ viewController: NewTaskViewController, didLoad values: [Project]) {
+        return
+    }
+    
+    /// This method is called when the NewTaskViewController is closed.
+   
 }

@@ -15,6 +15,7 @@ protocol SelectionListViewControllerDelegete: AnyObject {
 class SelectionListViewController: UIViewController {
     
     private var employees: [Employee]?
+    private var includeEmploye : [Employee]?
     private var project: [Project]?
     private var includedData: [Int : Bool]?
     public var delegete: SelectionListViewControllerDelegete!
@@ -125,9 +126,14 @@ extension SelectionListViewController: UITableViewDataSource {
             fatalError("Unable to dequeue HeadMenuTableViewCell.")
         }
         if let employee = employees {
-            cell.fillTable(employee: "\(employee[indexPath.row].lastName) \(employee[indexPath.row].firstName) \(employee[indexPath.row].secondName)", employee: employee[indexPath.row].id)
+            if let selectedEmployee = includeEmploye {
+                cell.fillTable(employee: "\(employee[indexPath.row].lastName) \(employee[indexPath.row].firstName) \(employee[indexPath.row].secondName)", employee: employee[indexPath.row].id, isInclude: employee[indexPath.row].id == selectedEmployee[indexPath.row].id )
+            } else {
+                cell.fillTable(employee: "\(employee[indexPath.row].lastName) \(employee[indexPath.row].firstName) \(employee[indexPath.row].secondName)", employee: employee[indexPath.row].id, isInclude: false)
+            }
+            
         } else if let project = project {
-            cell.fillTable(employee: "\(project[indexPath.row].projectName)", employee: project[indexPath.row].id)
+            cell.fillTable(employee: "\(project[indexPath.row].projectName)", employee: project[indexPath.row].id, isInclude: false)
         }
         cell.selectionStyle = .none
         cell.selectionStyle = .none
@@ -145,16 +151,26 @@ extension SelectionListViewController: UITableViewDelegate {
 }
 
 extension SelectionListViewController: NewTaskViewControllerDelegate {
-    func newTaskViewController(_ viewController: NewTaskViewController, didLoad values: [Project]) {
+    func newTaskViewController(_ viewController: NewTaskViewController, didLoad values: [Employee], selected employees: [Employee]?) {
         DispatchQueue.main.async {
-            self.project = values
+            self.employees = values
+            self.includeEmploye = employees
             self.tblList.reloadData()
         }
     }
     
-    func newTaskViewController(_ viewController: NewTaskViewController, didLoad values: [Employee]) {
+    func newTaskViewController(_ viewController: NewTaskViewController, isChande values: Bool) {
+        return
+    }
+    
+    func newTaskViewController(_ viewController: NewTaskViewController, didClosed: Bool) {
+        return
+    }
+    
+    func newTaskViewController(_ viewController: NewTaskViewController, didLoad values: [Project]) {
         DispatchQueue.main.async {
-            self.employees = values
+            self.project = values
+            
             self.tblList.reloadData()
         }
     }

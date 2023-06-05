@@ -7,6 +7,7 @@
 
 import UIKit
 import JWTDecode
+import  KeychainSwift
 
 protocol AppDelegateDelegate: AnyObject {
     func appDelegate(_ appDelegate: AppDelegate, didLoadEmployeeWith id: Int, completion: @escaping () -> Void, failure: @escaping (_ error: Error) -> Void)
@@ -18,6 +19,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private var delegate: AppDelegateDelegate!
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        if ProcessInfo.processInfo.arguments.contains("-resetUser") {
+                KeychainSwift().clear()
+        }
         let apiManager = APIManagerIndustry()
         window = UIWindow(frame: UIScreen.main.bounds)
         let splashViewController = SplachViewController()

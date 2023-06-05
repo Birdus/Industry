@@ -9,28 +9,10 @@ import UIKit
 
 // MARK: - NewTaskViewControllerDelegate
 protocol NewTaskViewControllerDelegate: AnyObject {
-    func newTaskViewController(_ viewController: NewTaskViewController, didLoad values: [Employee])
+    func newTaskViewController(_ viewController: NewTaskViewController, didLoad values: [Employee], selected employees: [Employee]?)
     func newTaskViewController(_ viewController: NewTaskViewController, didLoad values: [Project])
     func newTaskViewController(_ viewController: NewTaskViewController, isChande values: Bool)
     func newTaskViewController(_ viewController: NewTaskViewController, didClosed: Bool)
-}
-
-extension NewTaskViewControllerDelegate {
-    func newTaskViewController(_ viewController: NewTaskViewController, didLoad values: [Employee]) {
-        return
-    }
-    
-    func newTaskViewController(_ viewController: NewTaskViewController, didLoad values: [Project]) {
-        return
-    }
-    
-    func newTaskViewController(_ viewController: NewTaskViewController, isChande values: Bool) {
-        return
-    }
-    
-    func newTaskViewController(_ viewController: NewTaskViewController, didClosed: Bool) {
-        return
-    }
 }
 
 class NewTaskViewController: UIViewController {
@@ -39,7 +21,6 @@ class NewTaskViewController: UIViewController {
     weak var delegete: NewTaskViewControllerDelegate!
     private var apiManagerIndustry: APIManagerIndustry!
     private var employees: [Employee]?
-    private var employee: Employee!
     private var issues: Issues?
     private var laborCoast: LaborCost?
     private var project: Project?
@@ -115,19 +96,9 @@ class NewTaskViewController: UIViewController {
     @objc
     private func btnCreate_Click(_ notification: UIButton) {
         delegete.newTaskViewController(self, didClosed: true)
-        let activityIndicator = UIActivityIndicatorView(style: .gray)
-        activityIndicator.center = view.center
-        activityIndicator.hidesWhenStopped = true
         
-        let blurEffect = UIBlurEffect(style: .light)
-        let blurEffectView = UIVisualEffectView(effect: blurEffect)
-        blurEffectView.frame = view.bounds
-        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        blurEffectView.alpha = 0.6
-        blurEffectView.contentView.addSubview(activityIndicator)
-        view.addSubview(blurEffectView)
+        let (activityIndicator, blurEffectView) = setupBlurAndActivityIndicator()
         
-        activityIndicator.startAnimating()
         guard let taskName = issues?.taskName, !taskName.isEmpty,
               let taskDiscribe = issues?.taskDiscribe, !taskDiscribe.isEmpty,
               laborCoast != nil,
@@ -135,50 +106,40 @@ class NewTaskViewController: UIViewController {
               var laborCoasts = laborCoast,
               var isues = issues,
               let project = project,
-              let employee = employees else {
-            activityIndicator.stopAnimating()
-            blurEffectView.removeFromSuperview()
-            showAlController(message: "Не удалось преобразовать данные".localized)
+              let employees = employees else {
+            handleError(activityIndicator, blurEffectView, message: "Не удалось преобразовать данные".localized)
             return
         }
         
         isues.projectId = project.id
-        laborCoasts.employeeId = employee.first?.id ?? 0
-        
         apiManagerIndustry.post(request: ForecastType.Issue, data: isues) { result in
             switch result {
             case .success(let id):
                 laborCoasts.issueId = id
-                self.apiManagerIndustry.post(request: ForecastType.LaborCost, data: laborCoasts) { result in
-                    switch result {
-                    case .success(_):
-                        DispatchQueue.main.async {
-                            self.delegete.newTaskViewController(self, isChande: true)
-                            activityIndicator.stopAnimating()
-                            blurEffectView.removeFromSuperview()
-                            self.dismiss(animated: true, completion: nil)
+                var successCounter = 0
+                for employee in employees {
+                    laborCoasts.employeeId = employee.id
+                    self.apiManagerIndustry.post(request: ForecastType.LaborCost, data: laborCoasts) { result in
+                        switch result {
+                        case .success(_):
+                            successCounter += 1
+                            if successCounter == employees.count {
+                                DispatchQueue.main.async {
+                                    //                                    self.delegete.newTaskViewController(self, isChande: true)
+                                    self.dismiss(animated: true, completion: nil)
+                                }
+                            }
+                        case .failure(let error):
+                            self.handleError(activityIndicator, blurEffectView, message: "Не удалось загрузить трудозатраты: \(error.localizedDescription)")
+                        case .successArray(_):
+                            self.handleError(activityIndicator, blurEffectView, message: "Unexpected response")
                         }
-                    case .failure(let error):
-                        activityIndicator.stopAnimating()
-                        blurEffectView.removeFromSuperview()
-                        self.showAlController(message: "Не удалось загрузить трудозатраты: \(error.localizedDescription)")
-                        
-                    case .successArray(_):
-                        activityIndicator.stopAnimating()
-                        blurEffectView.removeFromSuperview()
-                        let laborCostError = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Unexpected response"])
-                        self.showAlController(message: "Не удалось загрузить трудозатраты: \(laborCostError.localizedDescription)")
                     }
                 }
             case .failure(let error):
-                activityIndicator.stopAnimating()
-                blurEffectView.removeFromSuperview()
-                self.showAlController(message: "Не удалось загрузить задачу: \(error.localizedDescription)")
+                self.handleError(activityIndicator, blurEffectView, message: "Не удалось загрузить задачу: \(error.localizedDescription)")
             case .successArray(_):
-                activityIndicator.stopAnimating()
-                blurEffectView.removeFromSuperview()
-                let issueError = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Unexpected response"])
-                self.showAlController(message: "Не удалось загрузить задачу: \(issueError.localizedDescription)")
+                self.handleError(activityIndicator, blurEffectView, message: "Unexpected response")
             }
         }
     }
@@ -186,75 +147,42 @@ class NewTaskViewController: UIViewController {
     @objc
     private func btnChange_Click(_ notification: UIButton) {
         delegete.newTaskViewController(self, didClosed: true)
-        let activityIndicator = UIActivityIndicatorView(style: .gray)
-        activityIndicator.center = view.center
-        activityIndicator.hidesWhenStopped = true
-        
-        let blurEffect = UIBlurEffect(style: .light)
-        let blurEffectView = UIVisualEffectView(effect: blurEffect)
-        blurEffectView.frame = view.bounds
-        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        blurEffectView.alpha = 0.6
-        blurEffectView.contentView.addSubview(activityIndicator)
-        view.addSubview(blurEffectView)
-        
-        activityIndicator.startAnimating()
+        let (activityIndicator, blurEffectView) = setupBlurAndActivityIndicator()
         guard let taskName = issues?.taskName, !taskName.isEmpty,
               let taskDiscribe = issues?.taskDiscribe, !taskDiscribe.isEmpty,
               laborCoast != nil,
               let hourCount = laborCoast?.hourCount, hourCount > 0,
               var laborCoasts = laborCoast,
               var isues = issues,
-              let project = project else {
-            activityIndicator.stopAnimating()
-            blurEffectView.removeFromSuperview()
-            showAlController(message: "Не удалось преобразовать данные".localized)
+              let project = project,
+              let employees = employees else {
+            handleError(activityIndicator, blurEffectView, message: "Не удалось преобразовать данные".localized)
             return
         }
-        
         isues.projectId = project.id
-        laborCoasts.employeeId = employee.id 
-        
         apiManagerIndustry.put(request: ForecastType.IssueWithId(id: isues.id ?? 0), data: isues) { result in
             switch result {
             case .success(_):
-                self.apiManagerIndustry.put(request: ForecastType.LaborCostWitchId(id: laborCoasts.id ?? 0), data: laborCoasts) { result in
-                    switch result {
-                    case .success(_):
-                        DispatchQueue.main.async {
-                            self.delegete.newTaskViewController(self, isChande: true)
-                            activityIndicator.stopAnimating()
-                            blurEffectView.removeFromSuperview()
-                            self.dismiss(animated: true, completion: nil)
-                        }
-                    case .failure(let error):
-                        DispatchQueue.main.async {
-                            activityIndicator.stopAnimating()
-                            blurEffectView.removeFromSuperview()
-                            self.showAlController(message: "Не удалось обновить трудозатраты: \(error.localizedDescription)")
-                        }
-                    case .successArray(_):
-                        DispatchQueue.main.async {
-                            activityIndicator.stopAnimating()
-                            blurEffectView.removeFromSuperview()
-                            let laborCostError = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Unexpected response"])
-                            self.showAlController(message: "Не удалось обновить трудозатраты: \(laborCostError.localizedDescription)")
+                for employee in employees  {
+                    laborCoasts.employeeId = employee.id
+                    self.apiManagerIndustry.put(request: ForecastType.LaborCostWitchId(id: laborCoasts.id ?? 0), data: laborCoasts) { result in
+                        switch result {
+                        case .success(_):
+                            DispatchQueue.main.async {
+                                //                                self.delegete.newTaskViewController(self, isChande: true)
+                                self.dismiss(animated: true, completion: nil)
+                            }
+                        case .failure(let error):
+                            self.handleError(activityIndicator, blurEffectView, message: "Не удалось обновить трудозатраты: \(error.localizedDescription)")
+                        case .successArray(_):
+                            self.handleError(activityIndicator, blurEffectView, message: "Unexpected response")
                         }
                     }
                 }
             case .failure(let error):
-                DispatchQueue.main.async {
-                    activityIndicator.stopAnimating()
-                    blurEffectView.removeFromSuperview()
-                    self.showAlController(message: "Не удалось обновить задачу: \(error.localizedDescription)")
-                }
+                self.handleError(activityIndicator, blurEffectView, message: "Не удалось обновить задачу: \(error.localizedDescription)")
             case .successArray(_):
-                DispatchQueue.main.async {
-                    activityIndicator.stopAnimating()
-                    blurEffectView.removeFromSuperview()
-                    let issueError = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Unexpected response"])
-                    self.showAlController(message: "Не удалось обновить задачу: \(issueError.localizedDescription)")
-                }
+                self.handleError(activityIndicator, blurEffectView, message: "Unexpected response")
             }
         }
     }
@@ -285,6 +213,32 @@ class NewTaskViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
+    private func setupBlurAndActivityIndicator() -> (UIActivityIndicatorView, UIVisualEffectView) {
+        let activityIndicator = UIActivityIndicatorView(style: .gray)
+        activityIndicator.center = view.center
+        activityIndicator.hidesWhenStopped = true
+        activityIndicator.startAnimating()
+        let blurEffect = UIBlurEffect(style: .light)
+        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView.frame = view.bounds
+        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        blurEffectView.alpha = 0.6
+        blurEffectView.contentView.addSubview(activityIndicator)
+        view.addSubview(blurEffectView)
+        return (activityIndicator, blurEffectView)
+    }
+    
+    private func handleSucsess(_ activityIndicator: UIActivityIndicatorView, _ blurEffectView: UIVisualEffectView) {
+        activityIndicator.stopAnimating()
+        blurEffectView.removeFromSuperview()
+    }
+    
+    private func handleError(_ activityIndicator: UIActivityIndicatorView, _ blurEffectView: UIVisualEffectView, message: String) {
+        activityIndicator.stopAnimating()
+        blurEffectView.removeFromSuperview()
+        showAlController(message: message)
+    }
+    
     private func showAlController(message: String) {
         let alControl:UIAlertController = {
             let alControl = UIAlertController(title: "Ошибка".localized, message: message, preferredStyle: .alert)
@@ -300,32 +254,56 @@ class NewTaskViewController: UIViewController {
         self.present(alControl, animated: true, completion: nil)
     }
     
-    private func loadEmployees() {
-        self.apiManagerIndustry?.fetch(request: ForecastType.Employee, parse: { (json) -> [Employee]? in
-            return json.compactMap({Employee.decodeJSON(json: $0)})
-        }, completionHandler: { (result: APIResult<Employee>) in
-            switch result {
-            case .success(_):
-                print("Error this single object")
-            case .failure(let error):
-                print(error)
-            case .successArray(let employees):
-                self.delegete.newTaskViewController(self, didLoad: employees)
-            }
-        })
+    private func loadEmployees(compleat: @escaping () -> Void) {
+        if let employee = employees {
+            apiManagerIndustry?.fetch(request: ForecastType.Employee, parse: { (json) -> [Employee]? in
+                return json.compactMap({Employee.decodeJSON(json: $0)})
+            }, completionHandler: { (result: APIResult<Employee>) in
+                switch result {
+                case .success(_):
+                    print("Error this single object")
+                    compleat()
+                case .failure(let error):
+                    print(error)
+                    compleat()
+                case .successArray(let employees):
+                    self.delegete.newTaskViewController(self, didLoad: employees, selected: employee)
+                    compleat()
+                }
+            })
+        } else {
+            apiManagerIndustry?.fetch(request: ForecastType.Employee, parse: { (json) -> [Employee]? in
+                return json.compactMap({Employee.decodeJSON(json: $0)})
+            }, completionHandler: { (result: APIResult<Employee>) in
+                switch result {
+                case .success(_):
+                    print("Error this single object")
+                    compleat()
+                case .failure(let error):
+                    print(error)
+                    compleat()
+                case .successArray(let employees):
+                    self.delegete.newTaskViewController(self, didLoad: employees, selected: nil)
+                    compleat()
+                }
+            })
+        }
     }
     
-    private func loadProject() {
+    private func loadProject(compleat: @escaping () -> Void) {
         self.apiManagerIndustry?.fetch(request: ForecastType.Project, parse: { (json) -> [Project]? in
             return json.compactMap({Project.decodeJSON(json: $0)})
         }, completionHandler: { (result: APIResult<Project>) in
             switch result {
             case .success(_):
                 print("Error this single object")
+                compleat()
             case .failure(let error):
                 print(error)
+                compleat()
             case .successArray(let project):
                 self.delegete.newTaskViewController(self, didLoad: project)
+                compleat()
             }
         })
     }
@@ -404,7 +382,7 @@ extension NewTaskViewController: UITableViewDataSource {
             if let dateTask = laborCoast?.date, let ischange = isChande, ischange{
                 cell.fillTable(placeholder: nil, date: dateTask, iconName: UIImage(named: "Vector"))
             } else {
-                cell.fillTable(placeholder: "Описание задачи".localized, date: nil, iconName: UIImage(named: "Vector"))
+                cell.fillTable(placeholder: "Дата окончание".localized, date: nil, iconName: UIImage(named: "Vector"))
             }
             cell.selectionStyle = .none
             cell.backgroundColor = .clear
@@ -435,7 +413,7 @@ extension NewTaskViewController: UITableViewDataSource {
                 if let isChange = isChande, isChange {
                     cell.fillTable(UIImage(named: "Vector (1)"), nil, employee: employee)
                 } else {
-                    cell.fillTable(UIImage(named: "Vector (1)"), nil, employee: employees)
+                    cell.fillTable(UIImage(named: "Vector (1)"), nil, employee: employee)
                 }
             } else if let isChange = isChande, !isChange {
                 cell.fillTable(UIImage(named: "Vector (1)"), "Сотрудник".localized, employee: nil)
@@ -479,21 +457,33 @@ extension NewTaskViewController: UITableViewDelegate {
         case 4:
             let vc = SelectionListViewController()
             delegete = vc
-            loadEmployees()
-            vc.modalPresentationStyle = .custom
-            vc.transitioningDelegate = self
-            vc.delegete = self
-            let navigationController = UINavigationController(rootViewController: vc)
-            self.present(navigationController, animated: true, completion: nil)
+            let (activityIndicator, blurEffectView) = setupBlurAndActivityIndicator()
+            loadEmployees(compleat: {
+                DispatchQueue.main.async {
+                    vc.modalPresentationStyle = .custom
+                    vc.transitioningDelegate = self
+                    vc.delegete = self
+                    let navigationController = UINavigationController(rootViewController: vc)
+                    self.handleSucsess(activityIndicator, blurEffectView)
+                    self.present(navigationController, animated: true, completion: nil)
+                }
+            })
         case 5:
             let vc = SelectionListViewController()
             delegete = vc
-            loadProject()
-            vc.modalPresentationStyle = .custom
-            vc.transitioningDelegate = self
-            vc.delegete = self
-            let navigationController = UINavigationController(rootViewController: vc)
-            self.present(navigationController, animated: true, completion: nil)
+            let (activityIndicator, blurEffectView) = setupBlurAndActivityIndicator()
+            loadProject(compleat: {
+                DispatchQueue.main.async {
+                    vc.modalPresentationStyle = .custom
+                    vc.transitioningDelegate = self
+                    vc.delegete = self
+                    let navigationController = UINavigationController(rootViewController: vc)
+                    self.handleSucsess(activityIndicator, blurEffectView)
+                    self.present(navigationController, animated: true, completion: nil)
+                }
+                
+            })
+            
         default:
             return
         }
@@ -550,12 +540,19 @@ extension NewTaskViewController: SelectionListViewControllerDelegete {
 
 // MARK: - CalendarTaskViewControllerDelegate
 extension NewTaskViewController: CalendarTaskViewControllerDelegate {
-    
-    func calendarTaskViewController(_ viewController: CalendarTaskViewController, didLoadEmployee: Employee, isues: Issues, laborCoast: LaborCost, project: Project) {
+    func calendarTaskViewController(_ viewController: CalendarTaskViewController, didLoadEmployees: [Employee], isues: Issues, laborCoast: LaborCost, project: Project) {
         self.isChande = true
-        self.employee = didLoadEmployee
+        self.employees = didLoadEmployees
         self.issues = isues
         self.laborCoast = laborCoast
         self.project = project
+    }
+    
+    func calendarTaskViewController(_ viewController: CalendarTaskViewController, didDeleateData witchId: Int) {
+        return
+    }
+    
+    func calendarTaskViewController(_ viewController: CalendarTaskViewController) {
+        return
     }
 }

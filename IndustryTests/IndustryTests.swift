@@ -62,7 +62,7 @@ class APIMangerTests: XCTestCase {
             }
             expectation.fulfill()
         })
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 9, handler: nil)
     }
 }
 

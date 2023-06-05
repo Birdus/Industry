@@ -107,17 +107,16 @@ enum ForecastType: FinalURLPoint {
     
     /// This URL dont work, this URL need to unit test
     var testRequest: URLRequest {
-        let url = URL(string: path, relativeTo: baseURL)
+        let url = URL(string: path, relativeTo: testBaseURL)
         return URLRequest(url: url!)
     }
 }
 
 extension ForecastType: KeychainWorkerProtocol {
+    static var KEY_ACCESS_TOKEN_NBF: String = "key_access_token_nbf"
     static var KEY_AUTH_BODY_EMAIL: String = "key_auth_body_email"
     static var KEY_AUTH_BODY_PASSWORD: String = "key_auth_body_password"
     static let KEY_ACCESS_TOKEN = "auth_token"
     static let KEY_ACCESS_TOKEN_EXPIRE = "auth_token_expire"
-    static let KEY_REFRESH_TOKEN = "refresh_token"
-    static let KEY_REFRESH_TOKEN_EXPIRE = "refresh_token_expire"
     static let ACCESS_TOKEN_LIFE_THRESHOLD_SECONDS: Int64 = 3600
 }
