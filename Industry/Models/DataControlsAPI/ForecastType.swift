@@ -36,6 +36,12 @@ enum ForecastType: FinalURLPoint {
     
     case Token(credentials: AuthBody)
     
+    case ResetPassword
+    
+    case ConfirmResetPassword
+    
+    case CheakValidConfirmationCode
+    
     /// The base URL for all endpoints.
     var baseURL: URL {
         return URL(string: "http://80.78.253.153/api/")!
@@ -71,6 +77,12 @@ enum ForecastType: FinalURLPoint {
             return "LaborCosts/\(id)"
         case .Token:
             return "Auth/token"
+        case .ResetPassword:
+            return "Auth/reset-password"
+        case .ConfirmResetPassword:
+            return "Auth/confirm-reset-password"
+        case .CheakValidConfirmationCode:
+            return "Auth/cheak-valid-confirmation-code"
         }
     }
     
@@ -99,6 +111,16 @@ enum ForecastType: FinalURLPoint {
         let url = URL(string: path, relativeTo: baseURL)
         return URLRequest(url: url!)
     }
+    
+    var isTokenRequired: Bool {
+        switch self {
+        case .CheakValidConfirmationCode, .ConfirmResetPassword, .ResetPassword, .Token:
+            return false
+        default:
+            return true
+        }
+    }
+
     
     
     var absoluteURL: URL {

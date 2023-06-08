@@ -66,9 +66,12 @@ class EditEmployeeAndTaskTaskTblViewCell: UITableViewCell {
             lblInfo.text = placeholders.localized
         } else if let employeeCount = employee?.count {
             lblInfo.textColor = UIColor.white
-            lblInfo.text = "В задаче \(employeeCount) сотрудник(ов)"
+            var text = "В задаче ".localized
+            text += String(employeeCount)
+            text += " сотрудник(ов)".localized
+            lblInfo.text = text
         } else {
-            lblInfo.text = "Нет информации" // или установите любое значение по умолчанию
+            lblInfo.text = "Нет информации".localized // или установите любое значение по умолчанию
         }
         imgIcon.image = iconName
     }
@@ -81,7 +84,7 @@ class EditEmployeeAndTaskTaskTblViewCell: UITableViewCell {
             lblInfo.textColor = UIColor.white
             lblInfo.text = "\(projectName)".localized
         } else {
-            lblInfo.text = "Нет информации" // или установите любое значение по умолчанию
+            lblInfo.text = "Нет информации".localized // или установите любое значение по умолчанию
         }
         imgIcon.image = iconName
     }

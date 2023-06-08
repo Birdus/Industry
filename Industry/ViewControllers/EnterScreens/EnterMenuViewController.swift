@@ -6,6 +6,7 @@
 //
 
 import UIKit
+
 /**
  The EnterMenuViewController displays a menu for user authentication.
  
@@ -67,7 +68,6 @@ class EnterMenuViewController: UIViewController {
         btn.layer.masksToBounds = false
         btn.translatesAutoresizingMaskIntoConstraints = false
         btn.addTarget(self, action: #selector(BtnEnter_Click), for: .touchUpInside)
-        
         return btn
     }()
     
@@ -131,14 +131,15 @@ class EnterMenuViewController: UIViewController {
     // MARK: - View Controller Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        apiManagerIndustry = APIManagerIndustry()
         configureUI()
         registerForKeyboardNotification()
+        apiManagerIndustry = APIManagerIndustry()
     }
     
     deinit {
         NotificationCenter.default.removeObserver(self)
         apiManagerIndustry = nil
+        print("sucsses closed EnterMenuViewController")
     }
     
     // MARK: - Actions
@@ -172,15 +173,14 @@ class EnterMenuViewController: UIViewController {
         guard let login = usserLogin, let password = usserPassword,
               !login.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
               !password.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            showAlController(messege: "Вы не ввели данные для входа")
+            showAlController(messege: "Вы не ввели данные для входа".localized)
             activityIndicator.stopAnimating()
             blurEffectView.removeFromSuperview()
             return
         }
-        
         let authBody = AuthBody(email: login, password: password)
-        
-        apiManagerIndustry?.validateCredentials(credentials: authBody) {result in
+        apiManagerIndustry?.validateCredentials(credentials: authBody) {[weak self] result in
+            guard let self = self else {return}
             DispatchQueue.main.async {
                 switch result {
                 case .failure(let error):
@@ -197,7 +197,14 @@ class EnterMenuViewController: UIViewController {
                         navigationController.isNavigationBarHidden = true
                         activityIndicator.stopAnimating()
                         blurEffectView.removeFromSuperview()
-                        self.present(navigationController, animated: true, completion: nil)
+                        self.present(navigationController, animated: true, completion: {
+                                    self.delegete = nil
+                            NotificationCenter.default.removeObserver(self)
+                            self.apiManagerIndustry = nil
+                            self.view.willRemoveSubview(self.tblAuthentication)
+                            self.view.removeFromSuperview()
+                            self.removeFromParent()
+                                })
                     }, failer: { error in
                         self.showAlController(messege: error.localizedDescription)
                         activityIndicator.stopAnimating()
@@ -207,7 +214,7 @@ class EnterMenuViewController: UIViewController {
             }
         }
     }
-
+    
     /// Keyboard will show notification handler
     @objc
     private func kbWillShow(_ notification: Notification) {
@@ -321,7 +328,6 @@ extension EnterMenuViewController: UITableViewDataSource {
         cell.separatorInset = .zero
         return cell
     }
-    
 }
 
 // MARK: - Table View Data Source and Table View Delegate

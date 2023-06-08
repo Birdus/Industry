@@ -26,6 +26,7 @@
 
 import UIKit
 import FSCalendar
+import UserNotifications
 
 // MARK: - MenuTabBarControllerDelegate
 protocol CalendarTaskViewControllerDelegate: AnyObject {
@@ -150,12 +151,16 @@ class CalendarTaskViewController: UIViewController {
     // MARK: - Lifecycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
+        DispatchQueue.global().async{
+            self.notificationTask()
+        }
         configureUI()
     }
     
     deinit {
         clnEvent.removeGestureRecognizer(swipeUpCalendare)
         clnEvent.removeGestureRecognizer(swipeDownCalendare)
+        print("sucsses closed CalendarTaskViewController")
     }
     
     // MARK: - Action
@@ -225,6 +230,41 @@ class CalendarTaskViewController: UIViewController {
         self.present(alControl, animated: true, completion: nil)
     }
     
+    private func notificationTask() {
+        guard let dates = employee.laborCosts?.map({ $0.date }) else { return }
+        let notificationCenter = UNUserNotificationCenter.current()
+        var count = 0
+        for taskDate in dates {
+            // Вычисление даты для одного дня и одной недели до дедлайна
+            let calendar = Calendar.current
+            guard let oneDayBefore = calendar.date(byAdding: .day, value: -1, to: taskDate) else { continue }
+            guard let oneWeekBefore = calendar.date(byAdding: .day, value: -7, to: taskDate) else { continue }
+            
+            // Создание уведомления за один день до дедлайна
+            let contentOneDayBefore = UNMutableNotificationContent()
+            contentOneDayBefore.title = "Дедлайн задачи \(issues[count].taskName) через один день"
+            contentOneDayBefore.body = "У вас есть один день, чтобы завершить задачу"
+            contentOneDayBefore.sound = UNNotificationSound.default
+
+            let dateComponentsOneDayBefore = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: oneDayBefore)
+            let triggerOneDayBefore = UNCalendarNotificationTrigger(dateMatching: dateComponentsOneDayBefore, repeats: false)
+            let requestOneDayBefore = UNNotificationRequest(identifier: UUID().uuidString, content: contentOneDayBefore, trigger: triggerOneDayBefore)
+            notificationCenter.add(requestOneDayBefore)
+
+            // Создание уведомления за одну неделю до дедлайна
+            let contentOneWeekBefore = UNMutableNotificationContent()
+            contentOneWeekBefore.title = "Дедлайн задачи \(issues[count].taskName) через одну неделю"
+            contentOneWeekBefore.body = "У вас есть одна неделя, чтобы завершить задачу"
+            contentOneWeekBefore.sound = UNNotificationSound.default
+            let dateComponentsOneWeekBefore = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: oneWeekBefore)
+            let triggerOneWeekBefore = UNCalendarNotificationTrigger(dateMatching: dateComponentsOneWeekBefore, repeats: false)
+            let requestOneWeekBefore = UNNotificationRequest(identifier: UUID().uuidString, content: contentOneWeekBefore, trigger: triggerOneWeekBefore)
+            notificationCenter.add(requestOneWeekBefore)
+            count += 1
+        }
+
+    }
+    
     /// Configures the UI elements of the view controller.
     private func configureUI() {
         navigationController?.navigationBar.barTintColor = .white
@@ -290,9 +330,13 @@ extension CalendarTaskViewController: FSCalendarDelegate {
                         }, completionHandler: { (result: APIResult<Employee>) in
                             switch result {
                             case .success(_):
-                                print("Error this single object")
+                                DispatchQueue.main.async {
+                                    self.showAlController(message: INDNetworkingError.decodingFailed.errorMessage)
+                                }
                             case .failure(let error):
-                                print(error)
+                                DispatchQueue.main.async {
+                                    self.showAlController(message: error.localizedDescription)
+                                }
                             case .successArray(let employees):
                                 DispatchQueue.main.async {
                                 self.isViewLoad(false)
@@ -314,7 +358,7 @@ extension CalendarTaskViewController: FSCalendarDelegate {
                 case .successArray(_):
                     DispatchQueue.main.async {
                         self.isViewLoad(false)
-                        self.showAlController(message: "Error this array object")
+                        self.showAlController(message: INDNetworkingError.decodingFailed.errorMessage)
                     }
                 }
             })
@@ -424,9 +468,13 @@ extension CalendarTaskViewController: UITableViewDataSource {
                     }, completionHandler: { (result: APIResult<Employee>) in
                         switch result {
                         case .success(_):
-                            print("Error this single object")
+                            DispatchQueue.main.async {
+                                self.showAlController(message: INDNetworkingError.decodingFailed.errorMessage)
+                            }
                         case .failure(let error):
-                            print(error)
+                            DispatchQueue.main.async {
+                                self.showAlController(message: error.localizedDescription)
+                            }
                         case .successArray(let employees):
                             DispatchQueue.main.async {
                             self.isViewLoad(false)

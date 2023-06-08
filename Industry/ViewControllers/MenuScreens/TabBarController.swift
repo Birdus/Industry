@@ -66,13 +66,14 @@ class TabBarController: UITabBarController {
     deinit {
         apiManagerIndustry = nil
         delegete.removeAll()
+        print("sucsses closed TabBarController")
     }
     
     // MARK: - Privates func
     /// The func show alert when error in request to API
-    private func showAlController() {
+    private func showAlController(message: String) {
         let alControl:UIAlertController = {
-            let alControl = UIAlertController(title: "Ошибка".localized, message: INDNetworkingError.serverError.errorMessage, preferredStyle: .alert)
+            let alControl = UIAlertController(title: "Ошибка".localized, message: message, preferredStyle: .alert)
             let btnOk: UIAlertAction = {
                 let btn = UIAlertAction(title: "Ok".localized,
                                         style: .default,
@@ -128,9 +129,8 @@ class TabBarController: UITabBarController {
             switch result {
             case .success(let employees):
                 guard let employees = employees else {
-                    print("Failed to parse employees.")
                     DispatchQueue.main.async {
-                        self.showAlController()
+                        self.showAlController(message: INDNetworkingError.decodingFailed.errorMessage)
                     }
                     return
                 }
@@ -147,27 +147,23 @@ class TabBarController: UITabBarController {
                             completion()
                         }
                     case .failure(let error):
-                        print("Error: \(error)")
                         DispatchQueue.main.async {
-                            self.showAlController()
+                            self.showAlController(message: error.localizedDescription)
                         }
                     case .successArray(_):
-                        print("Expected single objects, but got array.")
                         DispatchQueue.main.async {
-                            self.showAlController()
+                            self.showAlController(message: INDNetworkingError.decodingFailed.errorMessage)
                         }
                     }
                 }
                
             case .failure(let error):
-                print("Error: \(error)")
                 DispatchQueue.main.async {
-                    self.showAlController()
+                    self.showAlController(message: error.localizedDescription)
                 }
             case .successArray(_):
-                print("Expected single object, but got array.")
                 DispatchQueue.main.async {
-                    self.showAlController()
+                    self.showAlController(message: INDNetworkingError.decodingFailed.errorMessage)
                 }
             }
         }
@@ -187,8 +183,10 @@ extension TabBarController: EnterMenuViewControllerDelegate {
             switch result {
             case .success(let employees):
                 guard let employees = employees else {
-                    print("Failed to parse employees.")
-                    failer(errorNetwork)
+                    DispatchQueue.main.async {
+                        self.showAlController(message: INDNetworkingError.decodingFailed.errorMessage)
+                        failer(errorNetwork)
+                    }
                     return
                 }
                 self.employee = employees
@@ -205,19 +203,27 @@ extension TabBarController: EnterMenuViewControllerDelegate {
                             completion()
                         }
                     case .failure(let error):
-                        print("Error: \(error)")
-                        failer(error)
+                        DispatchQueue.main.async {
+                            self.showAlController(message: error.localizedDescription)
+                            failer(error)
+                        }
                     case .successArray(_):
-                        print("Expected single objects, but got array.")
-                        failer(errorNetwork)
+                        DispatchQueue.main.async {
+                            self.showAlController(message: INDNetworkingError.decodingFailed.errorMessage)
+                            failer(errorNetwork)
+                        }
                     }
                 }
             case .failure(let error):
-                print("Error: \(error)")
-                failer(error)
+                DispatchQueue.main.async {
+                    self.showAlController(message: error.localizedDescription)
+                    failer(error)
+                }
             case .successArray(_):
-                print("Expected single object, but got array.")
-                failer(errorNetwork)
+                DispatchQueue.main.async {
+                    self.showAlController(message: INDNetworkingError.decodingFailed.errorMessage)
+                    failer(errorNetwork)
+                }
             }
         }
     }
@@ -235,8 +241,10 @@ extension TabBarController: AppDelegateDelegate {
             switch result {
             case .success(let employees):
                 guard let employees = employees else {
-                    print("Failed to parse employees.")
-                    failer(errorNetwork)
+                    DispatchQueue.main.async {
+                        self.showAlController(message: INDNetworkingError.decodingFailed.errorMessage)
+                        failer(errorNetwork)
+                    }
                     return
                 }
                 self.employee = employees
@@ -253,19 +261,27 @@ extension TabBarController: AppDelegateDelegate {
                         }
                         completion()
                     case .failure(let error):
-                        print("Error: \(error)")
-                        failer(error)
+                        DispatchQueue.main.async {
+                            self.showAlController(message: error.localizedDescription)
+                            failer(error)
+                        }
                     case .successArray(_):
-                        print("Expected single objects, but got array.")
-                        failer(errorNetwork)
+                        DispatchQueue.main.async {
+                            self.showAlController(message: INDNetworkingError.decodingFailed.errorMessage)
+                            failer(errorNetwork)
+                        }
                     }
                 }
             case .failure(let error):
-                print("Error: \(error)")
-                failer(error)
+                DispatchQueue.main.async {
+                    self.showAlController(message: error.localizedDescription)
+                    failer(error)
+                }
             case .successArray(_):
-                print("Expected single object, but got array.")
-                failer(errorNetwork)
+                DispatchQueue.main.async {
+                    self.showAlController(message: INDNetworkingError.decodingFailed.errorMessage)
+                    failer(errorNetwork)
+                }
             }
         }
     }
@@ -297,11 +313,13 @@ extension TabBarController: CalendarTaskViewControllerDelegate {
                     }
                 }
             case .failure(let error):
-                print("Error deleting item: \(error)")
-                self.showAlController()
+                DispatchQueue.main.async {
+                    self.showAlController(message: error.localizedDescription)
+                }
             case .successArray(_):
-                print("Expected single object, but got array.")
-                self.showAlController()
+                DispatchQueue.main.async {
+                    self.showAlController(message: INDNetworkingError.decodingFailed.errorMessage)
+                }
             }
         }
     }

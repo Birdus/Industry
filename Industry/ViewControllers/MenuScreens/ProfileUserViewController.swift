@@ -48,6 +48,10 @@ class ProfileUserViewController: UIViewController {
         view.backgroundColor = .white
     }
     
+    deinit {
+        print("sucsses closed ProfileUserViewController")
+    }
+    
     // MARK: - Private Methods
     func loadImage(from url: URL, completion: @escaping (UIImage?) -> Void) {
         let task = URLSession.shared.dataTask(with: url) { (data, response, error) in

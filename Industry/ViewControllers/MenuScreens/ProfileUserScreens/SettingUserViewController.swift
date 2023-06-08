@@ -179,7 +179,7 @@ extension SettingUserViewController: UITableViewDelegate {
             case 6:
                 vc = PrivacyPolicyViewController()
             case 7:
-                vc = RecovoryPasswordViewController()
+                vc = RecoveryUserPasswordViewController()
             default:
                 return
             }

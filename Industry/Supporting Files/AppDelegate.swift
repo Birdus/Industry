@@ -7,7 +7,8 @@
 
 import UIKit
 import JWTDecode
-import  KeychainSwift
+import KeychainSwift
+import UserNotifications
 
 protocol AppDelegateDelegate: AnyObject {
     func appDelegate(_ appDelegate: AppDelegate, didLoadEmployeeWith id: Int, completion: @escaping () -> Void, failure: @escaping (_ error: Error) -> Void)
@@ -20,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         if ProcessInfo.processInfo.arguments.contains("-resetUser") {
-                KeychainSwift().clear()
+            KeychainSwift().clear()
         }
         let apiManager = APIManagerIndustry()
         window = UIWindow(frame: UIScreen.main.bounds)
@@ -91,4 +92,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             })
         }
     }
+    
+    
 }
+

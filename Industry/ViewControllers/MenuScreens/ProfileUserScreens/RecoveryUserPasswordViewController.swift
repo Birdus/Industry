@@ -1,13 +1,13 @@
 //
-//  RecovoryPasswordViewController.swift
+//  RecoveryUserPasswordViewController.swift
 //  Industry
 //
-//  Created by  Даниил on 22.04.2023.
+//  Created by  Даниил on 08.06.2023.
 //
 
 import UIKit
 
-class RecovoryPasswordViewController: UIViewController {
+class RecoveryUserPasswordViewController: UIViewController {
     
     private var apiManagerIndustry: APIManagerIndustry? = APIManagerIndustry()
     
@@ -27,32 +27,6 @@ class RecovoryPasswordViewController: UIViewController {
         collectionView.layer.borderWidth = 0
         collectionView.layer.borderColor = UIColor.clear.cgColor
         return collectionView
-    }()
-    
-    private lazy var containerImg: UIView = {
-        let view = UIView()
-        view.accessibilityIdentifier = "containerImg"
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .white
-        view.layer.cornerRadius = 70
-        view.backgroundColor =  .white
-        view.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
-        view.layer.shadowOpacity = 0.2
-        view.layer.shadowRadius = 0.3
-        view.layer.shadowOffset = CGSize(width: 2, height: 2)
-        view.layer.masksToBounds = false
-        return view
-    }()
-    
-    /// An image view displaying the company logo.
-    private lazy var imgCompany: UIImageView = {
-        let icon = UIImageView()
-        icon.image = UIImage(named: "logoCompany.png")
-        icon.translatesAutoresizingMaskIntoConstraints = false
-        icon.contentMode = .scaleAspectFill
-        icon.clipsToBounds = true
-        icon.accessibilityIdentifier = "imgCompany"
-        return icon
     }()
     
     // Back button
@@ -125,22 +99,11 @@ class RecovoryPasswordViewController: UIViewController {
         navigationItem.leftBarButtonItem = btnBack
         view.backgroundColor = .white
         view.addSubview(collRecovery)
-        view.addSubview(containerImg)
-        containerImg.addSubview(imgCompany)
         NSLayoutConstraint.activate([
-            collRecovery.topAnchor.constraint(equalTo: containerImg.safeAreaLayoutGuide.bottomAnchor, constant: 10),
+            collRecovery.heightAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.heightAnchor, multiplier: 0.5),
             collRecovery.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor),
             collRecovery.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor),
-            collRecovery.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor),
-            // Company logo
-            containerImg.widthAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.widthAnchor, multiplier: 0.45),
-            containerImg.heightAnchor.constraint(equalTo: containerImg.widthAnchor),
-            containerImg.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 10),
-            containerImg.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor),
-            imgCompany.topAnchor.constraint(equalTo: containerImg.topAnchor, constant: 15),
-            imgCompany.leadingAnchor.constraint(equalTo: containerImg.leadingAnchor, constant: 15),
-            imgCompany.trailingAnchor.constraint(equalTo: containerImg.trailingAnchor, constant: -15),
-            imgCompany.bottomAnchor.constraint(equalTo: containerImg.bottomAnchor, constant: -15),
+            collRecovery.centerYAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerYAnchor),
         ])
     }
     
@@ -161,12 +124,12 @@ class RecovoryPasswordViewController: UIViewController {
 }
 
 // MARK: - UICollectionViewDelegate
-extension RecovoryPasswordViewController: UICollectionViewDelegate {
+extension RecoveryUserPasswordViewController: UICollectionViewDelegate {
     
 }
 
 // MARK: - UICollectionViewDataSource
-extension RecovoryPasswordViewController: UICollectionViewDataSource {
+extension RecoveryUserPasswordViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 1
     }
@@ -176,13 +139,12 @@ extension RecovoryPasswordViewController: UICollectionViewDataSource {
         cell.backgroundColor = .white
         cell.layer.cornerRadius = 10
         cell.delegete = self
-        cell.fillCell(isAutohorizion: false)
+        cell.fillCell(isAutohorizion: true)
         return cell
     }
 }
 
-extension RecovoryPasswordViewController: RecovoryPasswordCollViewCellDelegate {
-    
+extension RecoveryUserPasswordViewController: RecovoryPasswordCollViewCellDelegate {
     func recovoryPasswordCollViewCell(_ viewController: RecovoryPasswordCollViewCell, didChange values: RecovoryPasswordInfo, complition: @escaping () -> Void) {
         switch values {
         case .acssesCode(let code):
@@ -203,24 +165,8 @@ extension RecovoryPasswordViewController: RecovoryPasswordCollViewCellDelegate {
             })
         case .error(let messege):
             showAlController(messege: messege)
-        case .mail(let mail):
-            let resetPasswordEmail = ResetPasswordEmail(email: mail)
-            apiManagerIndustry?.post(request: ForecastType.ResetPassword, data: resetPasswordEmail, completionHandler: { result in
-                switch result {
-                case .success(_):
-                    DispatchQueue.main.async {
-                        complition()
-                    }
-                case .successArray(_):
-                    DispatchQueue.main.async {
-                        self.showAlController(messege: "Неверные данные!".localized)
-                    }
-                case .failure(let error):
-                    DispatchQueue.main.async {
-                        self.showAlController(messege: error.localizedDescription.localized)
-                    }
-                }
-            })
+        case .mail(_):
+            break
         }
     }
     

@@ -44,7 +44,7 @@ class SelectionListViewController: UIViewController {
     }()
     
     private lazy var btnSave: UIBarButtonItem = {
-        let btn = UIBarButtonItem(title: "Save", style: .plain, target: self, action: #selector(btnSave_Click))
+        let btn = UIBarButtonItem(title: "Сохранить".localized, style: .plain, target: self, action: #selector(btnSave_Click))
         btn.setTitleTextAttributes([
             NSAttributedString.Key.font : UIFont.monospacedDigitSystemFont(ofSize: CGFloat(UIScreen.main.bounds.width/8)/2.5, weight: .bold),
         ], for: .normal)
@@ -56,6 +56,10 @@ class SelectionListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
+    }
+    
+    deinit {
+        print("sucsses closed SelectionListViewController")
     }
     
     @objc

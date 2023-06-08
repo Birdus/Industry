@@ -34,6 +34,10 @@ class SplachViewController: UIViewController {
         configureUI()
     }
     
+    deinit {
+        print("sucsses closed SplachViewController")
+    }
+    
     // MARK: - Privates func
     private func configureUI() {
         view.backgroundColor = .white

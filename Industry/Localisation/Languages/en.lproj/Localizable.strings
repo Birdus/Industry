@@ -14,7 +14,7 @@
 "Готово" = "Save";
 "Отменить" = "Cancel";
 "Востановления пароля" = "Password Recovery";
-"Введите свой логин который используеться на вашем акаунте" = "Enter your username that is used on your account";
+"Введите свою почту который используеться на вашем акаунте" = "Enter your mail that is used on your account";
 "Назад" = "Back";
 "Календарь" = "Calendar";
 "Уведомления" = "Notifications";
@@ -37,14 +37,12 @@
 "Должность: " = "Role: ";
 "Выполнено задач" = "Completed tasks";
 "Количество часов" = "Number of hours";
-
 "Продолжительность статистики" = "Duration of statistics";
 "За неделю" = "Per week";
 "За месяц" = "Per month";
 "За год" = "Per Year";
 "Отмена" = "Cancel";
 "Затраченное время по часам" = "Time spent by the clock";
-
 "Понедельник" = "Monday";
 "Вторник" ="Tuesday";
 "Среда" = "Wednesday";
@@ -62,5 +60,23 @@
 "Безопасность" = "Security";
 "Политика кондифициальности" = "Privacy Policy";
 "Изменить пароль" = "Change password";
-
-
+"Вы не ввели данные для входа" = "You have not entered login data";
+"Неверные данные!" = "Invalid data!";
+"Успех" = "Success";
+"Пароль успешно изменён!" = "Password successfully changed!";
+"Изменить" = "Edit";
+"Coхранить" = "Save";
+"Не удалось преобразовать данные" = "Failed to convert data";
+"Не известный запрос" = "Unknown request";
+"Название задачи" = "Task Name";
+"Описание задачи" = "Task Description";
+"Дата окончание" = "End Date";
+"Колличество часов на задачу" = "Hours per Task";
+"Сотрудник" = "Employee";
+"Проект" = "Project";
+"Выход" = "Logout";
+"Востановления пароля" = "Password Recovery";
+"Ближайщие события" = "Upcoming events";
+"Нет информации" = "No information";
+"В задаче " = "In task ";
+" сотрудник(ов)" = " employee(s)";

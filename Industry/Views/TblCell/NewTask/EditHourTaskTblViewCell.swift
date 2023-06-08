@@ -74,7 +74,6 @@ class EditHourTaskTblViewCell: UITableViewCell {
             textField.deleteBackward()
         case 7:
             textField.resignFirstResponder()
-            print("Код: \(code)")
         default:
             break
         }

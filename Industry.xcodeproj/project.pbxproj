@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A02EDA4B29CB5D180084BEBA /* ErrorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A02EDA4A29CB5D180084BEBA /* ErrorManager.swift */; };
+		A02EDA4B29CB5D180084BEBA /* INDNetworkingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A02EDA4A29CB5D180084BEBA /* INDNetworkingError.swift */; };
 		A0569DE829DE85C500D25991 /* CalendarTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0569DE729DE85C500D25991 /* CalendarTaskViewController.swift */; };
 		A0569DF829DEAB9600D25991 /* Pods_Industry.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D744E5C0DB64F0E2CA68335B /* Pods_Industry.framework */; };
 		A070410A29CE014F00BD2839 /* JSONDecoables.swift in Sources */ = {isa = PBXBuildFile; fileRef = A070410929CE014F00BD2839 /* JSONDecoables.swift */; };
@@ -33,6 +33,10 @@
 		A529737E2A1BA33B00B4189F /* EditNameDiscribeTaskTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A529737D2A1BA33B00B4189F /* EditNameDiscribeTaskTblViewCell.swift */; };
 		A52973842A1CD87F00B4189F /* EditDateTaskTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52973832A1CD87F00B4189F /* EditDateTaskTblViewCell.swift */; };
 		A52D517729F95E20005DB97D /* Duration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52D517629F95E1F005DB97D /* Duration.swift */; };
+		A52EB8522A30A81200FCFEE0 /* RecovoryPasswordInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52EB8512A30A81200FCFEE0 /* RecovoryPasswordInfo.swift */; };
+		A52EB8572A30ACB200FCFEE0 /* resetPasswordEmailModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52EB8562A30ACB200FCFEE0 /* resetPasswordEmailModel.swift */; };
+		A52EB85C2A30AD4200FCFEE0 /* ConfirmResetPasswordModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52EB85B2A30AD4200FCFEE0 /* ConfirmResetPasswordModel.swift */; };
+		A52EB8612A310B9700FCFEE0 /* CodeResetPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52EB8602A310B9700FCFEE0 /* CodeResetPassword.swift */; };
 		A52F87972A1125FC00CE2E4E /* IndustryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52F87962A1125FC00CE2E4E /* IndustryTests.swift */; };
 		A52F87A12A11264200CE2E4E /* JSONModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52F87A02A11264200CE2E4E /* JSONModelTests.swift */; };
 		A52F87AD2A12A6DC00CE2E4E /* IndustryUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52F87AC2A12A6DC00CE2E4E /* IndustryUITests.swift */; };
@@ -58,6 +62,7 @@
 		A5AC14FD2A07C540008FB74C /* SetingUserTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5AC14FC2A07C540008FB74C /* SetingUserTblViewCell.swift */; };
 		A5AC15092A0BB50A008FB74C /* PrivacyPolicyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5AC15082A0BB50A008FB74C /* PrivacyPolicyViewController.swift */; };
 		A5AC15122A0FDE2B008FB74C /* ListCaledarTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5AC15112A0FDE2A008FB74C /* ListCaledarTblViewCell.swift */; };
+		A5D830CC2A325CF10094C75C /* RecoveryUserPasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D830CB2A325CF10094C75C /* RecoveryUserPasswordViewController.swift */; };
 		A5E0AF1D29B8F41E003B47D2 /* LocalizeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E0AF1C29B8F41E003B47D2 /* LocalizeController.swift */; };
 		A5E0AF4E29B8FEE6003B47D2 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A5E0AF5029B8FEE6003B47D2 /* Localizable.strings */; };
 /* End PBXBuildFile section */
@@ -82,7 +87,7 @@
 /* Begin PBXFileReference section */
 		2F6553E98AFD03F8A774538D /* Pods-Industry.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Industry.release.xcconfig"; path = "Target Support Files/Pods-Industry/Pods-Industry.release.xcconfig"; sourceTree = "<group>"; };
 		6796CD28BA100E9D4938C138 /* Pods-Industry.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Industry.debug.xcconfig"; path = "Target Support Files/Pods-Industry/Pods-Industry.debug.xcconfig"; sourceTree = "<group>"; };
-		A02EDA4A29CB5D180084BEBA /* ErrorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorManager.swift; sourceTree = "<group>"; };
+		A02EDA4A29CB5D180084BEBA /* INDNetworkingError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = INDNetworkingError.swift; sourceTree = "<group>"; };
 		A0569DE729DE85C500D25991 /* CalendarTaskViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarTaskViewController.swift; sourceTree = "<group>"; };
 		A0569E0129DEC6F500D25991 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A070410929CE014F00BD2839 /* JSONDecoables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONDecoables.swift; sourceTree = "<group>"; };
@@ -110,6 +115,10 @@
 		A529737D2A1BA33B00B4189F /* EditNameDiscribeTaskTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditNameDiscribeTaskTblViewCell.swift; sourceTree = "<group>"; };
 		A52973832A1CD87F00B4189F /* EditDateTaskTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditDateTaskTblViewCell.swift; sourceTree = "<group>"; };
 		A52D517629F95E1F005DB97D /* Duration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Duration.swift; sourceTree = "<group>"; };
+		A52EB8512A30A81200FCFEE0 /* RecovoryPasswordInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecovoryPasswordInfo.swift; sourceTree = "<group>"; };
+		A52EB8562A30ACB200FCFEE0 /* resetPasswordEmailModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = resetPasswordEmailModel.swift; sourceTree = "<group>"; };
+		A52EB85B2A30AD4200FCFEE0 /* ConfirmResetPasswordModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmResetPasswordModel.swift; sourceTree = "<group>"; };
+		A52EB8602A310B9700FCFEE0 /* CodeResetPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeResetPassword.swift; sourceTree = "<group>"; };
 		A52F87942A1125FC00CE2E4E /* IndustryTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IndustryTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A52F87962A1125FC00CE2E4E /* IndustryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndustryTests.swift; sourceTree = "<group>"; };
 		A52F87982A1125FC00CE2E4E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -143,6 +152,7 @@
 		A5AC14FC2A07C540008FB74C /* SetingUserTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetingUserTblViewCell.swift; sourceTree = "<group>"; };
 		A5AC15082A0BB50A008FB74C /* PrivacyPolicyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyPolicyViewController.swift; sourceTree = "<group>"; };
 		A5AC15112A0FDE2A008FB74C /* ListCaledarTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListCaledarTblViewCell.swift; sourceTree = "<group>"; };
+		A5D830CB2A325CF10094C75C /* RecoveryUserPasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryUserPasswordViewController.swift; sourceTree = "<group>"; };
 		A5E0AF1C29B8F41E003B47D2 /* LocalizeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizeController.swift; sourceTree = "<group>"; };
 		A5E0AF4F29B8FEE6003B47D2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		D744E5C0DB64F0E2CA68335B /* Pods_Industry.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Industry.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -193,6 +203,7 @@
 				A5831B2629BBC91700A3A8F8 /* AuthenticationTableRow.swift */,
 				A0AF115A29E06D5700FBA975 /* NotificationCollRow.swift */,
 				A52D517629F95E1F005DB97D /* Duration.swift */,
+				A52EB8512A30A81200FCFEE0 /* RecovoryPasswordInfo.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -219,7 +230,7 @@
 		A070411029CE298D00BD2839 /* DataControlsAPI */ = {
 			isa = PBXGroup;
 			children = (
-				A02EDA4A29CB5D180084BEBA /* ErrorManager.swift */,
+				A02EDA4A29CB5D180084BEBA /* INDNetworkingError.swift */,
 				A0CF9F7E29CDF65200FE6A72 /* FinalUrll.swift */,
 				A0CF9F8129CDF69800FE6A72 /* ForecastType.swift */,
 				A0CF9F8429CDF6C300FE6A72 /* HttpMetods.swift */,
@@ -283,6 +294,9 @@
 				A070410929CE014F00BD2839 /* JSONDecoables.swift */,
 				A53140282A22371F009C557B /* AuthBodyModel.swift */,
 				A53140322A223771009C557B /* TokenInfo.swift */,
+				A52EB8562A30ACB200FCFEE0 /* resetPasswordEmailModel.swift */,
+				A52EB85B2A30AD4200FCFEE0 /* ConfirmResetPasswordModel.swift */,
+				A52EB8602A310B9700FCFEE0 /* CodeResetPassword.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -376,6 +390,7 @@
 		A578852E29F6B9CA00D26455 /* ProfileUserScreens */ = {
 			isa = PBXGroup;
 			children = (
+				A5D830CB2A325CF10094C75C /* RecoveryUserPasswordViewController.swift */,
 				A585FF1829BA178C00A0F0AF /* NotificationListViewController.swift */,
 				A578852529F6B7DE00D26455 /* StatisticUserViewController.swift */,
 				A578852B29F6B9C400D26455 /* SettingUserViewController.swift */,
@@ -604,6 +619,7 @@
 			files = (
 				A0AF115B29E06D5700FBA975 /* NotificationCollRow.swift in Sources */,
 				A0E4AA4829A8E46F00BDB4EF /* EnterMenuViewController.swift in Sources */,
+				A52EB8572A30ACB200FCFEE0 /* resetPasswordEmailModel.swift in Sources */,
 				A578852929F6B82E00D26455 /* DocumentFlowViewController.swift in Sources */,
 				A529737E2A1BA33B00B4189F /* EditNameDiscribeTaskTblViewCell.swift in Sources */,
 				A578852C29F6B9C400D26455 /* SettingUserViewController.swift in Sources */,
@@ -613,14 +629,18 @@
 				A529736F2A1AE0EC00B4189F /* NewTaskViewController.swift in Sources */,
 				A578852329F6887700D26455 /* MenuItemTblViewCell.swift in Sources */,
 				A07D45EC29C78F9000420463 /* APIClient .swift in Sources */,
+				A52EB8612A310B9700FCFEE0 /* CodeResetPassword.swift in Sources */,
 				A5833D2129C0990200387240 /* ProfileUserViewController.swift in Sources */,
 				A528206629F3EF19002FA269 /* RecovoryPasswordViewController.swift in Sources */,
+				A52EB8522A30A81200FCFEE0 /* RecovoryPasswordInfo.swift in Sources */,
+				A52EB85C2A30AD4200FCFEE0 /* ConfirmResetPasswordModel.swift in Sources */,
 				A0F8A7BD29CC78DB00C81D80 /* APIManager.swift in Sources */,
 				A52D517729F95E20005DB97D /* Duration.swift in Sources */,
 				A578851B29F67E0D00D26455 /* HeadMenuTblViewCell.swift in Sources */,
 				A5AC15092A0BB50A008FB74C /* PrivacyPolicyViewController.swift in Sources */,
 				A07D45DE29C78DFF00420463 /* ProjectModel.swift in Sources */,
 				A528206929F3F244002FA269 /* RecovoryPasswordCollViewCell.swift in Sources */,
+				A5D830CC2A325CF10094C75C /* RecoveryUserPasswordViewController.swift in Sources */,
 				A5E0AF1D29B8F41E003B47D2 /* LocalizeController.swift in Sources */,
 				A5313FFE2A1E6A40009C557B /* EditHourTaskTblViewCell.swift in Sources */,
 				A531401A2A1F94F5009C557B /* SelectionListViewController.swift in Sources */,
@@ -641,7 +661,7 @@
 				A07D45E829C78E3200420463 /* DivisionModel.swift in Sources */,
 				A5AC15122A0FDE2B008FB74C /* ListCaledarTblViewCell.swift in Sources */,
 				A0CF9F7F29CDF65200FE6A72 /* FinalUrll.swift in Sources */,
-				A02EDA4B29CB5D180084BEBA /* ErrorManager.swift in Sources */,
+				A02EDA4B29CB5D180084BEBA /* INDNetworkingError.swift in Sources */,
 				A531401F2A1FA6B1009C557B /* ListTblViewCell.swift in Sources */,
 				A585FF1929BA178C00A0F0AF /* NotificationListViewController.swift in Sources */,
 				A585FF1C29BA1A3600A0F0AF /* NotificationUserViewCell.swift in Sources */,

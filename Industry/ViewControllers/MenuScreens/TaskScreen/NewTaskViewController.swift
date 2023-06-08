@@ -89,6 +89,7 @@ class NewTaskViewController: UIViewController {
     deinit {
         NotificationCenter.default.removeObserver(self)
         apiManagerIndustry = nil
+        print("sucsses closed NewTaskViewController")
     }
     
     // MARK: - Acrion
@@ -139,7 +140,7 @@ class NewTaskViewController: UIViewController {
             case .failure(let error):
                 self.handleError(activityIndicator, blurEffectView, message: "Не удалось загрузить задачу: \(error.localizedDescription)")
             case .successArray(_):
-                self.handleError(activityIndicator, blurEffectView, message: "Unexpected response")
+                self.handleError(activityIndicator, blurEffectView, message: "Не известный запрос".localized)
             }
         }
     }
@@ -182,7 +183,7 @@ class NewTaskViewController: UIViewController {
             case .failure(let error):
                 self.handleError(activityIndicator, blurEffectView, message: "Не удалось обновить задачу: \(error.localizedDescription)")
             case .successArray(_):
-                self.handleError(activityIndicator, blurEffectView, message: "Unexpected response")
+                self.handleError(activityIndicator, blurEffectView, message: "Не известный запрос")
             }
         }
     }
@@ -261,11 +262,15 @@ class NewTaskViewController: UIViewController {
             }, completionHandler: { (result: APIResult<Employee>) in
                 switch result {
                 case .success(_):
-                    print("Error this single object")
-                    compleat()
+                    DispatchQueue.main.async {
+                        self.showAlController(message: INDNetworkingError.badRequest.errorMessage)
+                        compleat()
+                    }
                 case .failure(let error):
-                    print(error)
-                    compleat()
+                    DispatchQueue.main.async {
+                        self.showAlController(message: error.localizedDescription)
+                        compleat()
+                    }
                 case .successArray(let employees):
                     self.delegete.newTaskViewController(self, didLoad: employees, selected: employee)
                     compleat()
@@ -277,11 +282,15 @@ class NewTaskViewController: UIViewController {
             }, completionHandler: { (result: APIResult<Employee>) in
                 switch result {
                 case .success(_):
-                    print("Error this single object")
-                    compleat()
+                    DispatchQueue.main.async {
+                        self.showAlController(message: INDNetworkingError.badRequest.errorMessage)
+                        compleat()
+                    }
                 case .failure(let error):
-                    print(error)
-                    compleat()
+                    DispatchQueue.main.async {
+                        self.showAlController(message: error.localizedDescription)
+                        compleat()
+                    }
                 case .successArray(let employees):
                     self.delegete.newTaskViewController(self, didLoad: employees, selected: nil)
                     compleat()
@@ -296,11 +305,15 @@ class NewTaskViewController: UIViewController {
         }, completionHandler: { (result: APIResult<Project>) in
             switch result {
             case .success(_):
-                print("Error this single object")
-                compleat()
+                DispatchQueue.main.async {
+                    self.showAlController(message: INDNetworkingError.badRequest.localizedDescription)
+                    compleat()
+                }
             case .failure(let error):
-                print(error)
-                compleat()
+                DispatchQueue.main.async {
+                    self.showAlController(message: error.localizedDescription)
+                    compleat()
+                }
             case .successArray(let project):
                 self.delegete.newTaskViewController(self, didLoad: project)
                 compleat()
