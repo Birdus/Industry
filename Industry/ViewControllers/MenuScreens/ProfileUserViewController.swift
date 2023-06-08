@@ -49,7 +49,26 @@ class ProfileUserViewController: UIViewController {
     }
     
     // MARK: - Private Methods
-    
+    func loadImage(from url: URL, completion: @escaping (UIImage?) -> Void) {
+        let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+            if let error = error {
+                print("Error loading image: \(error)")
+                completion(nil)
+                return
+            }
+            
+            guard let data = data else {
+                print("No data returned from server")
+                completion(nil)
+                return
+            }
+            
+            let image = UIImage(data: data)
+            completion(image)
+        }
+        
+        task.resume()
+    }
     /**
      Configures the view controller's UI.
      */
@@ -250,6 +269,15 @@ extension ProfileUserViewController: TabBarControllerDelegate {
     
     func tabBarController(_ tabBarController: TabBarController, didSelectTabAtIndex index: Int, issues datas: [Issues], employee data: Employee) {
         self.employee = data
+        if let url = URL(string: "\(ForecastType.Project.baseURL)\(employee.iconPath)") {
+             loadImage(from: url) { image in
+                DispatchQueue.main.async {
+                    if let img = image {
+                        self.imgChange = img
+                    }
+                }
+            }
+        }
         self.tblMenu.reloadData()
     }
 }

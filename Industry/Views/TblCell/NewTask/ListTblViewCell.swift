@@ -52,9 +52,10 @@ class ListEmployeesTblViewCell: UITableViewCell {
         delegete.listEmployeesTblViewCell(self, didSelected: idEmployee, isEnclude: sender.isOn)
     }
     // MARK: - Public func
-    public func fillTable(employee fullName: String,employee id: Int) {
+    public func fillTable(employee fullName: String,employee id: Int, isInclude: Bool) {
         idEmployee = id
         lblEmployee.text = fullName
+        swhEmployee.isOn = isInclude
     }
     
     // MARK: - Private func

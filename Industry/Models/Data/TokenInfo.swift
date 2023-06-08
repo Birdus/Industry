@@ -10,4 +10,5 @@ import Foundation
 struct TokenInfo {
     let token: String
     let expiresAt: Int64
+    let notValidBefore: Int64
 }

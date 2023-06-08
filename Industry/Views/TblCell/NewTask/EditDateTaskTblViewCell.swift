@@ -8,6 +8,10 @@
 import UIKit
 
 protocol EditDateTblViewCellDelegate: AnyObject {
+    /// This method is called when the date in the cell has changed.
+       /// - Parameters:
+       ///   - cell: The cell in which the date has changed.
+       ///   - value: The new date value.
     func editDateTblViewCell(_ cell: EditDateTaskTblViewCell, didChanged value: Date)
 }
 
@@ -105,16 +109,33 @@ class EditDateTaskTblViewCell: UITableViewCell {
      - Parameter palcholder: The palcholder of the add task item to display.
      - Parameter iconName: The name of the image to use as the add task item icon.
      */
-    func fiillTable(_ palcholder: String, _ iconName: UIImage?) {
-        txtFld.placeholder = palcholder
+    func fillTable(placeholder: String?, date: Date?, iconName: UIImage?) {
+        setupPlaceholder(placeholder)
+        setupDate(date)
         imgIcon.image = iconName
-        let placeholderAttributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: UIColor.lightGray,
-        ]
-        txtFld.attributedPlaceholder = NSAttributedString(string: palcholder, attributes: placeholderAttributes)
     }
     
     // MARK: - Private func
+    
+    private func setupPlaceholder(_ text: String?) {
+        guard let text = text else { return }
+        
+        let placeholderAttributes: [NSAttributedString.Key: Any] = [.foregroundColor: UIColor.lightGray]
+        txtFld.attributedPlaceholder = NSAttributedString(string: text, attributes: placeholderAttributes)
+        txtFld.placeholder = text
+    }
+
+    private func setupDate(_ date: Date?) {
+        guard let date = date else { return }
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd.MM.yyyy"
+        txtFld.text = dateFormatter.string(from: date)
+        
+        let placeholder = "Дата окончание задачи".localized
+        setupPlaceholder(placeholder)
+    }
+    
     private func configureUI() {
         self.contentView.addSubview(containerIcon)
         self.contentView.addSubview(txtFld)
@@ -141,13 +162,14 @@ class EditDateTaskTblViewCell: UITableViewCell {
 
 // MARK: Text Field Delegate
 extension EditDateTaskTblViewCell: UITextFieldDelegate {
-    
+    /// Called when the text field begins editing.
     func textFieldDidBeginEditing(_ textField: UITextField) {
         if textField == txtFld {
             txtFld.inputAccessoryView = tlBarDatePic
         }
     }
     
+    /// Called when the text field ends editing.
     func textFieldDidEndEditing(_ textField: UITextField) {
         if textField == txtFld {
             txtFld.inputAccessoryView = nil
@@ -155,6 +177,7 @@ extension EditDateTaskTblViewCell: UITextFieldDelegate {
         }
     }
     
+    /// Asks the delegate if the text field should process the pressing of the return button.
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField == txtFld {
             textField.resignFirstResponder()
@@ -162,4 +185,28 @@ extension EditDateTaskTblViewCell: UITextFieldDelegate {
         }
         return true
     }
+}
+
+// MARK: NewTaskViewControllerDelegate
+extension EditDateTaskTblViewCell: NewTaskViewControllerDelegate {
+    func newTaskViewController(_ viewController: NewTaskViewController, didLoad values: [Employee], selected employees: [Employee]?) {
+        return
+    }
+    
+    func newTaskViewController(_ viewController: NewTaskViewController, isChande values: Bool) {
+        return
+    }
+    
+    func newTaskViewController(_ viewController: NewTaskViewController, didClosed: Bool) {
+        if didClosed {
+            delegete.editDateTblViewCell(self, didChanged: picDateTime.date)
+        }
+    }
+    
+    func newTaskViewController(_ viewController: NewTaskViewController, didLoad values: [Project]) {
+        return
+    }
+    
+    /// This method is called when the NewTaskViewController is closed.
+   
 }

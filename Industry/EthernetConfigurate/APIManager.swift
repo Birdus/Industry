@@ -103,6 +103,36 @@ final class APIManagerIndustry: APIManager {
         task.resume()
     }
     
+    func put<T>(request: ForecastType, data: T, completionHandler: @escaping (APIResult<Int>) -> Void) where T : Encodable {
+        refreshTokens { result in
+            if case .failure(let error) = result {
+                completionHandler(.failure(error))
+            }
+        }
+        var requestToPut = request.requestWitchToken
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        guard let data = try? encoder.encode(data) else {
+            let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.encodingFailed.errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.encodingFailed.errorMessage])
+            completionHandler(.failure(error))
+            return
+        }
+        requestToPut.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        requestToPut.httpMethod = HttpMethodsString.put.stringValue
+        requestToPut.httpBody = data
+        let task = JSONTaskWith(request: requestToPut, HTTPMethod: HttpMethodsString.put) { (json, response, error, _) in
+            guard let httpResponse = response,
+                  httpResponse.statusCode == 200 else {
+                let error = error ?? NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.unexpectedResponse(message: "Error parsing JSON").errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.unexpectedResponse(message: "Error parsing JSON").errorMessage])
+                completionHandler(.failure(error))
+                return
+            }
+            completionHandler(.success(httpResponse.statusCode))
+        }
+        task.resume()
+    }
+
+    
     func post<T>(request: ForecastType, data: T, completionHandler: @escaping (APIResult<Int>) -> Void) where T : Encodable {
         refreshTokens { result in
             if case .failure(let error) = result {
@@ -221,9 +251,9 @@ final class APIManagerIndustry: APIManager {
                 if let jsonString = String(data: data, encoding: .utf8) {
                     let jwt = try decode(jwt: jsonString)
                     let idEmployee = jwt.claim(name: "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").integer
-                    let exp = jwt.claim(name: "exp").integer
-                    if let id = idEmployee, let exp = exp {
-                        self.saveAuthTokens(tokens: TokenInfo(token: jsonString, expiresAt: Int64(exp)))
+                    if let id = idEmployee, let exp = jwt.claim(name: "exp").integer,
+                       let nbf = jwt.claim(name: "nbf").integer {
+                        self.saveAuthTokens(tokens: TokenInfo(token: jsonString, expiresAt: Int64(exp), notValidBefore: Int64(nbf)))
                         self.saveAuthBody(authBody: credentials)
                         self.accessToken = self.getAccessToken()
                         completion(.success(id))
@@ -309,8 +339,9 @@ final class APIManagerIndustry: APIManager {
             
             if let jsonString = String(data: data, encoding: .utf8),
                let jwt = try? decode(jwt: jsonString),
-               let exp = jwt.claim(name: "exp").integer {
-                self.saveAuthTokens(tokens: TokenInfo(token: jsonString, expiresAt: Int64(exp)))
+               let exp = jwt.claim(name: "exp").integer,
+               let nbf = jwt.claim(name: "nbf").integer {
+                self.saveAuthTokens(tokens: TokenInfo(token: jsonString, expiresAt: Int64(exp), notValidBefore: Int64(nbf)))
                 self.saveAuthBody(authBody: authBody)
                 self.accessToken = self.getAccessToken()
                 completion(.success(()))
@@ -322,19 +353,39 @@ final class APIManagerIndustry: APIManager {
         task.resume()
     }
     
+    func loadImage(from url: URL, completion: @escaping (UIImage?) -> Void) {
+        let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+            if let error = error {
+                print("Error loading image: \(error)")
+                completion(nil)
+                return
+            }
+            
+            guard let data = data else {
+                print("No data returned from server")
+                completion(nil)
+                return
+            }
+            
+            let image = UIImage(data: data)
+            completion(image)
+        }
+        
+        task.resume()
+    }
+
     /**
      Checks if re-authorization is needed based on the expiration of the access token.
      - Returns: A boolean value indicating whether re-authorization is needed.
      */
     private var needReAuth: Bool {
-        guard let expiresAt = accessToken?.expiresAt else {
+        guard let expiresAt = accessToken?.expiresAt,
+              let nbf = accessToken?.notValidBefore else {
             return true
         }
-        let currentTimestamp = Date().timeIntervalSince1970
-        let currentTimestamps = TimeInterval(currentTimestamp)
+        let createJWTTimestamps = TimeInterval(nbf)
         let expiresAtTimestamp = TimeInterval(expiresAt)
-
-        return currentTimestamps > expiresAtTimestamp
+        return createJWTTimestamps > expiresAtTimestamp
     }
 
     /**
@@ -355,10 +406,8 @@ final class APIManagerIndustry: APIManager {
      */
     init(sessionConfiguration: URLSessionConfiguration) {
         self.sessionConfiguration = sessionConfiguration
-        accessToken = TokenInfo(token: "", expiresAt: 0)
-        refreshToken = TokenInfo(token: "", expiresAt: 0)
+        accessToken = TokenInfo(token: "", expiresAt: 0, notValidBefore: 0)
         accessToken = getAccessToken()
-        refreshToken = getRefreshToken()
     }
     
     /**
@@ -371,23 +420,21 @@ final class APIManagerIndustry: APIManager {
 
 extension APIManagerIndustry: KeychainWorkerProtocol {
     
+    
     static var KEY_AUTH_BODY_EMAIL: String = "key_auth_body_email"
     static var KEY_AUTH_BODY_PASSWORD: String = "key_auth_body_password"
     static let KEY_ACCESS_TOKEN = "auth_token"
     static let KEY_ACCESS_TOKEN_EXPIRE = "auth_token_expire"
-    static let KEY_REFRESH_TOKEN = "refresh_token"
-    static let KEY_REFRESH_TOKEN_EXPIRE = "refresh_token_expire"
     static let ACCESS_TOKEN_LIFE_THRESHOLD_SECONDS: Int64 = 3600
+    static var KEY_ACCESS_TOKEN_NBF: String = "key_access_token_nbf"
     
     private func onTokensRefreshed(tokens: TokenInfo) {
         saveAuthTokens(tokens: tokens)
         accessToken = getAccessToken()
-        refreshToken = getRefreshToken()
     }
     
     private func dropToken() {
-        accessToken = TokenInfo(token: "", expiresAt: 0)
-        refreshToken = TokenInfo(token: "", expiresAt: 0)
+        accessToken = TokenInfo(token: "", expiresAt: 0, notValidBefore: 0)
         dropTokens()
     }
 }

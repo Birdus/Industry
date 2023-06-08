@@ -60,25 +60,32 @@ class EditEmployeeAndTaskTaskTblViewCell: UITableViewCell {
      - Parameter palcholder: The palcholder of the add task item to display.
      - Parameter iconName: The name of the image to use as the add task item icon.
      */
-    func fiillTable(_ iconName: UIImage?, _ placholder: String?, employee: [Employee]?) {
-        if let placholders = placholder {
+    func fillTable(_ iconName: UIImage?, _ placeholder: String?, employee: [Employee]?) {
+        if let placeholders = placeholder {
             lblInfo.textColor = UIColor.lightGray
-            lblInfo.text = placholders.localized
-        } else if let employee = employee {
-            lblInfo.text = "В задаче \(employee.count) сотрудник(ов)"
+            lblInfo.text = placeholders.localized
+        } else if let employeeCount = employee?.count {
+            lblInfo.textColor = UIColor.white
+            lblInfo.text = "В задаче \(employeeCount) сотрудник(ов)"
+        } else {
+            lblInfo.text = "Нет информации" // или установите любое значение по умолчанию
         }
         imgIcon.image = iconName
     }
-    
-    func fiillTable(_ iconName: UIImage?, _ placholder: String?, project: Project?) {
-        if let placholders = placholder {
+
+    func fillTable(_ iconName: UIImage?, _ placeholder: String?, project: Project?) {
+        if let placeholders = placeholder {
             lblInfo.textColor = UIColor.lightGray
-            lblInfo.text = placholders.localized
-        } else if let project = project {
-            lblInfo.text = "\(project.projectName)".localized
+            lblInfo.text = placeholders.localized
+        } else if let projectName = project?.projectName {
+            lblInfo.textColor = UIColor.white
+            lblInfo.text = "\(projectName)".localized
+        } else {
+            lblInfo.text = "Нет информации" // или установите любое значение по умолчанию
         }
         imgIcon.image = iconName
     }
+
     
     // MARK: - Private func
     private func configureUI() {
@@ -105,20 +112,3 @@ class EditEmployeeAndTaskTaskTblViewCell: UITableViewCell {
     }
 }
 
-extension EditEmployeeAndTaskTaskTblViewCell: UITextViewDelegate {
-    // Метод делегата UITextView, вызывается при начале редактирования текста
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        if textView.textColor == UIColor.lightGray {
-            textView.text = nil
-            textView.textColor = UIColor.white
-        }
-    }
-    
-    // Метод делегата UITextView, вызывается при окончании редактирования текста
-    func textViewDidEndEditing(_ textView: UITextView) {
-        if textView.text.isEmpty {
-            textView.text = "Сотрудник".localized
-            textView.textColor = UIColor.lightGray
-        }
-    }
-}

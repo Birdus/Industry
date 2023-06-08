@@ -36,7 +36,7 @@ protocol CalendarTaskViewControllerDelegate: AnyObject {
      - viewController: The calendar view controller.
      - witchId: The id where deleate data.
      */
-    func calendarTaskViewController(_ viewController: UIViewController, didDeleateData witchId: Int)
+    func calendarTaskViewController(_ viewController: CalendarTaskViewController, didDeleateData witchId: Int)
     
     /**
      Called when a  CalendarTaskViewController  need to action to Ui and data .
@@ -44,9 +44,12 @@ protocol CalendarTaskViewControllerDelegate: AnyObject {
      - Parameters:
      - viewController: The calendar view controller.
      */
-    func calendarTaskViewController(_ viewController: UIViewController)
-}
+    func calendarTaskViewController(_ viewController: CalendarTaskViewController)
     
+    func calendarTaskViewController(_ viewController: CalendarTaskViewController, didLoadEmployees: [Employee], isues: Issues, laborCoast: LaborCost, project: Project)
+    
+}
+
 class CalendarTaskViewController: UIViewController {
     // MARK: - Properties
     /// List of issue tasks
@@ -128,6 +131,22 @@ class CalendarTaskViewController: UIViewController {
         return swipe
     }()
     
+    private lazy var activityIndicator: UIActivityIndicatorView = {
+        let activityIndicator = UIActivityIndicatorView(style: .gray)
+        return activityIndicator
+    }()
+    
+    private lazy var blurEffectView: UIVisualEffectView = {
+        let blurEffect = UIBlurEffect(style: .light)
+        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+        activityIndicator.center = view.center
+        activityIndicator.hidesWhenStopped = true
+        blurEffectView.frame = view.bounds
+        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        blurEffectView.alpha = 0.6
+        return blurEffectView
+    }()
+    
     // MARK: - Lifecycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -178,6 +197,34 @@ class CalendarTaskViewController: UIViewController {
     }
     
     // MARK: - Private func
+    
+    
+    private func isViewLoad(_ isShow: Bool) {
+        if isShow {
+            blurEffectView.contentView.addSubview(activityIndicator)
+            activityIndicator.startAnimating()
+            self.view.addSubview(blurEffectView)
+        } else {
+            activityIndicator.stopAnimating()
+            blurEffectView.removeFromSuperview()
+        }
+    }
+    
+    private func showAlController(message: String) {
+        let alControl:UIAlertController = {
+            let alControl = UIAlertController(title: "Ошибка".localized, message: message, preferredStyle: .alert)
+            let btnOk: UIAlertAction = {
+                let btn = UIAlertAction(title: "Ok".localized,
+                                        style: .default,
+                                        handler: nil )
+                return btn
+            }()
+            alControl.addAction(btnOk)
+            return alControl
+        }()
+        self.present(alControl, animated: true, completion: nil)
+    }
+    
     /// Configures the UI elements of the view controller.
     private func configureUI() {
         navigationController?.navigationBar.barTintColor = .white
@@ -210,8 +257,8 @@ class CalendarTaskViewController: UIViewController {
             tblListCalendar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 5),
             tblListCalendar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -5),
             tblListCalendar.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -(self.tabBarController?.tabBar.frame.height ?? 0) - 5)
-
-
+            
+            
         ])
     }
 }
@@ -220,10 +267,60 @@ class CalendarTaskViewController: UIViewController {
 extension CalendarTaskViewController: FSCalendarDelegate {
     /// Handler for when a user selects a date on the calendar.
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "EEEE MM-dd-YYYY"
-        let str = formatter.string(from: date)
-        print("\(str)")
+        
+        isViewLoad(true)
+        let selectedDates = employee.laborCosts?.filter ({
+            let calendar = Calendar.current
+            let componentsSelf = calendar.dateComponents([.year, .month, .day], from: $0.date)
+            let componentsDate = calendar.dateComponents([.year, .month, .day], from: date)
+            return componentsSelf.month == componentsDate.month && componentsSelf.day == componentsDate.day
+        })
+        
+        let isuses = issues.first(where: {selectedDates?.first?.issueId == $0.id})
+        if let selectedDate = selectedDates?.first,
+           let isuses = isuses{
+            let apiManager = APIManagerIndustry()
+            apiManager.fetch(request: ForecastType.ProjectWitchId(id: isuses.projectId), parse: { (json) -> Project? in
+                return Project.decodeJSON(json: json)
+            }, completionHandler: { (result: APIResult<Project>) in
+                switch result {
+                case .success(let project):
+                        apiManager.fetch(request: ForecastType.Employee, parse: { (json) -> [Employee]? in
+                            return json.compactMap({Employee.decodeJSON(json: $0)})
+                        }, completionHandler: { (result: APIResult<Employee>) in
+                            switch result {
+                            case .success(_):
+                                print("Error this single object")
+                            case .failure(let error):
+                                print(error)
+                            case .successArray(let employees):
+                                DispatchQueue.main.async {
+                                self.isViewLoad(false)
+                                let vc = NewTaskViewController()
+                                self.delegete = vc
+                                vc.delegete = self
+                                self.delegete.calendarTaskViewController(self, didLoadEmployees: employees, isues: isuses, laborCoast: selectedDate, project: project)
+                                vc.modalPresentationStyle = .custom
+                                vc.transitioningDelegate = self
+                                self.present(vc, animated: true, completion: nil)
+                                }
+                            }
+                        })
+                case .failure(let error):
+                    DispatchQueue.main.async {
+                        self.isViewLoad(false)
+                        self.showAlController(message: error.localizedDescription)
+                    }
+                case .successArray(_):
+                    DispatchQueue.main.async {
+                        self.isViewLoad(false)
+                        self.showAlController(message: "Error this array object")
+                    }
+                }
+            })
+        } else {
+            isViewLoad(false)
+        }
     }
     
     func calendar(_ calendar: FSCalendar, boundingRectWillChange bounds: CGRect, animated: Bool) {
@@ -259,28 +356,6 @@ extension CalendarTaskViewController: FSCalendarDelegateAppearance {
     }
     
     func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, titleDefaultColorFor date: Date) -> UIColor? {
-        guard let laborCosts = employee.laborCosts else { return .white }
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        let currentDateString = formatter.string(from: Date())
-        let currentDate = formatter.date(from: currentDateString)!
-        let dateString = formatter.string(from: date)
-        let calendar = Calendar.current
-        for laborCost in laborCosts {
-            if formatter.string(from: laborCost.date) == dateString {
-                let laborCostDate = formatter.date(from: formatter.string(from: laborCost.date))!
-                let components = calendar.dateComponents([.day], from: currentDate, to: laborCostDate)
-                if let days = components.day {
-                    if days < 0 {
-                        return .black
-                    } else if days < 7 {
-                        return .black
-                    } else {
-                        return .black
-                    }
-                }
-            }
-        }
         return .black
     }
     
@@ -331,6 +406,56 @@ extension CalendarTaskViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        isViewLoad(true)
+        let selectedDates = employee.laborCosts?[indexPath.row]
+        let isuses = issues.first(where: {selectedDates?.issueId == $0.id})
+        if let selectedDate = selectedDates,
+           let isuses = isuses{
+            let apiManager = APIManagerIndustry()
+            apiManager.fetch(request: ForecastType.ProjectWitchId(id: isuses.projectId), parse: { (json) -> Project? in
+                return Project.decodeJSON(json: json)
+            }, completionHandler: { (result: APIResult<Project>) in
+                switch result {
+                case .success(let project):
+                    apiManager.fetch(request: ForecastType.Employee, parse: { (json) -> [Employee]? in
+                        return json.compactMap({Employee.decodeJSON(json: $0)})
+                    }, completionHandler: { (result: APIResult<Employee>) in
+                        switch result {
+                        case .success(_):
+                            print("Error this single object")
+                        case .failure(let error):
+                            print(error)
+                        case .successArray(let employees):
+                            DispatchQueue.main.async {
+                            self.isViewLoad(false)
+                            let vc = NewTaskViewController()
+                            self.delegete = vc
+                            vc.delegete = self
+                            self.delegete.calendarTaskViewController(self, didLoadEmployees: employees, isues: isuses, laborCoast: selectedDate, project: project)
+                            vc.modalPresentationStyle = .custom
+                            vc.transitioningDelegate = self
+                            self.present(vc, animated: true, completion: nil)
+                            }
+                        }
+                    })
+                case .failure(let error):
+                    DispatchQueue.main.async {
+                        self.isViewLoad(false)
+                        self.showAlController(message: error.localizedDescription)
+                    }
+                case .successArray(_):
+                    DispatchQueue.main.async {
+                        self.isViewLoad(false)
+                        self.showAlController(message: "Error this array object")
+                    }
+                }
+            })
+        } else {
+            isViewLoad(false)
+        }
+    }
 }
 
 // MARK: - UITableViewDelegate
@@ -342,7 +467,8 @@ extension CalendarTaskViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let action = UIContextualAction(style: .normal, title: "Завершить задачу".localized, handler: { (action, view, completionHandler) in
             let issueToDelete = self.issues[indexPath.row]
-            self.delegete?.calendarTaskViewController(self, didDeleateData: issueToDelete.id ?? 0)
+            guard let idIssues = issueToDelete.id else {return}
+            self.delegete?.calendarTaskViewController(self, didDeleateData: idIssues)
         })
         action.backgroundColor = .systemGreen
         let configuration = UISwipeActionsConfiguration(actions: [action])
@@ -373,10 +499,22 @@ extension CalendarTaskViewController: UIViewControllerTransitioningDelegate {
 
 // MARK: - NewTaskViewControllerDelegate
 extension CalendarTaskViewController: NewTaskViewControllerDelegate {
+    func newTaskViewController(_ viewController: NewTaskViewController, didLoad values: [Employee], selected employees: [Employee]?) {
+        return
+    }
+    
     func newTaskViewController(_ viewController: NewTaskViewController, isChande values: Bool) {
         if values {
-                self.delegete?.calendarTaskViewController(self)
+            self.delegete?.calendarTaskViewController(self)
         }
+    }
+    
+    func newTaskViewController(_ viewController: NewTaskViewController, didClosed: Bool) {
+        return
+    }
+    
+    func newTaskViewController(_ viewController: NewTaskViewController, didLoad values: [Project]) {
+        return
     }
     
 }

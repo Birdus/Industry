@@ -231,8 +231,8 @@
 		A07D45D829C78A8200420463 /* EthernetConfigurate */ = {
 			isa = PBXGroup;
 			children = (
-				A07D45EB29C78F9000420463 /* APIClient .swift */,
 				A0F8A7BC29CC78DB00C81D80 /* APIManager.swift */,
+				A07D45EB29C78F9000420463 /* APIClient .swift */,
 			);
 			path = EthernetConfigurate;
 			sourceTree = "<group>";

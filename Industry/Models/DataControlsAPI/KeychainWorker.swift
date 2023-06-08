@@ -12,14 +12,12 @@ protocol KeychainWorkerProtocol {
     static var keychain: KeychainSwift { get }
     static var KEY_ACCESS_TOKEN: String { get }
     static var KEY_ACCESS_TOKEN_EXPIRE: String { get }
-    static var KEY_REFRESH_TOKEN: String { get }
-    static var KEY_REFRESH_TOKEN_EXPIRE: String { get }
+    static var KEY_ACCESS_TOKEN_NBF: String { get }
     static var KEY_AUTH_BODY_EMAIL: String { get }
     static var KEY_AUTH_BODY_PASSWORD: String { get }
     
     func saveAuthTokens(tokens: TokenInfo)
     func getAccessToken() -> TokenInfo?
-    func getRefreshToken() -> TokenInfo
     var haveAuthTokens: Bool { get }
     func dropTokens()
     
@@ -37,22 +35,19 @@ extension KeychainWorkerProtocol {
     func saveAuthTokens(tokens: TokenInfo) {
         Self.keychain.set(tokens.token, forKey: Self.KEY_ACCESS_TOKEN)
         Self.keychain.set(String(tokens.expiresAt), forKey: Self.KEY_ACCESS_TOKEN_EXPIRE)
+        Self.keychain.set(String(tokens.notValidBefore), forKey: Self.KEY_ACCESS_TOKEN_NBF)
     }
     
     func getAccessToken() -> TokenInfo? {
         guard let token = Self.keychain.get(Self.KEY_ACCESS_TOKEN),
               let expiresAtString = Self.keychain.get(Self.KEY_ACCESS_TOKEN_EXPIRE),
-              let expiresAt = Int64(expiresAtString)
+              let expiresAt = Int64(expiresAtString),
+              let nbfString = Self.keychain.get(Self.KEY_ACCESS_TOKEN_NBF),
+              let nbfAt = Int64(nbfString)
         else {
             return nil
         }
-        return TokenInfo(token: token, expiresAt: expiresAt)
-    }
-    
-    func getRefreshToken() -> TokenInfo {
-        let token = Self.keychain.get(Self.KEY_REFRESH_TOKEN) ?? ""
-        let expiresAt = Int64(Self.keychain.get(Self.KEY_REFRESH_TOKEN_EXPIRE) ?? "0") ?? 0
-        return TokenInfo(token: token, expiresAt: expiresAt)
+        return TokenInfo(token: token, expiresAt: expiresAt, notValidBefore: nbfAt)
     }
     
     var haveAuthTokens: Bool {
@@ -62,6 +57,7 @@ extension KeychainWorkerProtocol {
     func dropTokens() {
         Self.keychain.delete(Self.KEY_ACCESS_TOKEN)
         Self.keychain.delete(Self.KEY_ACCESS_TOKEN_EXPIRE)
+        Self.keychain.delete(Self.KEY_ACCESS_TOKEN_NBF)
     }
     
     func saveAuthBody(authBody: AuthBody) {
