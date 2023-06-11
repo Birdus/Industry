@@ -74,7 +74,6 @@ class ListCaledarTblViewCell: UITableViewCell {
             lblDeadLineAction.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -10),
             lblDeadLineAction.leadingAnchor.constraint(equalTo: lblTypeAction.trailingAnchor, constant: 5),
             
-            
             lblDescriptionAction.topAnchor.constraint(equalTo: lblTypeAction.bottomAnchor, constant: 5),
             lblDescriptionAction.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -5),
             lblDescriptionAction.leadingAnchor.constraint(equalTo: lblTypeAction.leadingAnchor),

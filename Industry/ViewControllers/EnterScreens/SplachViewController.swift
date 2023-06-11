@@ -23,6 +23,7 @@ class SplachViewController: UIViewController {
         lbl.textColor = UIColor.white
         lbl.font = lbl.font.withSize(30)
         lbl.text = "Добро пожаловать!".localized
+        lbl.accessibilityIdentifier = "lblGreeting"
         return lbl
     }()
     
@@ -33,13 +34,16 @@ class SplachViewController: UIViewController {
         configureUI()
     }
     
+    deinit {
+        print("sucsses closed SplachViewController")
+    }
+    
     // MARK: - Privates func
     private func configureUI() {
-        lblGreeting.accessibilityIdentifier = "lblGreeting"
-        self.navigationController?.isNavigationBarHidden = true
         view.backgroundColor = .white
         self.view.addSubview(lblGreeting)
         self.view.bringSubviewToFront(lblGreeting)
+        self.navigationController?.isNavigationBarHidden = true
         lblGreeting.layer.zPosition = 1
         NSLayoutConstraint.activate([
             lblGreeting.centerYAnchor.constraint(equalTo: view.centerYAnchor),
@@ -50,21 +54,22 @@ class SplachViewController: UIViewController {
     
     private func animateGradient() {
         let gradientLayer = CAGradientLayer()
-        let colorTop = UIColor(red: 1, green: 0.498, blue: 0.247, alpha: 1).cgColor
-        let colorBottom = UIColor(red: 0.839, green: 0.235, blue: 0.494, alpha: 1).cgColor
-        gradientLayer.colors = [colorTop, colorBottom]
-        gradientLayer.startPoint = CGPoint(x: 0, y: 0)
+        gradientLayer.frame = view.bounds
+        let startColor = UIColor(red: 0.157, green: 0.535, blue: 0.821, alpha: 1).cgColor
+        let endColor = UIColor(red: 0.925, green: 0.949, blue: 0.976, alpha: 1).cgColor
+        gradientLayer.colors = [startColor, endColor]
+        gradientLayer.type = .radial
+        gradientLayer.startPoint = CGPoint(x: 0.5, y: 0.5)
         gradientLayer.endPoint = CGPoint(x: 1, y: 1)
-        gradientLayer.frame = self.view.bounds
+        gradientLayer.locations = [0, 0]
         let animation = CABasicAnimation(keyPath: "colors")
-        animation.fromValue = [colorTop, colorBottom]
-        animation.toValue = [colorBottom, colorTop]
-        animation.duration = 1.0
+        animation.fromValue = [startColor, endColor]
+        animation.toValue = [endColor, startColor]
+        animation.duration = 2.8
         animation.autoreverses = true
         animation.repeatCount = .infinity
-        self.view.layer.zPosition = -1
         gradientLayer.add(animation, forKey: nil)
-        self.view.layer.addSublayer(gradientLayer)
+        view.layer.addSublayer(gradientLayer)
     }
 }
 

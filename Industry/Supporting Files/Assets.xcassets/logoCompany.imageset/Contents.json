@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Industry (2).png",
+      "filename" : "My project.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Industry (2)-1.png",
+      "filename" : "My project-2.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Industry (2)-2.png",
+      "filename" : "My project-3.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

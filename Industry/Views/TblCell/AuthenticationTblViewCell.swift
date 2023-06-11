@@ -31,13 +31,13 @@ protocol AuthenticationTblViewCellDelegate: AnyObject {
 }
 
 class AuthenticationTblViewCell: UITableViewCell {
-    // MARK: Properties
+    // MARK: - Properties
     /// The reuse identifier for the cell.
     static let indificatorCell: String = "AuthenticationTblViewCell"
-    
     /// The delegate for handling changes in text input.
     weak var delegete: AuthenticationTblViewCellDelegate!
     
+    // MARK: - Private UI
     /// The text field for user input.
     private lazy var txtFld: UITextField = {
         let txt = UITextField()
@@ -47,10 +47,19 @@ class AuthenticationTblViewCell: UITableViewCell {
         txt.isSecureTextEntry = true
         txt.textAlignment = .left
         txt.delegate = self
+        let tlBar = UIToolbar(frame: CGRect(origin: .zero, size: CGSize(width: 100, height: 44.0)))
+        let doneButton = UIBarButtonItem(title: "Coхранить".localized, style: .plain, target: self, action: #selector(btnDone_Click))
+        let cancelButton = UIBarButtonItem(title: "Отменить".localized, style: .plain, target: self, action: #selector(btnCancel_click))
+        let spaceButton = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        tlBar.setItems([cancelButton, spaceButton, doneButton], animated: true)
+        tlBar.isUserInteractionEnabled = true
+        tlBar.sizeToFit()
+        tlBar.translatesAutoresizingMaskIntoConstraints = false
+        txt.inputAccessoryView = tlBar
         return txt
     }()
     
-    // MARK: Initialization
+    // MARK: - Initialization
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         configureUI()
@@ -60,25 +69,32 @@ class AuthenticationTblViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: Public Methods
+    deinit {
+        delegete = nil
+    }
+    
+    // MARK: - Public Methods
     /// Configures the cell with a placeholder and whether the input should be a password field.
     public func fillTable(_ placeholder: String, _ isPasword: Bool) {
         txtFld.placeholder = placeholder
         txtFld.isSecureTextEntry = isPasword
     }
     
-    // MARK: Private Methods
+    // MARK: - Action
     /// Handles the "Done" button being pressed on the keyboard accessory view.
-    @objc private func btnDone_Click(_ sender: UIBarButtonItem) {
+    @objc
+    private func btnDone_Click(_ sender: UIBarButtonItem) {
         delegete.authenticationTblViewCell(self, didChanged: txtFld.text!)
         contentView.endEditing(true)
     }
     
     /// Handles the "Cancel" button being pressed on the keyboard accessory view.
-    @objc private func btnCancel_click(_ sender: UIBarButtonItem) {
+    @objc
+    private func btnCancel_click(_ sender: UIBarButtonItem) {
         contentView.endEditing(true)
     }
     
+    // MARK: - Private Methods
     /// Configures the cell's user interface.
     private func configureUI() {
         contentView.addSubview(txtFld)
@@ -92,9 +108,8 @@ class AuthenticationTblViewCell: UITableViewCell {
     }
 }
 
-// MARK: Text Field Delegate
+// MARK: - Text Field Delegate
 extension AuthenticationTblViewCell: UITextFieldDelegate {
-    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField == txtFld {
             textField.resignFirstResponder()

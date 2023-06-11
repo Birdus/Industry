@@ -19,10 +19,10 @@ protocol TabBarControllerDelegate: AnyObject {
      Called when a tab is selected  in the menu tab bar controller.
      
      - Parameters:
-        - tabBarController: The menu tab bar controller.
-        - index: The index of the selected tab.
-        - datas: The data of array Issues, load from api
-        - data: The data of Employee, load from api
+     - tabBarController: The menu tab bar controller.
+     - index: The index of the selected tab.
+     - datas: The data of array Issues, load from api
+     - data: The data of Employee, load from api
      */
     func tabBarController(_ tabBarController: TabBarController, didSelectTabAtIndex index: Int, issues datas: [Issues], employee data: Employee)
 }
@@ -43,6 +43,7 @@ class TabBarController: UITabBarController {
         blurEffectView.frame = self.view.bounds
         blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         blurEffectView.alpha = 0.5
+        blurEffectView.accessibilityIdentifier = "blrLoad"
         return blurEffectView
     }()
     
@@ -51,6 +52,7 @@ class TabBarController: UITabBarController {
         let activityIndicator = UIActivityIndicatorView(style: .gray)
         activityIndicator.center = view.center
         activityIndicator.hidesWhenStopped = true
+        activityIndicator.accessibilityIdentifier = "activityIndicator"
         return activityIndicator
     }()
     
@@ -62,13 +64,14 @@ class TabBarController: UITabBarController {
     deinit {
         apiManagerIndustry = nil
         delegete.removeAll()
+        print("sucsses closed TabBarController")
     }
     
     // MARK: - Privates func
     /// The func show alert when error in request to API
-    private func showAlController() {
+    private func showAlController(message: String) {
         let alControl:UIAlertController = {
-            let alControl = UIAlertController(title: "Ошибка".localized, message: INDNetworkingError.serverError.errorMessage, preferredStyle: .alert)
+            let alControl = UIAlertController(title: "Ошибка".localized, message: message, preferredStyle: .alert)
             let btnOk: UIAlertAction = {
                 let btn = UIAlertAction(title: "Ok".localized,
                                         style: .default,
@@ -88,15 +91,13 @@ class TabBarController: UITabBarController {
         vcCalendar.delegete = self
         let vcDocumentFlow = DocumentFlowViewController()
         let navigationControllerDocumentFlow = UINavigationController(rootViewController: vcDocumentFlow)
-        
-        let vcMenuUser = MenuViewController()
+        let vcMenuUser = ProfileUserViewController()
+        vcMenuUser.delegete = self
         delegete.append(vcMenuUser)
         delegete.append(vcDocumentFlow)
         delegete.append(vcCalendar)
-        
         navigationControllerCalendar.isNavigationBarHidden = false
         navigationControllerDocumentFlow.isNavigationBarHidden = false
-        
         navigationControllerCalendar.tabBarItem = UITabBarItem(title: "Календарь".localized,
                                                                image: UIImage(named: "iconTask")?.withRenderingMode(.alwaysOriginal),
                                                                selectedImage: UIImage(named: "iconTaskSelected")?.withRenderingMode(.alwaysOriginal))
@@ -110,8 +111,6 @@ class TabBarController: UITabBarController {
                                              selectedImage: UIImage(named: "iconAccountSelected")?.withRenderingMode(.alwaysOriginal))
         
         setViewControllers([navigationControllerCalendar, navigationControllerDocumentFlow, vcMenuUser], animated: true)
-        delegate = self
-        
         if let employee = employee, let issues = issues {
             delegete.compactMap { $0 }.forEach {
                 $0.tabBarController(self, didSelectTabAtIndex: selectedIndex, issues: issues, employee: employee)
@@ -122,96 +121,137 @@ class TabBarController: UITabBarController {
     /// The func need to refresh data in all view controller
     private func refreshData(completion: @escaping () -> Void) {
         guard let employee = employee else { return }
-        apiManagerIndustry?.fetch(request: ForecastType.EmployeeWitchId(id: employee.id), HTTPMethod: .get) {(json: [String: Any]) -> Employee? in
+        apiManagerIndustry?.fetch(request: ForecastType.EmployeeWitchId(id: employee.id)) {(json: [String: Any]) -> Employee? in
             return Employee.decodeJSON(json: json)
         } completionHandler: { [weak self] (result: APIResult<Employee?>) in
             guard let self = self else { return }
             switch result {
             case .success(let employees):
                 guard let employees = employees else {
-                    print("Failed to parse employees.")
                     DispatchQueue.main.async {
-                        self.showAlController()
-                        completion() // Вызываем замыкание после завершения обновления данных
+                        self.showAlController(message: INDNetworkingError.decodingFailed.errorMessage)
                     }
-                    return
-                }
-                if employees != self.employee {
-                    self.employee = employees
-                    let idLaborCosts = employees.laborCosts?.compactMap { $0.issueId } ?? []
-                    self.apiManagerIndustry?.fetchIssues(HTTPMethod: .get, ids: idLaborCosts) {(json: [String: Any]) -> Issues? in
-                        return Issues.decodeJSON(json: json)
-                    } completionHandler: { [weak self] (result: APIResult<[Issues]>) in
-                        guard let self = self else { return }
-                        switch result {
-                        case .success(let issues):
-                            self.issues = issues
-                            completion()
-                        case .failure(let error):
-                            print("Error: \(error)")
-                            DispatchQueue.main.async {
-                                self.showAlController()
-                                completion()
-                            }
-                        case .successArray(_):
-                            print("Expected single objects, but got array.")
-                            DispatchQueue.main.async {
-                                self.showAlController()
-                                completion()
-                            }
-                        }
-                    }
-                }
-            case .failure(let error):
-                print("Error: \(error)")
-                DispatchQueue.main.async {
-                    self.showAlController()
-                    completion()
-                }
-            case .successArray(_):
-                print("Expected single object, but got array.")
-                DispatchQueue.main.async {
-                    self.showAlController()
-                    completion()
-                }
-            }
-        }
-    }
-}
-
-// MARK: - UITabBarControllerDelegate
-extension TabBarController: UITabBarControllerDelegate {
-    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-        refreshData() { [weak self] in
-            guard let self = self else { return }
-            DispatchQueue.main.async {
-                if let employee = self.employee, let issues = self.issues {
-                    self.delegete.forEach { $0.tabBarController(self, didSelectTabAtIndex: self.selectedIndex, issues: issues, employee: employee) }
-                }
-            }
-        }
-    }
-}
-
-// MARK: - EnterMenuViewControllerDelegate
-extension TabBarController: EnterMenuViewControllerDelegate {
-    func enterMenuViewController(_ enterMenuViewController: EnterMenuViewController, didLoadEmployeeWitch id: Int, completion: @escaping () -> Void, failer: @escaping (Error) -> Void) {
-        let errorNetwork = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.missingHTTPResponse.errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.missingHTTPResponse.localizedDescription])
-        
-        apiManagerIndustry?.fetch(request: ForecastType.EmployeeWitchId(id: id), HTTPMethod: .get) {(json: [String: Any]) -> Employee? in
-            return Employee.decodeJSON(json: json)
-        } completionHandler: { [weak self] (result: APIResult<Employee?>) in
-            guard let self = self else { return }
-            switch result {
-            case .success(let employees):
-                guard let employees = employees else {
-                    print("Failed to parse employees.")
-                    failer(errorNetwork)
                     return
                 }
                 self.employee = employees
                 let idLaborCosts = employees.laborCosts?.compactMap { $0.issueId } ?? []
-                self.apiManagerIndustry?.fetchIssues(HTTPMethod: .get, ids: idLaborCosts) {(json: [String: Any]) -> Issues? in
+                self.apiManagerIndustry?.fetchIssues(ids: idLaborCosts) {(json: [String: Any]) -> Issues? in
+                    return Issues.decodeJSON(json: json)
+                } completionHandler: { [weak self] (result: APIResult<[Issues]>) in
+                    guard let self = self else { return }
+                    switch result {
+                    case .success(let issues):
+                        DispatchQueue.main.async {
+                            self.issues = issues
+                            completion()
+                        }
+                    case .failure(let error):
+                        DispatchQueue.main.async {
+                            self.showAlController(message: error.localizedDescription)
+                        }
+                    case .successArray(_):
+                        DispatchQueue.main.async {
+                            self.showAlController(message: INDNetworkingError.decodingFailed.errorMessage)
+                        }
+                    }
+                }
+               
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    let errorsUser = INDNetworkingError.init(error)
+                    self.showAlController(message: errorsUser.errorMessage)
+                }
+            case .successArray(_):
+                DispatchQueue.main.async {
+                    self.showAlController(message: INDNetworkingError.decodingFailed.errorMessage)
+                }
+            }
+        }
+    }
+}
+
+
+// MARK: - EnterMenuViewControllerDelegate
+extension TabBarController: EnterMenuViewControllerDelegate {
+    /// This method is called when the EnterMenuViewController has loaded an employee with a specific ID.
+    func enterMenuViewController(_ enterMenuViewController: EnterMenuViewController, didLoadEmployeeWitch id: Int, completion: @escaping () -> Void, failer: @escaping (Error) -> Void) {
+        let errorNetwork = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.missingHTTPResponse.errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.missingHTTPResponse.localizedDescription])
+        apiManagerIndustry?.fetch(request: ForecastType.EmployeeWitchId(id: id)) {(json: [String: Any]) -> Employee? in
+            return Employee.decodeJSON(json: json)
+        } completionHandler: { [weak self] (result: APIResult<Employee?>) in
+            guard let self = self else { return }
+            switch result {
+            case .success(let employees):
+                guard let employees = employees else {
+                    DispatchQueue.main.async {
+                        self.showAlController(message: INDNetworkingError.decodingFailed.errorMessage)
+                        failer(errorNetwork)
+                    }
+                    return
+                }
+                self.employee = employees
+                let idLaborCosts = employees.laborCosts?.compactMap { $0.issueId } ?? []
+                self.apiManagerIndustry?.fetchIssues(ids: idLaborCosts) {(json: [String: Any]) -> Issues? in
+                    return Issues.decodeJSON(json: json)
+                } completionHandler: {[weak self] (result: APIResult<[Issues]>) in
+                    guard let self = self else { return }
+                    switch result {
+                    case .success(let issues):
+                        self.issues = issues
+                        DispatchQueue.main.async {
+                            self.configure()
+                            completion()
+                        }
+                    case .failure(let error):
+                        DispatchQueue.main.async {
+                            let errorsUser = INDNetworkingError.init(error)
+                            self.showAlController(message: errorsUser.errorMessage)
+                            failer(errorsUser)
+                        }
+                    case .successArray(_):
+                        DispatchQueue.main.async {
+                            self.showAlController(message: INDNetworkingError.decodingFailed.errorMessage)
+                            failer(errorNetwork)
+                        }
+                    }
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    let errorsUser = INDNetworkingError.init(error)
+                    self.showAlController(message: errorsUser.errorMessage)
+                    failer(errorsUser)
+                }
+            case .successArray(_):
+                DispatchQueue.main.async {
+                    self.showAlController(message: INDNetworkingError.decodingFailed.errorMessage)
+                    failer(errorNetwork)
+                }
+            }
+        }
+    }
+}
+
+// MARK: - AppDelegateDelegate
+extension TabBarController: AppDelegateDelegate {
+    /// This method is called when the AppDelegate has loaded an employee with a specific ID.
+    func appDelegate(_ appDelegate: AppDelegate, didLoadEmployeeWith id: Int, completion: @escaping () -> Void, failure failer: @escaping (Error) -> Void) {
+        let errorNetwork = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.missingHTTPResponse.errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.missingHTTPResponse.localizedDescription])
+        apiManagerIndustry?.fetch(request: ForecastType.EmployeeWitchId(id: id)) {(json: [String: Any]) -> Employee? in
+            return Employee.decodeJSON(json: json)
+        } completionHandler: { [weak self] (result: APIResult<Employee?>) in
+            guard let self = self else { return }
+            switch result {
+            case .success(let employees):
+                guard let employees = employees else {
+                    DispatchQueue.main.async {
+                        self.showAlController(message: INDNetworkingError.decodingFailed.errorMessage)
+                        failer(errorNetwork)
+                    }
+                    return
+                }
+                self.employee = employees
+                let idLaborCosts = employees.laborCosts?.compactMap { $0.issueId } ?? []
+                self.apiManagerIndustry?.fetchIssues(ids: idLaborCosts) {(json: [String: Any]) -> Issues? in
                     return Issues.decodeJSON(json: json)
                 } completionHandler: { [weak self] (result: APIResult<[Issues]>) in
                     guard let self = self else { return }
@@ -223,19 +263,29 @@ extension TabBarController: EnterMenuViewControllerDelegate {
                         }
                         completion()
                     case .failure(let error):
-                        print("Error: \(error)")
-                        failer(error)
+                        DispatchQueue.main.async {
+                            let errorsUser = INDNetworkingError.init(error)
+                            self.showAlController(message: errorsUser.errorMessage)
+                            failer(errorsUser)
+                        }
                     case .successArray(_):
-                        print("Expected single objects, but got array.")
-                        failer(errorNetwork)
+                        DispatchQueue.main.async {
+                            self.showAlController(message: INDNetworkingError.decodingFailed.errorMessage)
+                            failer(errorNetwork)
+                        }
                     }
                 }
             case .failure(let error):
-                print("Error: \(error)")
-                failer(error)
+                DispatchQueue.main.async {
+                    let errorsUser = INDNetworkingError.init(error)
+                    self.showAlController(message: errorsUser.errorMessage)
+                    failer(errorsUser)
+                }
             case .successArray(_):
-                print("Expected single object, but got array.")
-                failer(errorNetwork)
+                DispatchQueue.main.async {
+                    self.showAlController(message: INDNetworkingError.decodingFailed.errorMessage)
+                    failer(errorNetwork)
+                }
             }
         }
     }
@@ -243,7 +293,16 @@ extension TabBarController: EnterMenuViewControllerDelegate {
 
 // MARK: - CalendarTaskViewControllerDelegate
 extension TabBarController: CalendarTaskViewControllerDelegate {
-    func calendarTaskViewController(_ viewController: UIViewController, didDeleateData witchId: Int) {
+    func calendarTaskViewController(_ viewController: CalendarTaskViewController, didLoadEmployees: [Employee], isues: Issues, laborCoast: LaborCost, project: Project) {
+        return
+    }
+    
+    func calendarTaskViewController(_ viewController: CalendarTaskViewController, didLoadEmployee: Employee, isues: Issues, laborCoast: LaborCost, project: Project) {
+        return
+    }
+    
+    /// This method is called when the CalendarTaskViewController has deleted data with a specific ID.
+    func calendarTaskViewController(_ viewController: CalendarTaskViewController, didDeleateData witchId: Int) {
         apiManagerIndustry?.deleteItem(request: ForecastType.IssueWithId(id: witchId)) { result in
             switch result {
             case .success:
@@ -252,20 +311,25 @@ extension TabBarController: CalendarTaskViewControllerDelegate {
                     DispatchQueue.main.async {
                         if let employee = self.employee, let issues = self.issues {
                             self.delegete.forEach { $0.tabBarController(self, didSelectTabAtIndex: self.selectedIndex, issues: issues, employee: employee) }
+                            self.activityIndicator.stopAnimating()
+                            self.blrLoad.removeFromSuperview()
                         }
                     }
                 }
             case .failure(let error):
-                print("Error deleting item: \(error)")
-                self.showAlController()
+                DispatchQueue.main.async {
+                    self.showAlController(message: error.localizedDescription)
+                }
             case .successArray(_):
-                print("Expected single object, but got array.")
-                self.showAlController()
+                DispatchQueue.main.async {
+                    self.showAlController(message: INDNetworkingError.decodingFailed.errorMessage)
+                }
             }
         }
     }
     
-    func calendarTaskViewController(_ viewController: UIViewController) {
+    /// This methodis called when the CalendarTaskViewController is loaded.
+    func calendarTaskViewController(_ viewController: CalendarTaskViewController) {
         self.view.addSubview(blrLoad)
         blrLoad.contentView.addSubview(activityIndicator)
         activityIndicator.startAnimating()
@@ -279,5 +343,15 @@ extension TabBarController: CalendarTaskViewControllerDelegate {
                 }
             }
         }
+    }
+}
+
+extension TabBarController: ProfileUserViewControllerDelegate {
+    func profileUserViewController(_ viewController: ProfileUserViewController, didLoadEmployee image: @escaping (UIImage) -> Void) {
+        guard let employee = employee else {
+            return
+        }
+        let urlPath = ForecastType.EmployeeWitchId(id: employee.id).path
+        let url = ForecastType.EmployeeWitchId(id: employee.id).baseURL.appendingPathComponent(urlPath)
     }
 }

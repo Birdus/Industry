@@ -10,7 +10,7 @@ import Foundation
 // MARK: - Localized String Extension
 extension String {
     var localized: String {
-        return NSLocalizedString(self, comment: "")
+        return NSLocalizedString(self, bundle: Bundle.main, comment: "")
     }
     
     var isNullOrWhiteSpace: Bool {

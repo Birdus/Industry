@@ -6,6 +6,7 @@
 //
 
 import UIKit
+
 /**
  The EnterMenuViewController displays a menu for user authentication.
  
@@ -44,20 +45,27 @@ protocol EnterMenuViewControllerDelegate: AnyObject {
 class EnterMenuViewController: UIViewController {
     
     // MARK: - Properties
-    weak var delegete: EnterMenuViewControllerDelegate?
+    weak var delegete: EnterMenuViewControllerDelegate!
     private var usserLogin: String?
     private var usserPassword: String?
+    private var apiManagerIndustry: APIManagerIndustry?
     
     // MARK: - Private UI
     /// A button for entering the app.
     private lazy var btnEnter: UIButton = {
         let btn = UIButton()
-        btn.backgroundColor = .black
+        btn.accessibilityIdentifier = "btnEnter"
+        btn.backgroundColor = .white
         btn.setTitle("Войти".localized, for: .normal)
-        btn.setTitleColor(.white, for: .normal)
+        btn.setTitleColor(.black, for: .normal)
         btn.layer.cornerRadius = 10
         btn.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMaxXMinYCorner, .layerMinXMinYCorner, .layerMinXMaxYCorner]
         btn.clipsToBounds = false
+        btn.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
+        btn.layer.shadowOpacity = 0.8
+        btn.layer.shadowRadius = 0.4
+        btn.layer.shadowOffset = CGSize(width: 2, height: 2)
+        btn.layer.masksToBounds = false
         btn.translatesAutoresizingMaskIntoConstraints = false
         btn.addTarget(self, action: #selector(BtnEnter_Click), for: .touchUpInside)
         return btn
@@ -69,8 +77,35 @@ class EnterMenuViewController: UIViewController {
         btn.setTitle("Восстановить пароль".localized, for: .normal)
         btn.setTitleColor(.systemGray, for: .normal)
         btn.translatesAutoresizingMaskIntoConstraints = false
+        btn.accessibilityIdentifier = "btnRecoveryPass"
         btn.addTarget(self, action: #selector(BtnRecoveryPass_Click), for: .touchUpInside)
         return btn
+    }()
+    
+    private lazy var btnShowCode: UIButton = {
+        let btn = UIButton()
+        btn.setTitle("Код устройства".localized, for: .normal)
+        btn.setTitleColor(.systemGray, for: .normal)
+        btn.translatesAutoresizingMaskIntoConstraints = false
+        btn.titleLabel?.textAlignment = .right
+        btn.accessibilityIdentifier = "btnShowCode"
+        btn.addTarget(self, action: #selector(btnShowCode_Click), for: .touchUpInside)
+        return btn
+    }()
+    
+    private lazy var containerImg: UIView = {
+        let view = UIView()
+        view.accessibilityIdentifier = "containerImg"
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .white
+        view.layer.cornerRadius = 80
+        view.backgroundColor =  .white
+        view.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
+        view.layer.shadowOpacity = 0.2
+        view.layer.shadowRadius = 0.3
+        view.layer.shadowOffset = CGSize(width: 2, height: 2)
+        view.layer.masksToBounds = false
+        return view
     }()
     
     /// An image view displaying the company logo.
@@ -78,12 +113,16 @@ class EnterMenuViewController: UIViewController {
         let icon = UIImageView()
         icon.image = UIImage(named: "logoCompany.png")
         icon.translatesAutoresizingMaskIntoConstraints = false
+        icon.contentMode = .scaleAspectFill
+        icon.clipsToBounds = true
+        icon.accessibilityIdentifier = "imgCompany"
         return icon
     }()
     
     /// A table view for user input.
     private lazy var tblAuthentication: UITableView = {
         let tbl = UITableView()
+        tbl.accessibilityIdentifier = "tblAuthentication"
         tbl.register(AuthenticationTblViewCell.self, forCellReuseIdentifier: AuthenticationTblViewCell.indificatorCell)
         tbl.translatesAutoresizingMaskIntoConstraints = false
         tbl.dataSource = self
@@ -96,6 +135,7 @@ class EnterMenuViewController: UIViewController {
         tbl.layer.cornerRadius = 10
         tbl.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMaxXMinYCorner, .layerMinXMinYCorner, .layerMinXMaxYCorner]
         tbl.clipsToBounds = false
+        tbl.rowHeight = ((UIScreen.main.bounds.size.height/2 + tbl.contentOffset.y) / 2 ) / 3
         return tbl
     }()
     
@@ -103,69 +143,115 @@ class EnterMenuViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
+        registerForKeyboardNotification()
+        apiManagerIndustry = APIManagerIndustry()
     }
     
     deinit {
         NotificationCenter.default.removeObserver(self)
+        apiManagerIndustry = nil
+        print("sucsses closed EnterMenuViewController")
     }
     
     // MARK: - Actions
+    
     /// Func click button recovery password
     @objc
     private func BtnRecoveryPass_Click(_ sender: UIButton) {
-        
         let vc = RecovoryPasswordViewController()
-        
         let vcNav = UINavigationController(rootViewController: vc)
-        
         vcNav.modalPresentationStyle = .fullScreen
         navigationController?.present(vcNav, animated: true, completion: nil)
+    }
+    
+    @objc
+    private func btnShowCode_Click(_ sender: UIButton) {
+        guard let identifier = UIDevice.current.identifierForVendor?.uuidString else {
+            return
+        }
+        let alControl:UIAlertController = {
+            let alControl = UIAlertController(title: "Ваш код устройства".localized, message: identifier, preferredStyle: .alert)
+            let btnOk: UIAlertAction = {
+                let btn = UIAlertAction(title: "Ok".localized,
+                                        style: .default,
+                                        handler: nil )
+                return btn
+            }()
+            let btnCopy: UIAlertAction = {
+                let btn = UIAlertAction(title: "Скопировать код".localized,
+                                        style: .default,
+                                        handler: {_ in
+                                            UIPasteboard.general.string = identifier
+                                        })
+                return btn
+            }()
+            alControl.addAction(btnOk)
+            alControl.addAction(btnCopy)
+            return alControl
+        }()
+        self.present(alControl, animated: true, completion: nil)
     }
     
     /// Func click button enter to application
     @objc
     private func BtnEnter_Click(_ sender: UIButton) {
-        
         let activityIndicator = UIActivityIndicatorView(style: .gray)
         activityIndicator.center = view.center
         activityIndicator.hidesWhenStopped = true
-        activityIndicator.startAnimating()
+        
         let blurEffect = UIBlurEffect(style: .light)
         let blurEffectView = UIVisualEffectView(effect: blurEffect)
-        blurEffectView.frame = self.view.bounds
+        blurEffectView.frame = view.bounds
         blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         blurEffectView.alpha = 0.6
-        view.addSubview(blurEffectView)
         blurEffectView.contentView.addSubview(activityIndicator)
-        // Загрузка данных
-        let vc = TabBarController()
-        self.delegete = vc
-        let navigationController = UINavigationController(rootViewController: vc)
-        delegete?.enterMenuViewController(self, didLoadEmployeeWitch: 2) {
+        view.addSubview(blurEffectView)
+        
+        activityIndicator.startAnimating()
+        
+        guard let login = usserLogin, let password = usserPassword,
+              !login.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+              !password.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            showAlController(messege: "Вы не ввели данные для входа".localized)
+            activityIndicator.stopAnimating()
+            blurEffectView.removeFromSuperview()
+            return
+        }
+        let authBody = AuthBody(email: login, password: password)
+        apiManagerIndustry?.validateCredentials(credentials: authBody) {[weak self] result in
+            guard let self = self else {return}
             DispatchQueue.main.async {
-                activityIndicator.stopAnimating()
-                blurEffectView.removeFromSuperview()
-                navigationController.modalPresentationStyle = .fullScreen
-                navigationController.isToolbarHidden = true
-                navigationController.isNavigationBarHidden = true
-                self.present(navigationController, animated: true, completion: nil)
-            }
-        } failer: {error in
-            DispatchQueue.main.async {
-                activityIndicator.stopAnimating()
-                blurEffectView.removeFromSuperview()
-                let alControl:UIAlertController = {
-                    let alControl = UIAlertController(title: "Ошибка".localized, message: "Не удалось подключиться к серверу!", preferredStyle: .alert)
-                    let btnOk: UIAlertAction = {
-                        let btn = UIAlertAction(title: "Ok".localized,
-                                                style: .default,
-                                                handler: nil )
-                        return btn
-                    }()
-                    alControl.addAction(btnOk)
-                    return alControl
-                }()
-                self.present(alControl, animated: true, completion: nil)
+                switch result {
+                case .failure(let error):
+                    activityIndicator.stopAnimating()
+                    blurEffectView.removeFromSuperview()
+                    let errorsUser = INDNetworkingError.init(error)
+                    self.showAlController(messege: errorsUser.errorMessage)
+                case .success(let idEmployee):
+                    let vc = TabBarController()
+                    self.delegete = vc
+                    self.delegete?.enterMenuViewController(self, didLoadEmployeeWitch: idEmployee, completion: {
+                        let navigationController = UINavigationController(rootViewController: vc)
+                        navigationController.modalPresentationStyle = .fullScreen
+                        navigationController.isToolbarHidden = true
+                        navigationController.isNavigationBarHidden = true
+                        activityIndicator.stopAnimating()
+                        blurEffectView.removeFromSuperview()
+                        self.present(navigationController, animated: true, completion: {
+                                    self.delegete = nil
+                            NotificationCenter.default.removeObserver(self)
+                            self.apiManagerIndustry = nil
+                            self.view.willRemoveSubview(self.tblAuthentication)
+                            self.view.removeFromSuperview()
+                            self.removeFromParent()
+                                })
+                    }, failer: { error in
+                        let errorsUser = INDNetworkingError.init(error)
+                        self.showAlController(messege: errorsUser.errorMessage)
+                        activityIndicator.stopAnimating()
+                        blurEffectView.removeFromSuperview()
+                    })
+                }
             }
         }
     }
@@ -195,19 +281,31 @@ class EnterMenuViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(kbWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
+    private func showAlController(messege: String) {
+        let alControl:UIAlertController = {
+            let alControl = UIAlertController(title: "Ошибка".localized, message: messege, preferredStyle: .alert)
+            let btnOk: UIAlertAction = {
+                let btn = UIAlertAction(title: "Ok".localized,
+                                        style: .default,
+                                        handler: nil )
+                return btn
+            }()
+            alControl.addAction(btnOk)
+            return alControl
+        }()
+        self.present(alControl, animated: true, completion: nil)
+    }
+    
     /// Configures the UI elements of the view controller.
     private func configureUI() {
-        btnEnter.accessibilityIdentifier = "btnEnter"
-        btnRecoveryPass.accessibilityIdentifier = "btnRecoveryPass"
-        imgCompany.accessibilityIdentifier = "imgCompany"
-        tblAuthentication.accessibilityIdentifier = "tblAuthentication"
+        self.navigationController?.isNavigationBarHidden = true
         view.backgroundColor = .white
         view.addSubview(tblAuthentication)
         view.addSubview(btnEnter)
-        view.addSubview(imgCompany)
+        view.addSubview(btnShowCode)
+        view.addSubview(containerImg)
         view.addSubview(btnRecoveryPass)
-        self.navigationController?.isNavigationBarHidden = true
-        registerForKeyboardNotification()
+        containerImg.addSubview(imgCompany)
         NSLayoutConstraint.activate([
             // Authentication table view
             tblAuthentication.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
@@ -215,25 +313,27 @@ class EnterMenuViewController: UIViewController {
             tblAuthentication.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor, multiplier: 0.20),
             tblAuthentication.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor),
             tblAuthentication.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
-            
             // Enter button
             btnEnter.heightAnchor.constraint(equalToConstant: 40),
             btnEnter.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, constant: -190),
-            btnEnter.topAnchor.constraint(equalTo: btnRecoveryPass.bottomAnchor, constant: 40),
+            btnEnter.topAnchor.constraint(equalTo: btnRecoveryPass.bottomAnchor, constant: 20),
             btnEnter.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
-            
             // Recovery password button
-            btnRecoveryPass.topAnchor.constraint(equalTo: tblAuthentication.bottomAnchor, constant: -4),
+            btnRecoveryPass.topAnchor.constraint(equalTo: tblAuthentication.bottomAnchor, constant: -10),
             btnRecoveryPass.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
-            
+            // Show Code button
+            btnShowCode.topAnchor.constraint(equalTo: tblAuthentication.bottomAnchor, constant: -10),
+            btnShowCode.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
             // Company logo
-            imgCompany.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, constant: -150),
-            imgCompany.heightAnchor.constraint(equalTo: imgCompany.widthAnchor),
-            imgCompany.bottomAnchor.constraint(equalTo: tblAuthentication.topAnchor, constant: -(UIScreen.main.bounds.height/2 + tblAuthentication.contentOffset.y) / 12),
-            imgCompany.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor)
+            containerImg.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, multiplier: 0.5),
+            containerImg.heightAnchor.constraint(equalTo: containerImg.widthAnchor),
+            containerImg.bottomAnchor.constraint(equalTo: tblAuthentication.topAnchor, constant: -(UIScreen.main.bounds.height/2 + tblAuthentication.contentOffset.y) / 12),
+            containerImg.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+            imgCompany.topAnchor.constraint(equalTo: containerImg.topAnchor, constant: 15),
+            imgCompany.leadingAnchor.constraint(equalTo: containerImg.leadingAnchor, constant: 15),
+            imgCompany.trailingAnchor.constraint(equalTo: containerImg.trailingAnchor, constant: -15),
+            imgCompany.bottomAnchor.constraint(equalTo: containerImg.bottomAnchor, constant: -15),
         ])
-        // Set row height for authentication table view
-        tblAuthentication.rowHeight = ((UIScreen.main.bounds.size.height/2 + tblAuthentication.contentOffset.y) / 2 ) / 3
     }
 }
 
@@ -273,13 +373,10 @@ extension EnterMenuViewController: UITableViewDataSource {
         cell.separatorInset = .zero
         return cell
     }
-    
 }
 
 // MARK: - Table View Data Source and Table View Delegate
 extension EnterMenuViewController: UITableViewDelegate {
-    
-
 }
 
 // MARK: - AuthenticationTblViewCellDelegate

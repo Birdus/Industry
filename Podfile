@@ -1,4 +1,4 @@
-# Uncomment the next line to define a global platform for your project
+# Uncomment the next line to define a global platform for your project 
 # platform :ios, '12.0'
 
 target 'Industry' do
@@ -9,4 +9,6 @@ target 'Industry' do
 
 pod 'FSCalendar'
 pod 'Charts'
+pod 'KeychainSwift'
+pod 'JWTDecode'
 end

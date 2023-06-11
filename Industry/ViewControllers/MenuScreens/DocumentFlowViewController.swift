@@ -13,6 +13,10 @@ class DocumentFlowViewController: UIViewController {
         super.viewDidLoad()
         self.view.backgroundColor = .white
     }
+    
+    deinit {
+        print("sucsses closed DocumentFlowViewController")
+    }
 }
 
 extension DocumentFlowViewController: TabBarControllerDelegate {
