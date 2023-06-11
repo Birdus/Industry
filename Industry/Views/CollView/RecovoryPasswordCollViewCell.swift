@@ -16,7 +16,7 @@ class RecovoryPasswordCollViewCell: UICollectionViewCell {
     // MARK: - Properties
     /// The identifier for this collection view cell
     static let indificatorCell: String = "CollectionViewCell"
-    public weak var delegete: RecovoryPasswordCollViewCellDelegate!
+    weak var delegete: RecovoryPasswordCollViewCellDelegate!
     
     private var isAutohorizion: Bool!
     private var confirmResetPassword: ConfirmResetPassword?
@@ -126,7 +126,6 @@ class RecovoryPasswordCollViewCell: UICollectionViewCell {
     private func btnRecoveryPass_Click(_ sender: UIButton) {
         if let value =  txtFldLogin.text, !value.isNullOrWhiteSpace{
             delegete.recovoryPasswordCollViewCell(self, didChange:  RecovoryPasswordInfo.mail(value: value), complition: {
-                
                 self.addSubview(self.txtFldCode)
                 NSLayoutConstraint.activate([
                     self.txtFldCode.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10),
@@ -154,7 +153,6 @@ class RecovoryPasswordCollViewCell: UICollectionViewCell {
             delegete.recovoryPasswordCollViewCell(self, didChange: RecovoryPasswordInfo.error(messege: "Вы не ввели почту!".localized), complition: {return})
             return
         }
-        
     }
     
     @objc

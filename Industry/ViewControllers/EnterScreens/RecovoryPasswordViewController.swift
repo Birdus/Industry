@@ -115,6 +115,27 @@ class RecovoryPasswordViewController: UIViewController {
     }
     
     // MARK: - Private Methods
+    private func setupBlurAndActivityIndicator() -> (UIActivityIndicatorView, UIVisualEffectView) {
+        let activityIndicator = UIActivityIndicatorView(style: .gray)
+        activityIndicator.center = view.center
+        activityIndicator.hidesWhenStopped = true
+        activityIndicator.startAnimating()
+        let blurEffect = UIBlurEffect(style: .light)
+        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView.frame = view.bounds
+        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        blurEffectView.alpha = 0.6
+        blurEffectView.contentView.addSubview(activityIndicator)
+        view.addSubview(blurEffectView)
+        return (activityIndicator, blurEffectView)
+    }
+    
+    private func handleSucsess(_ activityIndicator: UIActivityIndicatorView, _ blurEffectView: UIVisualEffectView) {
+        DispatchQueue.main.async {
+            activityIndicator.stopAnimating()
+            blurEffectView.removeFromSuperview()
+        }
+    }
     
     /// Configures the UI elements of the view controller.
     private func configureUI() {
@@ -181,27 +202,33 @@ extension RecovoryPasswordViewController: UICollectionViewDataSource {
     }
 }
 
+// MARK: - RecovoryPasswordCollViewCellDelegate
 extension RecovoryPasswordViewController: RecovoryPasswordCollViewCellDelegate {
-    
     func recovoryPasswordCollViewCell(_ viewController: RecovoryPasswordCollViewCell, didChange values: RecovoryPasswordInfo, complition: @escaping () -> Void) {
+        let (activityIndicator, blurEffectView) = setupBlurAndActivityIndicator()
         switch values {
         case .acssesCode(let code):
             apiManagerIndustry?.post(request: ForecastType.CheakValidConfirmationCode, data: ConfirmResetPassword(confirmationCode: code, newPassword: nil), completionHandler: { result in
                 switch result {
                 case .success(_):
                     DispatchQueue.main.async {
+                        self.handleSucsess(activityIndicator, blurEffectView)
                         complition()
                     }
                 case .successArray(_):
                     DispatchQueue.main.async {
+                        self.handleSucsess(activityIndicator, blurEffectView)
                         self.showAlController(messege: "Неверные данные!".localized)
                     }
                 case .failure(let error): DispatchQueue.main.async {
-                    self.showAlController(messege: error.localizedDescription.localized)
+                    self.handleSucsess(activityIndicator, blurEffectView)
+                    let errorsUser = INDNetworkingError.init(error)
+                    self.showAlController(messege: errorsUser.errorMessage)
                 }
                 }
             })
         case .error(let messege):
+            self.handleSucsess(activityIndicator, blurEffectView)
             showAlController(messege: messege)
         case .mail(let mail):
             let resetPasswordEmail = ResetPasswordEmail(email: mail)
@@ -209,15 +236,19 @@ extension RecovoryPasswordViewController: RecovoryPasswordCollViewCellDelegate {
                 switch result {
                 case .success(_):
                     DispatchQueue.main.async {
+                        self.handleSucsess(activityIndicator, blurEffectView)
                         complition()
                     }
                 case .successArray(_):
                     DispatchQueue.main.async {
+                        self.handleSucsess(activityIndicator, blurEffectView)
                         self.showAlController(messege: "Неверные данные!".localized)
                     }
                 case .failure(let error):
                     DispatchQueue.main.async {
-                        self.showAlController(messege: error.localizedDescription.localized)
+                        self.handleSucsess(activityIndicator, blurEffectView)
+                        let errorsUser = INDNetworkingError.init(error)
+                        self.showAlController(messege: errorsUser.errorMessage)
                     }
                 }
             })
@@ -225,10 +256,12 @@ extension RecovoryPasswordViewController: RecovoryPasswordCollViewCellDelegate {
     }
     
     func recovoryPasswordCollViewCell(_ viewController: RecovoryPasswordCollViewCell, didChange password: String, code: Int) {
+        let (activityIndicator, blurEffectView) = setupBlurAndActivityIndicator()
         apiManagerIndustry?.post(request: ForecastType.ConfirmResetPassword, data: ConfirmResetPassword(confirmationCode: code, newPassword: password), completionHandler: { result in
             switch result {
             case .success(_):
                 DispatchQueue.main.async {
+                    self.handleSucsess(activityIndicator, blurEffectView)
                     let alControl:UIAlertController = {
                         let alControl = UIAlertController(title: "Успех".localized, message: "Пароль успешно изменён!".localized, preferredStyle: .alert)
                         let btnOk: UIAlertAction = {
@@ -246,11 +279,14 @@ extension RecovoryPasswordViewController: RecovoryPasswordCollViewCellDelegate {
                 }
             case .successArray(_):
                 DispatchQueue.main.async {
-                self.showAlController(messege: "Неверные данные!".localized)
+                    self.handleSucsess(activityIndicator, blurEffectView)
+                    self.showAlController(messege: "Неверные данные!".localized)
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
-                self.showAlController(messege: error.localizedDescription.localized)
+                    self.handleSucsess(activityIndicator, blurEffectView)
+                    let errorsUser = INDNetworkingError.init(error)
+                    self.showAlController(messege: errorsUser.errorMessage)
                 }
             }
         })

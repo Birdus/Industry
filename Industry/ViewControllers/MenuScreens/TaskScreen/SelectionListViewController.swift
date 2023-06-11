@@ -13,12 +13,12 @@ protocol SelectionListViewControllerDelegete: AnyObject {
 }
 
 class SelectionListViewController: UIViewController {
-    
+    // MARK: - Properti
     private var employees: [Employee]?
     private var includeEmploye : [Employee]?
     private var project: [Project]?
     private var includedData: [Int : Bool]?
-    public var delegete: SelectionListViewControllerDelegete!
+    weak var delegete: SelectionListViewControllerDelegete!
     
     // MARK: - Private UI
     private lazy var tblList: UITableView = {
@@ -33,7 +33,6 @@ class SelectionListViewController: UIViewController {
         return tableView
     }()
     
-    // Back button
     private lazy var btnBack: UIBarButtonItem = {
         let btn = UIBarButtonItem(title: "✖️", style: .plain, target: self, action: #selector(btnBack_Click))
         btn.setTitleTextAttributes([
@@ -59,9 +58,13 @@ class SelectionListViewController: UIViewController {
     }
     
     deinit {
+        self.delegete = nil
+        NotificationCenter.default.removeObserver(self)
+        self.view.willRemoveSubview(self.tblList)
         print("sucsses closed SelectionListViewController")
     }
     
+    // MARK: - Action
     @objc
     private func btnSave_Click(_ sender: UIBarButtonItem) {
         if let employee = employees {
@@ -95,7 +98,11 @@ class SelectionListViewController: UIViewController {
     
     @objc
     private func btnBack_Click(_ sender: UIBarButtonItem) {
-        self.dismiss(animated: true, completion: nil)
+        self.dismiss(animated: true, completion: {
+            self.delegete = nil
+            NotificationCenter.default.removeObserver(self)
+            self.view.willRemoveSubview(self.tblList)
+        })
     }
     
     // MARK: - Private func
@@ -114,6 +121,7 @@ class SelectionListViewController: UIViewController {
     }
 }
 
+// MARK: - UITableViewDataSource
 extension SelectionListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if let employee = employees {
@@ -148,12 +156,14 @@ extension SelectionListViewController: UITableViewDataSource {
     }
 }
 
+// MARK: - UITableViewDelegate
 extension SelectionListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return self.view.bounds.height/9
     }
 }
 
+// MARK: - NewTaskViewControllerDelegate
 extension SelectionListViewController: NewTaskViewControllerDelegate {
     func newTaskViewController(_ viewController: NewTaskViewController, didLoad values: [Employee], selected employees: [Employee]?) {
         DispatchQueue.main.async {
@@ -180,6 +190,7 @@ extension SelectionListViewController: NewTaskViewControllerDelegate {
     }
 }
 
+// MARK: - ListEmployeesTblViewCellDelegete
 extension SelectionListViewController: ListEmployeesTblViewCellDelegete {
     func listEmployeesTblViewCell(_ cell: ListEmployeesTblViewCell, didSelected employeeId: Int, isEnclude task: Bool) {
         includedData?[employeeId] = task

@@ -52,11 +52,22 @@ class StatisticUserViewController: UIViewController {
         showMenu()
     }
     
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+        self.view.willRemoveSubview(self.brChStatic)
+        self.view.willRemoveSubview(self.pieChStatic)
+        print("sucsses closed StatisticUserViewController")
+    }
+    
     // MARK: - Actions
     @objc
     private func btnBack_Click(_ sender: UIButton) {
         navigationController?.popViewController(animated: true)
-        dismiss(animated: true, completion: nil)
+        dismiss(animated: true, completion: {
+            NotificationCenter.default.removeObserver(self)
+            self.view.willRemoveSubview(self.brChStatic)
+            self.view.willRemoveSubview(self.pieChStatic)
+        })
         self.navigationController?.isNavigationBarHidden = true
     }
     

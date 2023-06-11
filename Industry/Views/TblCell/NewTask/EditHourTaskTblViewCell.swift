@@ -93,7 +93,6 @@ class EditHourTaskTblViewCell: UITableViewCell {
     }
     
     // MARK: - Private func
-    
     private func setupPlaceholder(_ text: String?) {
         guard let text = text else { return }
         let placeholderAttributes: [NSAttributedString.Key: Any] = [.foregroundColor: UIColor.lightGray]
@@ -132,7 +131,7 @@ class EditHourTaskTblViewCell: UITableViewCell {
     }
 }
 
-// MARK: Text Field Delegate
+// MARK: - Text Field Delegate
 extension EditHourTaskTblViewCell: UITextFieldDelegate {
     /// Called when the text field ends editing.
     func textFieldDidEndEditing(_ textField: UITextField) {
@@ -153,7 +152,7 @@ extension EditHourTaskTblViewCell: UITextFieldDelegate {
     }
 }
 
-// MARK: Text Field Delegate
+// MARK: - Text Field Delegate
 extension EditHourTaskTblViewCell: NewTaskViewControllerDelegate {
     func newTaskViewController(_ viewController: NewTaskViewController, didLoad values: [Employee], selected employees: [Employee]?) {
         return
@@ -174,7 +173,4 @@ extension EditHourTaskTblViewCell: NewTaskViewControllerDelegate {
     func newTaskViewController(_ viewController: NewTaskViewController, didLoad values: [Project]) {
         return
     }
-    
-    /// This method is called when the NewTaskViewController is closed.
-   
 }

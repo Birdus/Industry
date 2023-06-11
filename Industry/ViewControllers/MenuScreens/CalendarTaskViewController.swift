@@ -202,8 +202,6 @@ class CalendarTaskViewController: UIViewController {
     }
     
     // MARK: - Private func
-    
-    
     private func isViewLoad(_ isShow: Bool) {
         if isShow {
             blurEffectView.contentView.addSubview(activityIndicator)
@@ -233,36 +231,35 @@ class CalendarTaskViewController: UIViewController {
     private func notificationTask() {
         guard let dates = employee.laborCosts?.map({ $0.date }) else { return }
         let notificationCenter = UNUserNotificationCenter.current()
-        var count = 0
-        for taskDate in dates {
-            // Вычисление даты для одного дня и одной недели до дедлайна
+        for (index, taskDate) in dates.enumerated() {
+            guard let idIssues = issues[index].id else { continue }
             let calendar = Calendar.current
             guard let oneDayBefore = calendar.date(byAdding: .day, value: -1, to: taskDate) else { continue }
-            guard let oneWeekBefore = calendar.date(byAdding: .day, value: -7, to: taskDate) else { continue }
-            
-            // Создание уведомления за один день до дедлайна
-            let contentOneDayBefore = UNMutableNotificationContent()
-            contentOneDayBefore.title = "Дедлайн задачи \(issues[count].taskName) через один день"
-            contentOneDayBefore.body = "У вас есть один день, чтобы завершить задачу"
-            contentOneDayBefore.sound = UNNotificationSound.default
-
-            let dateComponentsOneDayBefore = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: oneDayBefore)
-            let triggerOneDayBefore = UNCalendarNotificationTrigger(dateMatching: dateComponentsOneDayBefore, repeats: false)
-            let requestOneDayBefore = UNNotificationRequest(identifier: UUID().uuidString, content: contentOneDayBefore, trigger: triggerOneDayBefore)
-            notificationCenter.add(requestOneDayBefore)
-
-            // Создание уведомления за одну неделю до дедлайна
-            let contentOneWeekBefore = UNMutableNotificationContent()
-            contentOneWeekBefore.title = "Дедлайн задачи \(issues[count].taskName) через одну неделю"
-            contentOneWeekBefore.body = "У вас есть одна неделя, чтобы завершить задачу"
-            contentOneWeekBefore.sound = UNNotificationSound.default
-            let dateComponentsOneWeekBefore = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: oneWeekBefore)
-            let triggerOneWeekBefore = UNCalendarNotificationTrigger(dateMatching: dateComponentsOneWeekBefore, repeats: false)
-            let requestOneWeekBefore = UNNotificationRequest(identifier: UUID().uuidString, content: contentOneWeekBefore, trigger: triggerOneWeekBefore)
-            notificationCenter.add(requestOneWeekBefore)
-            count += 1
+            notificationCenter.getPendingNotificationRequests { (requests) in
+                let taskNotifications = requests.filter { $0.identifier.hasPrefix("task-\(idIssues)-oneDayBefore") }
+                if taskNotifications.isEmpty {
+                    let contentOneDayBefore = UNMutableNotificationContent()
+                    var text = "Дедлайн задачи ".localized
+                    text += self.issues[index].taskName
+                    text = " через один день".localized
+                    contentOneDayBefore.title = text
+                    contentOneDayBefore.body = "У вас есть один день, чтобы завершить задачу".localized
+                    contentOneDayBefore.sound = UNNotificationSound.default
+                    var dateComponentsMorning = calendar.dateComponents([.year, .month, .day], from: oneDayBefore)
+                    dateComponentsMorning.hour = 9
+                    dateComponentsMorning.minute = 0
+                    var dateComponentsAfternoon = calendar.dateComponents([.year, .month, .day], from: oneDayBefore)
+                    dateComponentsAfternoon.hour = 15
+                    dateComponentsAfternoon.minute = 0
+                    let triggerMorning = UNCalendarNotificationTrigger(dateMatching: dateComponentsMorning, repeats: false)
+                    let triggerAfternoon = UNCalendarNotificationTrigger(dateMatching: dateComponentsAfternoon, repeats: false)
+                    let requestMorning = UNNotificationRequest(identifier: "task-\(idIssues)-oneDayBefore-morning", content: contentOneDayBefore, trigger: triggerMorning)
+                    let requestAfternoon = UNNotificationRequest(identifier: "task-\(idIssues)-oneDayBefore-afternoon", content: contentOneDayBefore, trigger: triggerAfternoon)
+                    notificationCenter.add(requestMorning)
+                    notificationCenter.add(requestAfternoon)
+                }
+            }
         }
-
     }
     
     /// Configures the UI elements of the view controller.
@@ -335,7 +332,8 @@ extension CalendarTaskViewController: FSCalendarDelegate {
                                 }
                             case .failure(let error):
                                 DispatchQueue.main.async {
-                                    self.showAlController(message: error.localizedDescription)
+                                    let errorsUser = INDNetworkingError.init(error)
+                                    self.showAlController(message: errorsUser.errorMessage)
                                 }
                             case .successArray(let employees):
                                 DispatchQueue.main.async {
@@ -353,7 +351,8 @@ extension CalendarTaskViewController: FSCalendarDelegate {
                 case .failure(let error):
                     DispatchQueue.main.async {
                         self.isViewLoad(false)
-                        self.showAlController(message: error.localizedDescription)
+                        let errorsUser = INDNetworkingError.init(error)
+                        self.showAlController(message: errorsUser.errorMessage)
                     }
                 case .successArray(_):
                     DispatchQueue.main.async {
@@ -473,7 +472,8 @@ extension CalendarTaskViewController: UITableViewDataSource {
                             }
                         case .failure(let error):
                             DispatchQueue.main.async {
-                                self.showAlController(message: error.localizedDescription)
+                                let errorsUser = INDNetworkingError.init(error)
+                                self.showAlController(message: errorsUser.errorMessage)
                             }
                         case .successArray(let employees):
                             DispatchQueue.main.async {
@@ -491,7 +491,8 @@ extension CalendarTaskViewController: UITableViewDataSource {
                 case .failure(let error):
                     DispatchQueue.main.async {
                         self.isViewLoad(false)
-                        self.showAlController(message: error.localizedDescription)
+                        let errorsUser = INDNetworkingError.init(error)
+                        self.showAlController(message: errorsUser.errorMessage)
                     }
                 case .successArray(_):
                     DispatchQueue.main.async {
@@ -516,12 +517,19 @@ extension CalendarTaskViewController: UITableViewDelegate {
         let action = UIContextualAction(style: .normal, title: "Завершить задачу".localized, handler: { (action, view, completionHandler) in
             let issueToDelete = self.issues[indexPath.row]
             guard let idIssues = issueToDelete.id else {return}
+            
+            // Удаление уведомления
+            let notificationCenter = UNUserNotificationCenter.current()
+            let identifiers = ["task-\(idIssues)-oneDayBefore-morning", "task-\(idIssues)-oneDayBefore-afternoon"]
+            notificationCenter.removePendingNotificationRequests(withIdentifiers: identifiers)
+            
             self.delegete?.calendarTaskViewController(self, didDeleateData: idIssues)
         })
         action.backgroundColor = .systemGreen
         let configuration = UISwipeActionsConfiguration(actions: [action])
         return configuration
     }
+
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return self.view.bounds.height/9.5

@@ -127,8 +127,5 @@ extension EditNameDiscribeTaskTblViewCell: NewTaskViewControllerDelegate {
     func newTaskViewController(_ viewController: NewTaskViewController, didLoad values: [Project]) {
         return
     }
-    
-    /// This method is called when the NewTaskViewController is closed.
-   
 }
 

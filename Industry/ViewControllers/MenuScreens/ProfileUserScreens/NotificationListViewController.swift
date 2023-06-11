@@ -49,12 +49,21 @@ class NotificationListViewController: UIViewController {
         configureUI()
     }
     
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+        self.view.willRemoveSubview(self.collNotification)
+        print("sucsses closed NotificationListViewController")
+    }
+    
     // MARK: - Actions
     /// Func click button back
     @objc
     private func btnBack_Click(_ sender: UIButton) {
         navigationController?.popViewController(animated: true)
-        dismiss(animated: true, completion: nil)
+        dismiss(animated: true, completion: {
+            NotificationCenter.default.removeObserver(self)
+            self.view.willRemoveSubview(self.collNotification)
+        })
         self.navigationController?.isNavigationBarHidden = true
     }
     

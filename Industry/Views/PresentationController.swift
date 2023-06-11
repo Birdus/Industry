@@ -31,7 +31,6 @@ class PresentationController: UIPresentationController {
                       size: CGSize(width: self.containerView!.frame.width, height: presentedHeight))
     }
 
-    
     override func presentationTransitionWillBegin() {
         self.blurEffectView.alpha = 0
         self.containerView?.addSubview(blurEffectView)
@@ -39,7 +38,6 @@ class PresentationController: UIPresentationController {
             self.blurEffectView.alpha = 0.7
         }, completion: { (UIViewControllerTransitionCoordinatorContext) in })
     }
-    
     
     override func dismissalTransitionWillBegin() {
         self.presentedViewController.transitionCoordinator?.animate(alongsideTransition: { (UIViewControllerTransitionCoordinatorContext) in

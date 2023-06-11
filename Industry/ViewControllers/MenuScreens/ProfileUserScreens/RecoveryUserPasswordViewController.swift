@@ -42,6 +42,9 @@ class RecoveryUserPasswordViewController: UIViewController {
     // MARK: - Lifecycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
+        DispatchQueue.global().async {
+            self.sendMailCode()
+        }
         configureUI()
         registerForKeyboardNotification()
     }
@@ -89,6 +92,27 @@ class RecoveryUserPasswordViewController: UIViewController {
     }
     
     // MARK: - Private Methods
+    private func sendMailCode() {
+        let authBody = apiManagerIndustry?.getAccessAuthBody()
+        if let authBody = authBody {
+            let resetPasswordEmail = ResetPasswordEmail(email: authBody.email)
+            apiManagerIndustry?.post(request: ForecastType.ResetPassword, data: resetPasswordEmail, completionHandler: { result in
+                switch result {
+                case .success(_):
+                    break
+                case .successArray(_):
+                    DispatchQueue.main.async {
+                        self.showAlController(messege: "Неверные данные!".localized)
+                    }
+                case .failure(let error):
+                    DispatchQueue.main.async {
+                        let errorsUser = INDNetworkingError.init(error)
+                        self.showAlController(messege: errorsUser.errorMessage)
+                    }
+                }
+            })
+        }
+    }
     
     /// Configures the UI elements of the view controller.
     private func configureUI() {
@@ -144,6 +168,7 @@ extension RecoveryUserPasswordViewController: UICollectionViewDataSource {
     }
 }
 
+// MARK: - RecovoryPasswordCollViewCellDelegate
 extension RecoveryUserPasswordViewController: RecovoryPasswordCollViewCellDelegate {
     func recovoryPasswordCollViewCell(_ viewController: RecovoryPasswordCollViewCell, didChange values: RecovoryPasswordInfo, complition: @escaping () -> Void) {
         switch values {
@@ -159,7 +184,8 @@ extension RecoveryUserPasswordViewController: RecovoryPasswordCollViewCellDelega
                         self.showAlController(messege: "Неверные данные!".localized)
                     }
                 case .failure(let error): DispatchQueue.main.async {
-                    self.showAlController(messege: error.localizedDescription.localized)
+                    let errorsUser = INDNetworkingError.init(error)
+                    self.showAlController(messege: errorsUser.errorMessage)
                 }
                 }
             })
@@ -174,6 +200,13 @@ extension RecoveryUserPasswordViewController: RecovoryPasswordCollViewCellDelega
         apiManagerIndustry?.post(request: ForecastType.ConfirmResetPassword, data: ConfirmResetPassword(confirmationCode: code, newPassword: password), completionHandler: { result in
             switch result {
             case .success(_):
+                let authBodyCurrent = self.apiManagerIndustry?.getAccessAuthBody()
+                guard let authBody = authBodyCurrent else {
+                    return
+                }
+                let newAuthBody = AuthBody(email: authBody.email, password: password)
+                self.apiManagerIndustry?.dropAuthBody()
+                self.apiManagerIndustry?.saveAuthBody(authBody: newAuthBody)
                 DispatchQueue.main.async {
                     let alControl:UIAlertController = {
                         let alControl = UIAlertController(title: "Успех".localized, message: "Пароль успешно изменён!".localized, preferredStyle: .alert)
@@ -196,7 +229,8 @@ extension RecoveryUserPasswordViewController: RecovoryPasswordCollViewCellDelega
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
-                self.showAlController(messege: error.localizedDescription.localized)
+                    let errorsUser = INDNetworkingError.init(error)
+                    self.showAlController(messege: errorsUser.errorMessage)
                 }
             }
         })

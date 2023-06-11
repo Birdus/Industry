@@ -16,7 +16,7 @@ class ListEmployeesTblViewCell: UITableViewCell {
     // MARK: - Properties
     static let indificatorCell = "ListEmployeesTblViewCell"
     private var idEmployee: Int!
-    public var delegete: ListEmployeesTblViewCellDelegete!
+    weak var delegete: ListEmployeesTblViewCellDelegete!
     
     // MARK: - Private UI
     /// A UIView container image

@@ -22,262 +22,275 @@ final class APIManagerIndustry: APIManager {
     /**
      Makes a network request to fetch an array of objects that conform to `JSONDecodable`.
      - Parameters:
-     -  request The `URLRequest` object that defines the network request to be made.
-     -  HTTPMethod The HTTP method used to make the request.
-     -  parse: A closure that takes a dictionary of `[String: Any]` as input and returns an array of objects that conform to `JSONDecodable`.
-     -  completionHandler: A closure that takes an `APIResult` object as input and has no return value.
+        -  request The `URLRequest` object that defines the network request to be made.
+        -  HTTPMethod The HTTP method used to make the request.
+        -  parse: A closure that takes a dictionary of `[String: Any]` as input and returns an array of objects that conform to `JSONDecodable`.
+        -  completionHandler: A closure that takes an `APIResult` object as input and has no return value.
      */
     func fetch<T>(request: ForecastType, parse: @escaping ([[String: Any]]) -> [T]?, completionHandler: @escaping (APIResult<T>) -> Void) where T: Decodable {
         refreshTokens { result in
             if case .failure(let error) = result {
                 completionHandler(.failure(error))
+                return
             }
         }
+        
         var requestToFetch = request.requestWitchToken
         requestToFetch.httpMethod = HttpMethodsString.get.stringValue
         let dataTask = JSONTaskWithArray(request: requestToFetch, HTTPMethod: HttpMethodsString.get) { (json, response, error, _) in
-            guard response != nil else {
-                let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.missingHTTPResponse.errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.missingHTTPResponse.localizedDescription])
-                completionHandler(.failure(error))
-                return
+            
+            guard let HTTPResponse = response else {
+                let error = INDNetworkingError.missingHTTPResponse
+                return completionHandler(.failure(error))
             }
-            if let error = error {
-                completionHandler(.failure(error))
-                return
+
+            let responseError = INDNetworkingError(statusCode: HTTPResponse.statusCode, message: error?.localizedDescription)
+
+            if !(200...299).contains(HTTPResponse.statusCode) {
+                return completionHandler(.failure(responseError))
             }
+
             guard let json = json else {
-                let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.unexpectedResponse(message: "Unexpected error: no JSON response").errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.unexpectedResponse(message: "Unexpected error: no JSON response").errorMessage])
-                completionHandler(.failure(error))
-                return
+                let error = INDNetworkingError.unexpectedResponse(message: "Unexpected error: no JSON response")
+                return completionHandler(.failure(error))
             }
+            
             let compactedJSON = json.compactMap { $0 }
-            if let result = parse(compactedJSON) {
-                completionHandler(.successArray(result))
-            } else {
-                let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.unexpectedResponse(message: "Error parsing JSON").errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.unexpectedResponse(message: "Error parsing JSON").errorMessage])
-                completionHandler(.failure(error))
+            guard let items = parse(compactedJSON) else {
+                let error = INDNetworkingError.unexpectedResponse(message: "Error parsing JSON")
+                return completionHandler(.failure(error))
             }
+            completionHandler(.successArray(items))
         }
         dataTask.resume()
     }
+
     
     /**
      Makes a network request to fetch a single object that conforms to `JSONDecodable`.
      - Parameters:
-     - request: The `URLRequest` object that defines the network request to be made.
-     - HTTPMethod: The HTTP method used to make the request.
-     - id: An optional `Int` value that represents the ID of the object to be fetched.
-     - parse: A closure that takes a dictionary of `[String: Any]` as input and returns an object that conforms to `JSONDecodable`.
-     - completionHandler: A closure that takes an `APIResult` object as input and has no return value.
+        - request: The `URLRequest` object that defines the network request to be made.
+        - HTTPMethod: The HTTP method used to make the request.
+        - id: An optional `Int` value that represents the ID of the object to be fetched.
+        - parse: A closure that takes a dictionary of `[String: Any]` as input and returns an object that conforms to `JSONDecodable`.
+        - completionHandler: A closure that takes an `APIResult` object as input and has no return value.
      */
     func fetch<T>(request: ForecastType, parse: @escaping ([String : Any]) -> T?, completionHandler: @escaping (APIResult<T>) -> Void) where T : Decodable {
         refreshTokens { result in
             if case .failure(let error) = result {
                 completionHandler(.failure(error))
+                return
             }
         }
         var requestToFetch = request.requestWitchToken
         requestToFetch.httpMethod = HttpMethodsString.get.stringValue
         let task = JSONTaskWith(request: requestToFetch, HTTPMethod: HttpMethodsString.get) { (json, response, error, _) in
-            guard response != nil else {
-                let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.missingHTTPResponse.errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.missingHTTPResponse.localizedDescription])
-                completionHandler(.failure(error))
-                return
+            
+            if let error = error {
+                return completionHandler(.failure(INDNetworkingError.init(statusCode: (response)?.statusCode, message: error.localizedDescription)))
             }
+            
+            guard let HTTPResponse = response else {
+                let error = INDNetworkingError.missingHTTPResponse
+                return completionHandler(.failure(error))
+            }
+            
+            let responseError = INDNetworkingError(statusCode: HTTPResponse.statusCode, message: error?.localizedDescription)
+
+            if !(200...299).contains(HTTPResponse.statusCode) {
+                return completionHandler(.failure(responseError))
+            }
+            
             guard let json = json else {
-                if let error = error {
-                    completionHandler(.failure(error))
-                } else {
-                    let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.unexpectedResponse(message: "Unexpected error: no error message provided").errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.unexpectedResponse(message: "Unexpected error: no error message provided").errorMessage])
-                    completionHandler(.failure(error))
-                }
-                return
+                let error = INDNetworkingError.unexpectedResponse(message: "Unexpected error: no JSON response")
+                return completionHandler(.failure(error))
             }
-            if let result = parse(json) {
-                completionHandler(.success(result))
-            } else {
-                let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.unexpectedResponse(message: "Error parsing JSON").errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.unexpectedResponse(message: "Error parsing JSON").errorMessage])
-                completionHandler(.failure(error))
+            
+            guard let item = parse(json) else {
+                let error = INDNetworkingError.unexpectedResponse(message: "Error parsing JSON")
+                return completionHandler(.failure(error))
             }
+            completionHandler(.success(item))
         }
         task.resume()
     }
     
     func put<T>(request: ForecastType, data: T, completionHandler: @escaping (APIResult<Int>) -> Void) where T : Encodable {
         refreshTokens { result in
-            if case .failure(let error) = result {
+            switch result {
+            case .failure(let error):
                 completionHandler(.failure(error))
+                return
+            case .success:
+                break
             }
         }
         var requestToPut = request.requestWitchToken
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
         guard let data = try? encoder.encode(data) else {
-            let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.encodingFailed.errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.encodingFailed.errorMessage])
+            let error = INDNetworkingError.encodingFailed
             completionHandler(.failure(error))
             return
         }
-        requestToPut.addValue("application/json", forHTTPHeaderField: "Content-Type")
         requestToPut.httpMethod = HttpMethodsString.put.stringValue
         requestToPut.httpBody = data
         let task = JSONTaskWith(request: requestToPut, HTTPMethod: HttpMethodsString.put) { (json, response, error, _) in
-            guard let httpResponse = response,
-                  httpResponse.statusCode == 200 else {
-                let error = error ?? NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.unexpectedResponse(message: "Error parsing JSON").errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.unexpectedResponse(message: "Error parsing JSON").errorMessage])
-                completionHandler(.failure(error))
+            if let error = error {
+                completionHandler(.failure(INDNetworkingError.init(statusCode: (response)?.statusCode, message: error.localizedDescription)))
                 return
             }
-            completionHandler(.success(httpResponse.statusCode))
+            guard let HTTPResponse = response else {
+                let error = INDNetworkingError.missingHTTPResponse
+                return completionHandler(.failure(error))
+            }
+            let responseError = INDNetworkingError(statusCode: HTTPResponse.statusCode, message: error?.localizedDescription)
+
+            if !(200...299).contains(HTTPResponse.statusCode) {
+                return completionHandler(.failure(responseError))
+            }
+            
+            completionHandler(.success(HTTPResponse.statusCode))
         }
         task.resume()
     }
     
-    
     func post<T>(request: ForecastType, data: T, completionHandler: @escaping (APIResult<Int>) -> Void) where T : Encodable {
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
-        
         guard let data = try? encoder.encode(data) else {
             let error = INDNetworkingError.encodingFailed
             completionHandler(.failure(error))
             return
         }
-        
         var requestToPost = request.isTokenRequired ? request.requestWitchToken : request.requestWitchOutToken
-        requestToPost.addValue("application/json", forHTTPHeaderField: "Content-Type")
         requestToPost.httpMethod = HttpMethodsString.post.stringValue
         requestToPost.httpBody = data
-        
-        if request.isTokenRequired {
-            refreshTokens { result in
-                if case .failure(let error) = result {
-                    completionHandler(.failure(error))
+        let launchTask = {
+            let task = self.JSONTaskWith(request: requestToPost, HTTPMethod: HttpMethodsString.post) { (json, response, error, _) in
+                if let error = error {
+                    let errorUser = INDNetworkingError.init(error)
+                    completionHandler(.failure(errorUser))
+                    return
                 }
-            }
-        }
-        
-        let task = JSONTaskWith(request: requestToPost, HTTPMethod: HttpMethodsString.post) { (json, response, error, _) in
-            guard let httpResponse = response else {
-                let error = error ?? INDNetworkingError.unexpectedResponse(message: "Error parsing JSON")
-                completionHandler(.failure(error))
-                return
-            }
-            
-            if httpResponse.statusCode == 201,
-               let locationHeader = httpResponse.allHeaderFields["Location"] as? String,
-               let url = URL(string: locationHeader),
-               let id = Int(url.lastPathComponent) {
-                completionHandler(.success(id))
-                return
-            }
-            
-            if httpResponse.statusCode != 200 {
-                let error = INDNetworkingError.unexpectedResponse(message: "Unexpected status code")
-                completionHandler(.failure(error))
-                return
-            }
-            
-            guard let json = json, let responseValue = json["response"] as? String else {
-                completionHandler(.success(0))
-                return
-            }
-            
-            guard let successCode = Bool(responseValue) else {
-                completionHandler(.success(0))
-                return
-            }
-            
-            if successCode {
-                completionHandler(.success(0))
-            } else {
-                let error = INDNetworkingError.unexpectedResponse(message: "Код не действителен!".localized)
-                completionHandler(.failure(error))
-                return
-            }
-            completionHandler(.success(0))
-        }
-        
-        task.resume()
-    }
-    
-    
-    func fetchIssues(ids: [Int], parse: @escaping ([String : Any]) -> Issues?, completionHandler: @escaping (APIResult<[Issues]>) -> Void) {
-        refreshTokens { result in
-            if case .failure(let error) = result {
-                completionHandler(.failure(error))
-            }
-        }
-        let dispatchGroup = DispatchGroup()
-        var results: [Issues] = []
-        for id in ids {
-            dispatchGroup.enter()
-            let requestToFetchIssues = ForecastType.IssueWithId(id: id)
-            var requestToFetch = requestToFetchIssues.requestWitchToken
-            requestToFetch.httpMethod = HttpMethodsString.get.stringValue
-            let task = JSONTaskWith(request: requestToFetch, HTTPMethod: HttpMethodsString.get) { (json, response, error, _) in
-                defer { dispatchGroup.leave() }
+                guard let HTTPResponse = response else {
+                    let error = INDNetworkingError.missingHTTPResponse
+                    return completionHandler(.failure(error))
+                }
+                let responseError = INDNetworkingError(statusCode: HTTPResponse.statusCode, message: error?.localizedDescription)
+
+                if !(200...299).contains(HTTPResponse.statusCode) {
+                    return completionHandler(.failure(responseError))
+                }
                 
-                guard response != nil else {
-                    let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.missingHTTPResponse.errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.missingHTTPResponse.localizedDescription])
-                    completionHandler(.failure(error))
+                if HTTPResponse.statusCode == 201,
+                   let locationHeader = HTTPResponse.allHeaderFields["Location"] as? String,
+                   let url = URL(string: locationHeader),
+                   let id = Int(url.lastPathComponent) {
+                    completionHandler(.success(id))
                     return
                 }
-                guard let json = json else {
-                    if let error = error {
-                        completionHandler(.failure(error))
-                    } else {
-                        let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.unexpectedResponse(message: "Unexpected error: no error message provided").errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.unexpectedResponse(message: "Unexpected error: no error message provided").errorMessage])
-                        completionHandler(.failure(error))
-                    }
-                    return
-                }
-                if let result = parse(json) {
-                    results.append(result)
-                } else {
-                    let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.unexpectedResponse(message: "Error parsing JSON").errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.unexpectedResponse(message: "Error parsing JSON").errorMessage])
-                    completionHandler(.failure(error))
-                }
+                completionHandler(.success(0))
             }
             task.resume()
         }
         
-        dispatchGroup.notify(queue: .main) {
-            completionHandler(.success(results))
+        if request.isTokenRequired {
+            refreshTokens { result in
+                switch result {
+                case .failure(let error):
+                    completionHandler(.failure(error))
+                    return
+                case .success:
+                    launchTask()
+                }
+            }
+        } else {
+            launchTask()
         }
     }
     
+    func fetchIssues(ids: [Int], parse: @escaping ([String : Any]) -> Issues?, completionHandler: @escaping (APIResult<[Issues]>) -> Void) {
+        let refreshTokensCompletion = { (result: Result<Void, Error>) in
+            switch result {
+            case .failure(let error):
+                completionHandler(.failure(error))
+            case .success:
+                let dispatchGroup = DispatchGroup()
+                var results: [Issues] = []
+                for id in ids {
+                    dispatchGroup.enter()
+                    let requestToFetchIssues = ForecastType.IssueWithId(id: id)
+                    var requestToFetch = requestToFetchIssues.requestWitchToken
+                    requestToFetch.httpMethod = HttpMethodsString.get.stringValue
+                    let task = self.JSONTaskWith(request: requestToFetch, HTTPMethod: HttpMethodsString.get) { (json, response, error, _) in
+                        defer { dispatchGroup.leave() }
+                        guard let HTTPResponse = response else {
+                            let error = error ?? NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.unexpectedResponse(message: "Unexpected error: no error message provided").errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.unexpectedResponse(message: "Unexpected error: no error message provided").errorMessage])
+                            completionHandler(.failure(error))
+                            return
+                        }
+                        
+                        let responseError = INDNetworkingError(statusCode: HTTPResponse.statusCode, message: error?.localizedDescription)
+
+                        if !(200...299).contains(HTTPResponse.statusCode) {
+                            return completionHandler(.failure(responseError))
+                        }
+                        
+                        guard let json = json else {
+                            let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.unexpectedResponse(message: "Unexpected error: no JSON response").errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.unexpectedResponse(message: "Unexpected error: no JSON response").errorMessage])
+                            completionHandler(.failure(error))
+                            return
+                        }
+                        if let result = parse(json) {
+                            results.append(result)
+                        } else {
+                            let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.unexpectedResponse(message: "Error parsing JSON").errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.unexpectedResponse(message: "Error parsing JSON").errorMessage])
+                            completionHandler(.failure(error))
+                            return
+                        }
+                    }
+                    task.resume()
+                }
+                dispatchGroup.notify(queue: .main) {
+                    completionHandler(.success(results))
+                }
+            }
+        }
+        refreshTokens(completion: refreshTokensCompletion)
+    }
+    
     func validateCredentials(credentials: AuthBody, completion: @escaping (Result<Int, Error>) -> Void) {
-        
         var request = ForecastType.Token(credentials: credentials).requestWitchOutToken
         request.httpMethod = HttpMethodsString.post.stringValue
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         do {
             let jsonData = try JSONEncoder().encode(credentials)
             request.httpBody = jsonData
         } catch {
-            completion(.failure(INDNetworkingError.encodingFailed))
+            let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.encodingFailed.errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.encodingFailed.errorMessage])
+            completion(.failure(error))
             return
         }
-        let task = URLSession.shared.dataTask(with: request) { [weak self] (data, response, error) in
-            guard let self = self else { return }
-            if let error = error {
+        let task = JSONTaskWith(request: request, HTTPMethod: .post) { (json, response, error, method) in
+            guard let HTTPResponse = response else {
+                let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.missingHTTPResponse.errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.missingHTTPResponse.errorMessage])
                 completion(.failure(error))
                 return
             }
-            guard let httpResponse = response as? HTTPURLResponse else {
-                completion(.failure(INDNetworkingError.missingHTTPResponse))
+            let responseError = INDNetworkingError(statusCode: HTTPResponse.statusCode, message: error?.localizedDescription)
+
+            if !(200...299).contains(HTTPResponse.statusCode) {
+                return completion(.failure(responseError))
+            }
+    
+            guard let json = json else {
+                let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.unexpectedResponse(message: "Unexpected error: no JSON response").errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.unexpectedResponse(message: "Unexpected error: no JSON response").errorMessage])
+                completion(.failure(error))
                 return
             }
-            guard (200...299).contains(httpResponse.statusCode) else {
-                completion(.failure(INDNetworkingError.init(statusCode: httpResponse.statusCode)))
-                return
-            }
-            guard let data = data else {
-                completion(.failure(INDNetworkingError.decodingFailed))
-                return
-            }
+            
             do {
-                if let jsonString = String(data: data, encoding: .utf8) {
+                if let jsonString = json["response"] as? String {
                     let jwt = try decode(jwt: jsonString)
                     let idEmployee = jwt.claim(name: "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").integer
                     if let id = idEmployee, let exp = jwt.claim(name: "exp").integer,
@@ -287,10 +300,12 @@ final class APIManagerIndustry: APIManager {
                         self.accessToken = self.getAccessToken()
                         completion(.success(id))
                     } else {
-                        completion(.failure(INDNetworkingError.decodingFailed))
+                        let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.unexpectedResponse(message: "Error parsing JSON").errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.unexpectedResponse(message: "Error parsing JSON").errorMessage])
+                        completion(.failure(error))
                     }
                 } else {
-                    completion(.failure(INDNetworkingError.decodingFailed))
+                    let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.unexpectedResponse(message: "Error parsing JSON").errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.unexpectedResponse(message: "Error parsing JSON").errorMessage])
+                    completion(.failure(error))
                 }
             } catch {
                 completion(.failure(error))
@@ -300,26 +315,32 @@ final class APIManagerIndustry: APIManager {
     }
     
     func deleteItem(request: ForecastType, completionHandler: @escaping (APIResult<Void>) -> Void) {
-        refreshTokens { result in
-            if case .failure(let error) = result {
+        let refreshTokensCompletion = { (result: Result<Void, Error>) in
+            switch result {
+            case .failure(let error):
                 completionHandler(.failure(error))
+            case .success:
+                var request = request.requestWitchToken
+                request.httpMethod = HttpMethodsString.delete.stringValue
+                let task = self.JSONTaskWith(request: request, HTTPMethod: .delete) { (_, response, error, _) in
+                    guard let HTTPResponse = response else {
+                        let error = error ?? NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.unexpectedResponse(message: "Unexpected error: no error message provided").errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.unexpectedResponse(message: "Unexpected error: no error message provided").errorMessage])
+                        completionHandler(.failure(error))
+                        return
+                    }
+                    
+                    let responseError = INDNetworkingError(statusCode: HTTPResponse.statusCode, message: error?.localizedDescription)
+
+                    if !(200...299).contains(HTTPResponse.statusCode) {
+                        return completionHandler(.failure(responseError))
+                    }
+                    
+                    completionHandler(.success(()))
+                }
+                task.resume()
             }
         }
-        var request = request.requestWitchToken
-        request.httpMethod = HttpMethodsString.delete.stringValue
-        let task = JSONTaskWith(request: request, HTTPMethod: .delete) { (_, response, error, _) in
-            guard response != nil else {
-                let error = NSError(domain: INDNetworkingError.errorDomain, code: INDNetworkingError.missingHTTPResponse.errorCode, userInfo: [NSLocalizedDescriptionKey: INDNetworkingError.missingHTTPResponse.localizedDescription])
-                completionHandler(.failure(error))
-                return
-            }
-            if let error = error {
-                completionHandler(.failure(error))
-            } else {
-                completionHandler(.success(()))
-            }
-        }
-        task.resume()
+        refreshTokens(completion: refreshTokensCompletion)
     }
     
     func refreshTokens(completion: @escaping (Result<Void, Error>) -> Void) {
@@ -327,45 +348,40 @@ final class APIManagerIndustry: APIManager {
             completion(.success(()))
             return
         }
-        
         guard let authBody = self.getAccessAuthBody() else {
-            let error = INDNetworkingError.invalidAccessToken
+            let error = INDNetworkingError.unexpectedResponse(message: "Invalid access auth body")
             completion(.failure(error))
             return
         }
-        
         var refreshRequest = ForecastType.Token(credentials: authBody).requestWitchOutToken
         refreshRequest.httpMethod = HttpMethodsString.post.stringValue
-        refreshRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
         do {
             if let authBody = getAccessAuthBody() {
                 let jsonData = try JSONEncoder().encode(authBody)
                 refreshRequest.httpBody = jsonData
             }
         } catch {
-            completion(.failure(INDNetworkingError.encodingFailed))
+            let error = INDNetworkingError.unexpectedResponse(message: "Failed to encode auth body")
+            completion(.failure(error))
             return
         }
+        
         let task = URLSession.shared.dataTask(with: refreshRequest) { [weak self] (data, response, error) in
             guard let self = self else { return }
-            
             if let error = error {
                 completion(.failure(error))
                 return
             }
-            
             guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
-                let error = INDNetworkingError.invalidAccessToken
+                let error = INDNetworkingError.unexpectedResponse(message: "Unexpected HTTP response")
                 completion(.failure(error))
                 return
             }
-            
             guard let data = data else {
-                let error = INDNetworkingError.decodingFailed
+                let error = INDNetworkingError.unexpectedResponse(message: "No data in response")
                 completion(.failure(error))
                 return
             }
-            
             if let jsonString = String(data: data, encoding: .utf8),
                let jwt = try? decode(jwt: jsonString),
                let exp = jwt.claim(name: "exp").integer,
@@ -375,31 +391,10 @@ final class APIManagerIndustry: APIManager {
                 self.accessToken = self.getAccessToken()
                 completion(.success(()))
             } else {
-                let error = INDNetworkingError.decodingFailed
+                let error = INDNetworkingError.unexpectedResponse(message: "Failed to decode JWT or missing claims")
                 completion(.failure(error))
             }
         }
-        task.resume()
-    }
-    
-    func loadImage(from url: URL, completion: @escaping (UIImage?) -> Void) {
-        let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
-            if let error = error {
-                print("Error loading image: \(error)")
-                completion(nil)
-                return
-            }
-            
-            guard let data = data else {
-                print("No data returned from server")
-                completion(nil)
-                return
-            }
-            
-            let image = UIImage(data: data)
-            completion(image)
-        }
-        
         task.resume()
     }
     
@@ -416,7 +411,7 @@ final class APIManagerIndustry: APIManager {
         let reAuthThreshold: TimeInterval = 5 * 60
         return currentTimestamp + reAuthThreshold >= expiresAtTimestamp
     }
-
+    
     /**
      The configuration object used to create the session.
      */
@@ -448,8 +443,6 @@ final class APIManagerIndustry: APIManager {
 }
 
 extension APIManagerIndustry: KeychainWorkerProtocol {
-    
-    
     static var KEY_AUTH_BODY_EMAIL: String = "key_auth_body_email"
     static var KEY_AUTH_BODY_PASSWORD: String = "key_auth_body_password"
     static let KEY_ACCESS_TOKEN = "auth_token"

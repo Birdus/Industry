@@ -82,6 +82,17 @@ class EnterMenuViewController: UIViewController {
         return btn
     }()
     
+    private lazy var btnShowCode: UIButton = {
+        let btn = UIButton()
+        btn.setTitle("Код устройства".localized, for: .normal)
+        btn.setTitleColor(.systemGray, for: .normal)
+        btn.translatesAutoresizingMaskIntoConstraints = false
+        btn.titleLabel?.textAlignment = .right
+        btn.accessibilityIdentifier = "btnRecoveryPass"
+        btn.addTarget(self, action: #selector(btnShowCode_Click), for: .touchUpInside)
+        return btn
+    }()
+    
     private lazy var containerImg: UIView = {
         let view = UIView()
         view.accessibilityIdentifier = "containerImg"
@@ -153,6 +164,34 @@ class EnterMenuViewController: UIViewController {
         navigationController?.present(vcNav, animated: true, completion: nil)
     }
     
+    @objc
+    private func btnShowCode_Click(_ sender: UIButton) {
+        guard let identifier = UIDevice.current.identifierForVendor?.uuidString else {
+            return
+        }
+        let alControl:UIAlertController = {
+            let alControl = UIAlertController(title: "Ваш код устройства".localized, message: identifier, preferredStyle: .alert)
+            let btnOk: UIAlertAction = {
+                let btn = UIAlertAction(title: "Ok".localized,
+                                        style: .default,
+                                        handler: nil )
+                return btn
+            }()
+            let btnCopy: UIAlertAction = {
+                let btn = UIAlertAction(title: "Скопировать код".localized,
+                                        style: .default,
+                                        handler: {_ in
+                                            UIPasteboard.general.string = identifier
+                                        })
+                return btn
+            }()
+            alControl.addAction(btnOk)
+            alControl.addAction(btnCopy)
+            return alControl
+        }()
+        self.present(alControl, animated: true, completion: nil)
+    }
+    
     /// Func click button enter to application
     @objc
     private func BtnEnter_Click(_ sender: UIButton) {
@@ -186,7 +225,8 @@ class EnterMenuViewController: UIViewController {
                 case .failure(let error):
                     activityIndicator.stopAnimating()
                     blurEffectView.removeFromSuperview()
-                    self.showAlController(messege: error.localizedDescription)
+                    let errorsUser = INDNetworkingError.init(error)
+                    self.showAlController(messege: errorsUser.errorMessage)
                 case .success(let idEmployee):
                     let vc = TabBarController()
                     self.delegete = vc
@@ -206,7 +246,8 @@ class EnterMenuViewController: UIViewController {
                             self.removeFromParent()
                                 })
                     }, failer: { error in
-                        self.showAlController(messege: error.localizedDescription)
+                        let errorsUser = INDNetworkingError.init(error)
+                        self.showAlController(messege: errorsUser.errorMessage)
                         activityIndicator.stopAnimating()
                         blurEffectView.removeFromSuperview()
                     })
@@ -261,6 +302,7 @@ class EnterMenuViewController: UIViewController {
         view.backgroundColor = .white
         view.addSubview(tblAuthentication)
         view.addSubview(btnEnter)
+        view.addSubview(btnShowCode)
         view.addSubview(containerImg)
         view.addSubview(btnRecoveryPass)
         containerImg.addSubview(imgCompany)
@@ -279,6 +321,9 @@ class EnterMenuViewController: UIViewController {
             // Recovery password button
             btnRecoveryPass.topAnchor.constraint(equalTo: tblAuthentication.bottomAnchor, constant: -10),
             btnRecoveryPass.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            // Show Code button
+            btnShowCode.topAnchor.constraint(equalTo: tblAuthentication.bottomAnchor, constant: -10),
+            btnShowCode.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
             // Company logo
             containerImg.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, multiplier: 0.5),
             containerImg.heightAnchor.constraint(equalTo: containerImg.widthAnchor),

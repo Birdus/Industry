@@ -160,7 +160,7 @@ class EditDateTaskTblViewCell: UITableViewCell {
     }
 }
 
-// MARK: Text Field Delegate
+// MARK: - Text Field Delegate
 extension EditDateTaskTblViewCell: UITextFieldDelegate {
     /// Called when the text field begins editing.
     func textFieldDidBeginEditing(_ textField: UITextField) {
@@ -187,7 +187,7 @@ extension EditDateTaskTblViewCell: UITextFieldDelegate {
     }
 }
 
-// MARK: NewTaskViewControllerDelegate
+// MARK: - NewTaskViewControllerDelegate
 extension EditDateTaskTblViewCell: NewTaskViewControllerDelegate {
     func newTaskViewController(_ viewController: NewTaskViewController, didLoad values: [Employee], selected employees: [Employee]?) {
         return
@@ -206,7 +206,4 @@ extension EditDateTaskTblViewCell: NewTaskViewControllerDelegate {
     func newTaskViewController(_ viewController: NewTaskViewController, didLoad values: [Project]) {
         return
     }
-    
-    /// This method is called when the NewTaskViewController is closed.
-   
 }

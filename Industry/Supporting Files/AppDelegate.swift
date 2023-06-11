@@ -17,12 +17,13 @@ protocol AppDelegateDelegate: AnyObject {
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
-    private var delegate: AppDelegateDelegate!
+    private weak var delegate: AppDelegateDelegate!
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         if ProcessInfo.processInfo.arguments.contains("-resetUser") {
             KeychainSwift().clear()
         }
+        KeychainSwift().clear()
         let apiManager = APIManagerIndustry()
         window = UIWindow(frame: UIScreen.main.bounds)
         let splashViewController = SplachViewController()
@@ -74,7 +75,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             self.delegate.appDelegate(self, didLoadEmployeeWith: id, completion: { [weak self] in
                 guard let self = self else { return }
                 DispatchQueue.main.async {
-                    
                     let navController = UINavigationController(rootViewController: tabBarController)
                     navController.modalPresentationStyle = .fullScreen
                     navController.isToolbarHidden = true

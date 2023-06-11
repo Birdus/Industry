@@ -21,6 +21,7 @@ class HeadMenuTblViewCell: UITableViewCell {
     /// The delegate for handling changes in text input.
     weak var delegete: HeadMenuTblViewCellDelegate!
     
+    // MARK: - Private UI
     /// A UILabel displaying the first, last and  name of the user.
     lazy private var lblFIO: UILabel = {
         var lbl: UILabel = UILabel()

@@ -25,8 +25,6 @@ protocol TabBarControllerDelegate: AnyObject {
      - data: The data of Employee, load from api
      */
     func tabBarController(_ tabBarController: TabBarController, didSelectTabAtIndex index: Int, issues datas: [Issues], employee data: Employee)
-    
-    
 }
 
 class TabBarController: UITabBarController {
@@ -94,6 +92,7 @@ class TabBarController: UITabBarController {
         let vcDocumentFlow = DocumentFlowViewController()
         let navigationControllerDocumentFlow = UINavigationController(rootViewController: vcDocumentFlow)
         let vcMenuUser = ProfileUserViewController()
+        vcMenuUser.delegete = self
         delegete.append(vcMenuUser)
         delegete.append(vcDocumentFlow)
         delegete.append(vcCalendar)
@@ -159,7 +158,8 @@ class TabBarController: UITabBarController {
                
             case .failure(let error):
                 DispatchQueue.main.async {
-                    self.showAlController(message: error.localizedDescription)
+                    let errorsUser = INDNetworkingError.init(error)
+                    self.showAlController(message: errorsUser.errorMessage)
                 }
             case .successArray(_):
                 DispatchQueue.main.async {
@@ -204,8 +204,9 @@ extension TabBarController: EnterMenuViewControllerDelegate {
                         }
                     case .failure(let error):
                         DispatchQueue.main.async {
-                            self.showAlController(message: error.localizedDescription)
-                            failer(error)
+                            let errorsUser = INDNetworkingError.init(error)
+                            self.showAlController(message: errorsUser.errorMessage)
+                            failer(errorsUser)
                         }
                     case .successArray(_):
                         DispatchQueue.main.async {
@@ -216,8 +217,9 @@ extension TabBarController: EnterMenuViewControllerDelegate {
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
-                    self.showAlController(message: error.localizedDescription)
-                    failer(error)
+                    let errorsUser = INDNetworkingError.init(error)
+                    self.showAlController(message: errorsUser.errorMessage)
+                    failer(errorsUser)
                 }
             case .successArray(_):
                 DispatchQueue.main.async {
@@ -262,8 +264,9 @@ extension TabBarController: AppDelegateDelegate {
                         completion()
                     case .failure(let error):
                         DispatchQueue.main.async {
-                            self.showAlController(message: error.localizedDescription)
-                            failer(error)
+                            let errorsUser = INDNetworkingError.init(error)
+                            self.showAlController(message: errorsUser.errorMessage)
+                            failer(errorsUser)
                         }
                     case .successArray(_):
                         DispatchQueue.main.async {
@@ -274,8 +277,9 @@ extension TabBarController: AppDelegateDelegate {
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
-                    self.showAlController(message: error.localizedDescription)
-                    failer(error)
+                    let errorsUser = INDNetworkingError.init(error)
+                    self.showAlController(message: errorsUser.errorMessage)
+                    failer(errorsUser)
                 }
             case .successArray(_):
                 DispatchQueue.main.async {
@@ -339,5 +343,15 @@ extension TabBarController: CalendarTaskViewControllerDelegate {
                 }
             }
         }
+    }
+}
+
+extension TabBarController: ProfileUserViewControllerDelegate {
+    func profileUserViewController(_ viewController: ProfileUserViewController, didLoadEmployee image: @escaping (UIImage) -> Void) {
+        guard let employee = employee else {
+            return
+        }
+        let urlPath = ForecastType.EmployeeWitchId(id: employee.id).path
+        let url = ForecastType.EmployeeWitchId(id: employee.id).baseURL.appendingPathComponent(urlPath)
     }
 }

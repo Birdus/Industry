@@ -16,6 +16,7 @@ class UserCountTaskTblViewCell: UITableViewCell {
     /// The reuse identifier for this cell.
     static let indificatorCell = "UserCountTaskTblViewCell"
     
+    // MARK: - Private UI
     /// The label displaying the count of completed tasks.
     private lazy var lblCountTask: UILabel = {
         let lbl = UILabel()

@@ -92,8 +92,7 @@ class NewTaskViewController: UIViewController {
         print("sucsses closed NewTaskViewController")
     }
     
-    // MARK: - Acrion
-    
+    // MARK: -  Action
     @objc
     private func btnCreate_Click(_ notification: UIButton) {
         delegete.newTaskViewController(self, didClosed: true)
@@ -127,7 +126,13 @@ class NewTaskViewController: UIViewController {
                             if successCounter == employees.count {
                                 DispatchQueue.main.async {
                                     //                                    self.delegete.newTaskViewController(self, isChande: true)
-                                    self.dismiss(animated: true, completion: nil)
+                                    self.dismiss(animated: true, completion: {
+                                        self.delegete = nil
+                                        NotificationCenter.default.removeObserver(self)
+                                        self.apiManagerIndustry = nil
+                                        self.view.willRemoveSubview(self.tblNewTask)
+                                        self.view.removeFromSuperview()
+                                    })
                                 }
                             }
                         case .failure(let error):
@@ -230,14 +235,18 @@ class NewTaskViewController: UIViewController {
     }
     
     private func handleSucsess(_ activityIndicator: UIActivityIndicatorView, _ blurEffectView: UIVisualEffectView) {
-        activityIndicator.stopAnimating()
-        blurEffectView.removeFromSuperview()
+        DispatchQueue.main.async {
+            activityIndicator.stopAnimating()
+            blurEffectView.removeFromSuperview()
+        }
     }
     
     private func handleError(_ activityIndicator: UIActivityIndicatorView, _ blurEffectView: UIVisualEffectView, message: String) {
-        activityIndicator.stopAnimating()
-        blurEffectView.removeFromSuperview()
-        showAlController(message: message)
+        DispatchQueue.main.async {
+            activityIndicator.stopAnimating()
+            blurEffectView.removeFromSuperview()
+            self.showAlController(message: message)
+        }
     }
     
     private func showAlController(message: String) {
@@ -268,7 +277,8 @@ class NewTaskViewController: UIViewController {
                     }
                 case .failure(let error):
                     DispatchQueue.main.async {
-                        self.showAlController(message: error.localizedDescription)
+                        let errorsUser = INDNetworkingError.init(error)
+                        self.showAlController(message: errorsUser.errorMessage)
                         compleat()
                     }
                 case .successArray(let employees):
@@ -288,7 +298,8 @@ class NewTaskViewController: UIViewController {
                     }
                 case .failure(let error):
                     DispatchQueue.main.async {
-                        self.showAlController(message: error.localizedDescription)
+                        let errorsUser = INDNetworkingError.init(error)
+                        self.showAlController(message: errorsUser.errorMessage)
                         compleat()
                     }
                 case .successArray(let employees):
@@ -311,7 +322,8 @@ class NewTaskViewController: UIViewController {
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
-                    self.showAlController(message: error.localizedDescription)
+                    let errorsUser = INDNetworkingError.init(error)
+                    self.showAlController(message: errorsUser.errorMessage)
                     compleat()
                 }
             case .successArray(let project):

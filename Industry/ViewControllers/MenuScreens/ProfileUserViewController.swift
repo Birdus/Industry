@@ -5,6 +5,9 @@
 //
 
 import UIKit
+protocol ProfileUserViewControllerDelegate: AnyObject {
+    func profileUserViewController(_ viewController: ProfileUserViewController, didLoadEmployee image: @escaping (UIImage)-> Void)
+}
 
 /**
  ProfileUserViewController displays a user's profile with a menu of options.
@@ -12,7 +15,7 @@ import UIKit
 class ProfileUserViewController: UIViewController {
     
     // MARK: - Properties
-    
+    weak var delegete: ProfileUserViewControllerDelegate!
     private var employee: Employee!
     
     // MARK: - Private UI
@@ -53,26 +56,6 @@ class ProfileUserViewController: UIViewController {
     }
     
     // MARK: - Private Methods
-    func loadImage(from url: URL, completion: @escaping (UIImage?) -> Void) {
-        let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
-            if let error = error {
-                print("Error loading image: \(error)")
-                completion(nil)
-                return
-            }
-            
-            guard let data = data else {
-                print("No data returned from server")
-                completion(nil)
-                return
-            }
-            
-            let image = UIImage(data: data)
-            completion(image)
-        }
-        
-        task.resume()
-    }
     /**
      Configures the view controller's UI.
      */
@@ -181,6 +164,9 @@ extension ProfileUserViewController: UITableViewDataSource {
             cell.selectionStyle = .none
             cell.backgroundColor = .clear
             cell.contentView.backgroundColor = .clear
+            delegete.profileUserViewController(self, didLoadEmployee: {image in
+                self.imgChange = image
+            })
             cell.fiillTable("\(employee.lastName) \(employee.firstName) \(employee.secondName)", employee.division.divisionName, employee.role, imgChange)
             cell.separatorInset = UIEdgeInsets(top: 0, left: view.bounds.width / 4, bottom: 0, right: 0)
             cell.delegete = self
@@ -241,7 +227,6 @@ extension ProfileUserViewController: HeadMenuTblViewCellDelegate {
 // MARK: - UIImagePickerControllerDelegate
 
 extension ProfileUserViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
         if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
             imgChange = image
@@ -268,20 +253,9 @@ extension ProfileUserViewController: UIImagePickerControllerDelegate, UINavigati
 }
 
 // MARK: - TabBarControllerDelegate
-
 extension ProfileUserViewController: TabBarControllerDelegate {
-    
     func tabBarController(_ tabBarController: TabBarController, didSelectTabAtIndex index: Int, issues datas: [Issues], employee data: Employee) {
         self.employee = data
-        if let url = URL(string: "\(ForecastType.Project.baseURL)\(employee.iconPath)") {
-             loadImage(from: url) { image in
-                DispatchQueue.main.async {
-                    if let img = image {
-                        self.imgChange = img
-                    }
-                }
-            }
-        }
-        self.tblMenu.reloadData()
+        return
     }
 }

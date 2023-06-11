@@ -21,7 +21,7 @@ class MenuItemTblViewCell: UITableViewCell {
     }()
     
     /// A UILabel displaying the name of the menu item.
-    lazy private var lblName: UILabel = {
+    private lazy var lblName: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .left

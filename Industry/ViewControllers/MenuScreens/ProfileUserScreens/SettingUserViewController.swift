@@ -39,12 +39,21 @@ class SettingUserViewController: UIViewController {
         super.viewDidLoad()
         configureUI()
     }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+        self.view.willRemoveSubview(self.tblMenu)
+        print("sucsses closed SettingUserViewController")
+    }
 
     // MARK: - Actions
     @objc
     private func btnBack_Click(_ sender: UIButton) {
         navigationController?.popViewController(animated: true)
-        dismiss(animated: true, completion: nil)
+        dismiss(animated: true, completion: {
+            NotificationCenter.default.removeObserver(self)
+            self.view.willRemoveSubview(self.tblMenu)
+        })
         self.navigationController?.isNavigationBarHidden = true
     }
 
@@ -67,7 +76,7 @@ class SettingUserViewController: UIViewController {
 // MARK: - Table data source delegate
 extension SettingUserViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 8
+        return 9
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -143,6 +152,14 @@ extension SettingUserViewController: UITableViewDataSource {
             cell.textLabel?.font = UIFont.systemFont(ofSize: CGFloat(UIScreen.main.bounds.width/10)/2)
             cell.accessoryType = .disclosureIndicator
             return cell
+        case 8:
+            let cell: UITableViewCell = tableView.dequeueReusableCell(withIdentifier: indificatorDefaultCell, for: indexPath)
+            cell.selectionStyle = .none
+            cell.textLabel?.text = "Скопировать код устройства".localized
+            cell.textLabel?.textAlignment = .left
+            cell.textLabel?.font = UIFont.systemFont(ofSize: CGFloat(UIScreen.main.bounds.width/10)/2)
+            cell.accessoryType = .disclosureIndicator
+            return cell
         default:
             let cell: UITableViewCell = tableView.dequeueReusableCell(withIdentifier: indificatorDefaultCell, for: indexPath)
             return cell
@@ -180,6 +197,12 @@ extension SettingUserViewController: UITableViewDelegate {
                 vc = PrivacyPolicyViewController()
             case 7:
                 vc = RecoveryUserPasswordViewController()
+            case 8:
+                if let identifier = UIDevice.current.identifierForVendor?.uuidString {
+                    UIPasteboard.general.string = identifier
+                }
+                tableView.deselectRow(at: indexPath, animated: true)
+                return
             default:
                 return
             }

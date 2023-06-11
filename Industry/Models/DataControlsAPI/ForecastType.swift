@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 // MARK: - ForecastType
 /**
@@ -33,14 +34,16 @@ enum ForecastType: FinalURLPoint {
     case LaborCost
     /// Endpoint for getting a specific labor cost by ID.
     case LaborCostWitchId(id: Int)
-    
+    /// Endpoint for obtaining a token with the provided credentials.
     case Token(credentials: AuthBody)
-    
+    /// Endpoint for resetting a password.
     case ResetPassword
-    
+    /// Endpoint for confirming the reset of a password.
     case ConfirmResetPassword
-    
+    /// Endpoint for checking the validity of a confirmation code.
     case CheakValidConfirmationCode
+    /// Endpoint for loading an image from a specific URL.
+    case LoadImage(url: URL)
     
     /// The base URL for all endpoints.
     var baseURL: URL {
@@ -83,46 +86,57 @@ enum ForecastType: FinalURLPoint {
             return "Auth/confirm-reset-password"
         case .CheakValidConfirmationCode:
             return "Auth/cheak-valid-confirmation-code"
+        case .LoadImage(let url):
+            return url.absoluteString
         }
     }
     
-    /// The URL request for the endpoint.
-    var requestWitchToken: URLRequest {
-        let url = URL(string: path, relativeTo: baseURL)
-        var urlRequest = URLRequest(url: url!)
-        guard let accessToken = self.getAccessToken() else {return self.requestWitchOutToken}
-        urlRequest.setValue("Bearer \(accessToken.token)", forHTTPHeaderField: "Authorization")
-        if case .Token(let credentials) = self {
-            // Get access token
-            let accessToken = self.getAccessToken()
-            urlRequest.httpMethod = "POST"
-            urlRequest.setValue("Bearer \(String(describing: accessToken?.token))", forHTTPHeaderField: "Authorization")
-            do {
-                let jsonData = try JSONEncoder().encode(credentials)
-                urlRequest.httpBody = jsonData
-            } catch {
-                fatalError("Encoding credentials failed.")
+    func createURLRequest(withToken: Bool = false) -> URLRequest {
+        let url = URL(string: path, relativeTo: baseURL)!
+        var urlRequest = URLRequest(url: url)
+        if let identifier = UIDevice.current.identifierForVendor?.uuidString {
+            urlRequest.setValue(identifier, forHTTPHeaderField: "DeviceCode")
+        }
+        urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        if withToken {
+            guard let accessToken = self.getAccessToken() else {
+                return urlRequest
+            }
+            urlRequest.setValue("Bearer \(accessToken.token)", forHTTPHeaderField: "Authorization")
+            if case .Token(let credentials) = self {
+                urlRequest.httpMethod = "POST"
+                do {
+                    let jsonData = try JSONEncoder().encode(credentials)
+                    urlRequest.httpBody = jsonData
+                } catch {
+                    fatalError("Encoding credentials failed.")
+                }
             }
         }
         return urlRequest
     }
-    
+
+    /// The URL request with authorization JWT token for the endpoint.
+    var requestWitchToken: URLRequest {
+        return createURLRequest(withToken: true)
+    }
+
+    /// The URL reques  for the endpoint.
     var requestWitchOutToken: URLRequest {
-        let url = URL(string: path, relativeTo: baseURL)
-        return URLRequest(url: url!)
+        return createURLRequest()
     }
     
+    /// This Bool check is needed to verify if a token is required in the reques
     var isTokenRequired: Bool {
         switch self {
-        case .CheakValidConfirmationCode, .ConfirmResetPassword, .ResetPassword, .Token:
+        case .ResetPassword, .ConfirmResetPassword, .Token, .CheakValidConfirmationCode:
             return false
         default:
             return true
         }
     }
-
     
-    
+    /// This URL end point.
     var absoluteURL: URL {
         return URL(string: "\(self.baseURL) + \(self.path)")!
     }

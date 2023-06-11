@@ -12,10 +12,11 @@ import UIKit
 /// A cell used to display notifications for a user
 class NotificationUserViewCell: UICollectionViewCell {
     
-    // MARK: Properties
+    // MARK: - Properties
     /// The identifier for the cell
     static let indificatorCell: String = "NotificationUserViewCell"
     
+    // MARK: - Private UI
     /// An image view to display an icon for the notification
     private lazy var iconImageView: UIImageView = {
         let imageView = UIImageView()
@@ -45,7 +46,7 @@ class NotificationUserViewCell: UICollectionViewCell {
         return label
     }()
     
-    // MARK: Initializers
+    // MARK: - Initializers
     override init(frame: CGRect) {
         super.init(frame: frame)
         configureUI()
@@ -55,7 +56,7 @@ class NotificationUserViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: Public methods
+    // MARK: - Public methods
     /// Fills the table with data for a notification
     /// - Parameters:
     ///   - iconImage: The image for the notification icon
@@ -68,7 +69,7 @@ class NotificationUserViewCell: UICollectionViewCell {
         lblDescription.text = "\(deadline)\n\(description)"
     }
     
-    // MARK: Private methods
+    // MARK: - Private methods
     /// Configures the user interface for the cell
     private func configureUI() {
         contentView.addSubview(iconImageView)
