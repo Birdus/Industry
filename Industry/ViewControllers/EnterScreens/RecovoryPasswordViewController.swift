@@ -70,6 +70,7 @@ class RecovoryPasswordViewController: UIViewController {
         super.viewDidLoad()
         configureUI()
         registerForKeyboardNotification()
+        self.view.accessibilityIdentifier = "RecovoryPasswordViewController"
     }
     
     deinit {

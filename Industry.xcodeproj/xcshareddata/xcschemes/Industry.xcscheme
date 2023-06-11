@@ -52,11 +52,6 @@
                BlueprintName = "IndustryUITests"
                ReferencedContainer = "container:Industry.xcodeproj">
             </BuildableReference>
-            <SkippedTests>
-               <Test
-                  Identifier = "SplachViewControllerTests">
-               </Test>
-            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>

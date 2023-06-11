@@ -88,7 +88,7 @@ class EnterMenuViewController: UIViewController {
         btn.setTitleColor(.systemGray, for: .normal)
         btn.translatesAutoresizingMaskIntoConstraints = false
         btn.titleLabel?.textAlignment = .right
-        btn.accessibilityIdentifier = "btnRecoveryPass"
+        btn.accessibilityIdentifier = "btnShowCode"
         btn.addTarget(self, action: #selector(btnShowCode_Click), for: .touchUpInside)
         return btn
     }()

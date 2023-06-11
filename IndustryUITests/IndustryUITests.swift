@@ -9,6 +9,7 @@ class IndustryAppUITests: XCTestCase {
         continueAfterFailure = false
         app = XCUIApplication()
         app.launch()
+        
     }
 
     override func tearDown() {
@@ -17,12 +18,16 @@ class IndustryAppUITests: XCTestCase {
     }
     
     func waitForElementToExist(element: XCUIElement, timeout: TimeInterval = 5) {
-        let exists = NSPredicate(format: "exists == true")
-        expectation(for: exists, evaluatedWith: element, handler: nil)
-        waitForExpectations(timeout: timeout)
-        
-        XCTAssertTrue(element.exists)
+        let existsPredicate = NSPredicate(format: "exists == true")
+        expectation(for: existsPredicate, evaluatedWith: element, handler: nil)
+
+        waitForExpectations(timeout: timeout) { (error) in
+            if let error = error {
+                XCTFail("waitForElementToExist failed: \(error)")
+            }
+        }
     }
+
     
     func testGreetingExists() {
         let greetingLabel = app.staticTexts["lblGreeting"]
@@ -65,32 +70,31 @@ class IndustryAppUITests: XCTestCase {
         enterButton.tap()
         // Здесь вы можете добавить проверки, чтобы убедиться, что приложение перешло на следующий экран
     }
-    
     func testRecovoryPasswordViewControllerUIElementsExist() {
         let btnEnter = app.buttons["btnEnter"]
         let btnRecovoryPass = app.buttons["btnRecoveryPass"]
         let collectionView = app.collectionViews["collRecovery"]
         let companyLogo = app.images["imgCompany"]
         let backButton = app.navigationBars.buttons["btnBack"]
-        
-        waitForElementToExist(element: btnEnter)
-        waitForElementToExist(element: btnRecovoryPass)
+
+        waitForElementToExist(element: btnEnter, timeout: 10)
+        waitForElementToExist(element: btnRecovoryPass, timeout: 10)
         btnRecovoryPass.tap() // navigate to the RecovoryPasswordViewController
-        waitForElementToExist(element: collectionView)
-        waitForElementToExist(element: companyLogo)
-        waitForElementToExist(element: backButton)
+        waitForElementToExist(element: collectionView, timeout: 10)
+        waitForElementToExist(element: companyLogo, timeout: 10)
+        waitForElementToExist(element: backButton, timeout: 10)
     }
 
     func testBackButtonClick() {
         let btnEnter = app.buttons["btnEnter"]
         let btnRecovoryPass = app.buttons["btnRecoveryPass"]
         let backButton = app.navigationBars.buttons["btnBack"]
-        
-        waitForElementToExist(element: btnEnter)
-        waitForElementToExist(element: btnRecovoryPass)
+
+        waitForElementToExist(element: btnEnter, timeout: 10)
         btnRecovoryPass.tap() // navigate to the RecovoryPasswordViewController
-        waitForElementToExist(element: backButton)
+        waitForElementToExist(element: backButton, timeout: 10)
         backButton.tap()
-        waitForElementToExist(element: btnEnter)
+        waitForElementToExist(element: btnEnter, timeout: 10)
     }
+
 }

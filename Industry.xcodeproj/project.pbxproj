@@ -17,7 +17,6 @@
 		A07D45E129C78E0F00420463 /* LaborCostModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07D45E029C78E0F00420463 /* LaborCostModel.swift */; };
 		A07D45E429C78E1C00420463 /* EmployeeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07D45E329C78E1C00420463 /* EmployeeModel.swift */; };
 		A07D45E829C78E3200420463 /* DivisionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07D45E729C78E3200420463 /* DivisionModel.swift */; };
-		A07D45EC29C78F9000420463 /* APIClient .swift in Sources */ = {isa = PBXBuildFile; fileRef = A07D45EB29C78F9000420463 /* APIClient .swift */; };
 		A0AF115B29E06D5700FBA975 /* NotificationCollRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0AF115A29E06D5700FBA975 /* NotificationCollRow.swift */; };
 		A0CF9F7F29CDF65200FE6A72 /* FinalUrll.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0CF9F7E29CDF65200FE6A72 /* FinalUrll.swift */; };
 		A0CF9F8229CDF69800FE6A72 /* ForecastType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0CF9F8129CDF69800FE6A72 /* ForecastType.swift */; };
@@ -62,6 +61,11 @@
 		A5AC14FD2A07C540008FB74C /* SetingUserTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5AC14FC2A07C540008FB74C /* SetingUserTblViewCell.swift */; };
 		A5AC15092A0BB50A008FB74C /* PrivacyPolicyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5AC15082A0BB50A008FB74C /* PrivacyPolicyViewController.swift */; };
 		A5AC15122A0FDE2B008FB74C /* ListCaledarTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5AC15112A0FDE2A008FB74C /* ListCaledarTblViewCell.swift */; };
+		A5ADFBB02A3641DD00EEB959 /* SplachViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5ADFBAF2A3641DC00EEB959 /* SplachViewControllerTests.swift */; };
+		A5ADFBB52A36429200EEB959 /* EnterMenuViewControllerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5ADFBB42A36429200EEB959 /* EnterMenuViewControllerUITests.swift */; };
+		A5ADFBD82A364BD000EEB959 /* APIClient .swift in Sources */ = {isa = PBXBuildFile; fileRef = A07D45EB29C78F9000420463 /* APIClient .swift */; };
+		A5ADFBF22A364ED400EEB959 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A5E0AF5029B8FEE6003B47D2 /* Localizable.strings */; };
+		A5ADFBF62A36516A00EEB959 /* LocalizeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E0AF1C29B8F41E003B47D2 /* LocalizeController.swift */; };
 		A5D830CC2A325CF10094C75C /* RecoveryUserPasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D830CB2A325CF10094C75C /* RecoveryUserPasswordViewController.swift */; };
 		A5E0AF1D29B8F41E003B47D2 /* LocalizeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E0AF1C29B8F41E003B47D2 /* LocalizeController.swift */; };
 		A5E0AF4E29B8FEE6003B47D2 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A5E0AF5029B8FEE6003B47D2 /* Localizable.strings */; };
@@ -152,6 +156,9 @@
 		A5AC14FC2A07C540008FB74C /* SetingUserTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetingUserTblViewCell.swift; sourceTree = "<group>"; };
 		A5AC15082A0BB50A008FB74C /* PrivacyPolicyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyPolicyViewController.swift; sourceTree = "<group>"; };
 		A5AC15112A0FDE2A008FB74C /* ListCaledarTblViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListCaledarTblViewCell.swift; sourceTree = "<group>"; };
+		A5ADFBAF2A3641DC00EEB959 /* SplachViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplachViewControllerTests.swift; sourceTree = "<group>"; };
+		A5ADFBB42A36429200EEB959 /* EnterMenuViewControllerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterMenuViewControllerUITests.swift; sourceTree = "<group>"; };
+		A5ADFBEA2A364D2200EEB959 /* Pods_Industry.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Pods_Industry.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5D830CB2A325CF10094C75C /* RecoveryUserPasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryUserPasswordViewController.swift; sourceTree = "<group>"; };
 		A5E0AF1C29B8F41E003B47D2 /* LocalizeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizeController.swift; sourceTree = "<group>"; };
 		A5E0AF4F29B8FEE6003B47D2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -187,6 +194,7 @@
 		02AA78E4BB83A47D9FD677C0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A5ADFBEA2A364D2200EEB959 /* Pods_Industry.framework */,
 				A52F87BB2A12A83900CE2E4E /* FSCalendar.framework */,
 				A52F87B92A12A83300CE2E4E /* Charts.framework */,
 				A52F87B72A12A82D00CE2E4E /* Algorithms.framework */,
@@ -381,6 +389,8 @@
 		A52F87AB2A12A6DC00CE2E4E /* IndustryUITests */ = {
 			isa = PBXGroup;
 			children = (
+				A5ADFBB42A36429200EEB959 /* EnterMenuViewControllerUITests.swift */,
+				A5ADFBAF2A3641DC00EEB959 /* SplachViewControllerTests.swift */,
 				A52F87AC2A12A6DC00CE2E4E /* IndustryUITests.swift */,
 				A52F87AE2A12A6DC00CE2E4E /* Info.plist */,
 			);
@@ -508,6 +518,9 @@
 		A0E4AA2229A8E25600BDB4EF /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				KnownAssetTags = (
+					New,
+				);
 				LastSwiftUpdateCheck = 1240;
 				LastUpgradeCheck = 1240;
 				TargetAttributes = {
@@ -565,6 +578,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A5ADFBF22A364ED400EEB959 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -628,7 +642,6 @@
 				A0E4AA2E29A8E25600BDB4EF /* AppDelegate.swift in Sources */,
 				A529736F2A1AE0EC00B4189F /* NewTaskViewController.swift in Sources */,
 				A578852329F6887700D26455 /* MenuItemTblViewCell.swift in Sources */,
-				A07D45EC29C78F9000420463 /* APIClient .swift in Sources */,
 				A52EB8612A310B9700FCFEE0 /* CodeResetPassword.swift in Sources */,
 				A5833D2129C0990200387240 /* ProfileUserViewController.swift in Sources */,
 				A528206629F3EF19002FA269 /* RecovoryPasswordViewController.swift in Sources */,
@@ -650,6 +663,7 @@
 				A578852629F6B7DE00D26455 /* StatisticUserViewController.swift in Sources */,
 				A52973842A1CD87F00B4189F /* EditDateTaskTblViewCell.swift in Sources */,
 				A0569DE829DE85C500D25991 /* CalendarTaskViewController.swift in Sources */,
+				A5ADFBD82A364BD000EEB959 /* APIClient .swift in Sources */,
 				A5916AB229BC9D8900285D79 /* TabBarController.swift in Sources */,
 				A5AC14FD2A07C540008FB74C /* SetingUserTblViewCell.swift in Sources */,
 				A07D45D229C763CD00420463 /* UserCountTaskTblViewCell.swift in Sources */,
@@ -686,6 +700,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				A52F87AD2A12A6DC00CE2E4E /* IndustryUITests.swift in Sources */,
+				A5ADFBB52A36429200EEB959 /* EnterMenuViewControllerUITests.swift in Sources */,
+				A5ADFBF62A36516A00EEB959 /* LocalizeController.swift in Sources */,
+				A5ADFBB02A3641DD00EEB959 /* SplachViewControllerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
