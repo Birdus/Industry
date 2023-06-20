@@ -23,7 +23,7 @@ Overall, "Industry Task Manager" is a useful application for people who want to 
 
 This project was developed using Xcode version 12.0.1, and requires macOS version 10.15 or higher. The application requires iOS 10 or higher.
 
-Here is a list of devices that support iOS 12:
+Here is a list of devices that support iOS 13:
 
 iPhone SE, iPhone 6S, iPhone 6S Plus, iPhone 7, iPhone 7 Plus, iPod touch (7 new gen), iPhone 8, iPhone 8 Plus, iPhone SE 2, iPhone SE 3, iPhone X, iPhone XS, iPhone XS Max, iPhone XR, iPhone 11, iPhone 11 Pro, iPhone 11 Pro Max, iPhone 12, iPhone 12 mini, iPhone 12 Pro, iPhone 12 Pro Max, iPhone 13 и iPhone 13 mini, iPhone 13 Pro, iPhone 13 Pro Max, iPhone 14, iPhone 14 Plus, iPhone 14 Pro and iPhone 14 Pro Max.
 
