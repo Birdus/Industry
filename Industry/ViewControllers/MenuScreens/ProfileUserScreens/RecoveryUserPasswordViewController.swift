@@ -67,6 +67,8 @@ class RecoveryUserPasswordViewController: UIViewController {
     }
     
     /// Keyboard will show notification handler
+    ///
+    /// - Parameter notification: The notification that was event.
     @objc
     private func kbWillShow(_ notification: Notification) {
         if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
@@ -79,19 +81,21 @@ class RecoveryUserPasswordViewController: UIViewController {
     }
     
     /// Keyboard will hide notification handler
+    ///
+    /// - Parameter notification: The notification that was event.
     @objc
     private func kbWillHide(_ notification: Notification) {
         self.view.frame.origin.y = 0
     }
     
-    // MARK: - Keyboard Notifications
+    // MARK: - Private Methods
     /// Register for keyboard notifications
     private func registerForKeyboardNotification() {
         NotificationCenter.default.addObserver(self, selector: #selector(kbWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(kbWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
-    // MARK: - Private Methods
+    /// This func send email user code
     private func sendMailCode() {
         let authBody = apiManagerIndustry?.getAccessAuthBody()
         if let authBody = authBody {
@@ -131,6 +135,9 @@ class RecoveryUserPasswordViewController: UIViewController {
         ])
     }
     
+    /// This fumc show alelrt controoler
+    ///
+    /// - Parameter messege: The messege show alert controller
     private func showAlController(messege: String) {
         let alControl:UIAlertController = {
             let alControl = UIAlertController(title: "Ошибка".localized, message: messege, preferredStyle: .alert)

@@ -1,7 +1,7 @@
 // MARK: - ErrorManager
 
 /// ErrorManager handles networking errors in the Industry app.
-enum INDNetworkingError: Error {
+enum INDNetworkingError: Error, Equatable {
     // 1xx Informational
     case `continue`
     case switchingProtocols

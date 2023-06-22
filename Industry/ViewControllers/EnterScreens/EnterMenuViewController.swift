@@ -45,9 +45,13 @@ protocol EnterMenuViewControllerDelegate: AnyObject {
 class EnterMenuViewController: UIViewController {
     
     // MARK: - Properties
+    /// This delegete need to messege other controller
     weak var delegete: EnterMenuViewControllerDelegate!
+    /// This login input
     private var usserLogin: String?
+    /// This password input
     private var usserPassword: String?
+    /// This final class need to conection in API
     private var apiManagerIndustry: APIManagerIndustry?
     
     // MARK: - Private UI
@@ -82,6 +86,7 @@ class EnterMenuViewController: UIViewController {
         return btn
     }()
     
+    /// A button for show code.
     private lazy var btnShowCode: UIButton = {
         let btn = UIButton()
         btn.setTitle("Код устройства".localized, for: .normal)
@@ -93,6 +98,7 @@ class EnterMenuViewController: UIViewController {
         return btn
     }()
     
+    /// A button for show code .
     private lazy var containerImg: UIView = {
         let view = UIView()
         view.accessibilityIdentifier = "containerImg"
@@ -154,8 +160,9 @@ class EnterMenuViewController: UIViewController {
     }
     
     // MARK: - Actions
-    
     /// Func click button recovery password
+    ///
+    /// - Parameter sender: The button that was clicked.
     @objc
     private func BtnRecoveryPass_Click(_ sender: UIButton) {
         let vc = RecovoryPasswordViewController()
@@ -164,6 +171,9 @@ class EnterMenuViewController: UIViewController {
         navigationController?.present(vcNav, animated: true, completion: nil)
     }
     
+    /// Func click button show code
+    ///
+    /// - Parameter sender: The button that was clicked.
     @objc
     private func btnShowCode_Click(_ sender: UIButton) {
         guard let identifier = UIDevice.current.identifierForVendor?.uuidString else {
@@ -193,6 +203,8 @@ class EnterMenuViewController: UIViewController {
     }
     
     /// Func click button enter to application
+    ///
+    /// - Parameter sender: The button that was clicked.
     @objc
     private func BtnEnter_Click(_ sender: UIButton) {
         let activityIndicator = UIActivityIndicatorView(style: .gray)
@@ -226,7 +238,12 @@ class EnterMenuViewController: UIViewController {
                     activityIndicator.stopAnimating()
                     blurEffectView.removeFromSuperview()
                     let errorsUser = INDNetworkingError.init(error)
-                    self.showAlController(messege: errorsUser.errorMessage)
+                    if errorsUser == .badRequest {
+                        let messege = "Неверные логин или пароль".localized
+                        self.showAlController(messege: messege)
+                    } else {
+                        self.showAlController(messege: errorsUser.errorMessage)
+                    }
                 case .success(let idEmployee):
                     let vc = TabBarController()
                     self.delegete = vc
@@ -257,6 +274,8 @@ class EnterMenuViewController: UIViewController {
     }
     
     /// Keyboard will show notification handler
+    ///
+    /// - Parameter notification: The Notification that was show keyboard.
     @objc
     private func kbWillShow(_ notification: Notification) {
         if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
@@ -269,6 +288,8 @@ class EnterMenuViewController: UIViewController {
     }
     
     /// Keyboard will hide notification handler
+    ///
+    /// - Parameter notification: The Notification that was show hide.
     @objc
     private func kbWillHide(_ notification: Notification) {
         self.view.frame.origin.y = 0
@@ -281,6 +302,9 @@ class EnterMenuViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(kbWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
+    /// This fumc show alelrt controoler
+    ///
+    /// - Parameter messege: The messege show alert controller
     private func showAlController(messege: String) {
         let alControl:UIAlertController = {
             let alControl = UIAlertController(title: "Ошибка".localized, message: messege, preferredStyle: .alert)
@@ -339,19 +363,10 @@ class EnterMenuViewController: UIViewController {
 
 // MARK: - Table View Data Source
 extension EnterMenuViewController: UITableViewDataSource {
-    
-    /// Returns the number of rows in the table view section.
-    /// - Parameter tableView: The table view requesting this information.
-    /// - Parameter section: An index number identifying a section of `tableView`.
-    /// - Returns: The number of rows in section.
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 2
     }
     
-    /// Asks the data source for a cell to insert in a particular location of the table view.
-    /// - Parameter tableView: A table-view object requesting the cell.
-    /// - Parameter indexPath: An index path locating a row in `tableView`.
-    /// - Returns: An object inheriting from `UITableViewCell` that the table view can use for the specified row. An assertion is raised if you return nil.
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: AuthenticationTblViewCell.indificatorCell, for: indexPath) as? AuthenticationTblViewCell else {
             fatalError("Unable to dequeue cell.")

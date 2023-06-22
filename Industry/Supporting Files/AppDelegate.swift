@@ -23,7 +23,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if ProcessInfo.processInfo.arguments.contains("-resetUser") {
             KeychainSwift().clear()
         }
-        KeychainSwift().clear()
         let apiManager = APIManagerIndustry()
         window = UIWindow(frame: UIScreen.main.bounds)
         let splashViewController = SplachViewController()

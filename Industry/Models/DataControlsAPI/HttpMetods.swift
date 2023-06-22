@@ -18,7 +18,8 @@ enum HttpMethodsString {
     case put
     /// HTTP DELETE method.
     case delete
-    
+    /// HTTP PUTCH method.
+    case putch
     /// Returns the corresponding string value for the HTTP method.
     var stringValue: String {
         switch self {
@@ -30,6 +31,8 @@ enum HttpMethodsString {
             return "PUT"
         case .delete:
             return "DELETE"
+        case .putch:
+            return "PATCH"
         }
     }
 }

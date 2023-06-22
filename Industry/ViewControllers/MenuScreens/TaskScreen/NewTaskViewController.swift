@@ -453,12 +453,12 @@ extension NewTaskViewController: UITableViewDataSource {
             }
             if let project = project {
                 if let isChange = isChande, isChange {
-                    cell.fillTable(UIImage(named: "Vector (1)"), nil, project: project)
+                    cell.fillTable(UIImage(named: "iconProject"), nil, project: project)
                 } else {
-                    cell.fillTable(UIImage(named: "Vector (1)"), nil, project: project)
+                    cell.fillTable(UIImage(named: "iconProject"), nil, project: project)
                 }
             } else if let isChange = isChande, !isChange {
-                cell.fillTable(UIImage(named: "Vector (1)"), "Проект".localized, project: nil)
+                cell.fillTable(UIImage(named: "iconProject"), "Проект".localized, project: nil)
             }
             cell.selectionStyle = .none
             cell.backgroundColor = .clear

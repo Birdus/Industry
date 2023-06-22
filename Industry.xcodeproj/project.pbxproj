@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		35AF759E6FBEB28B5556B101 /* Pods_Industry.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5ADFBEA2A364D2200EEB959 /* Pods_Industry.framework */; };
 		A02EDA4B29CB5D180084BEBA /* INDNetworkingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A02EDA4A29CB5D180084BEBA /* INDNetworkingError.swift */; };
 		A0569DE829DE85C500D25991 /* CalendarTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0569DE729DE85C500D25991 /* CalendarTaskViewController.swift */; };
-		A0569DF829DEAB9600D25991 /* Pods_Industry.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D744E5C0DB64F0E2CA68335B /* Pods_Industry.framework */; };
 		A070410A29CE014F00BD2839 /* JSONDecoables.swift in Sources */ = {isa = PBXBuildFile; fileRef = A070410929CE014F00BD2839 /* JSONDecoables.swift */; };
 		A07D45D229C763CD00420463 /* UserCountTaskTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07D45D129C763CD00420463 /* UserCountTaskTblViewCell.swift */; };
 		A07D45DA29C78DEE00420463 /* IssuesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07D45D929C78DEE00420463 /* IssuesModel.swift */; };
@@ -31,6 +31,8 @@
 		A529736F2A1AE0EC00B4189F /* NewTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A529736E2A1AE0E600B4189F /* NewTaskViewController.swift */; };
 		A529737E2A1BA33B00B4189F /* EditNameDiscribeTaskTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A529737D2A1BA33B00B4189F /* EditNameDiscribeTaskTblViewCell.swift */; };
 		A52973842A1CD87F00B4189F /* EditDateTaskTblViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52973832A1CD87F00B4189F /* EditDateTaskTblViewCell.swift */; };
+		A52A14A62A3748C100960751 /* Pods_Industry.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D744E5C0DB64F0E2CA68335B /* Pods_Industry.framework */; };
+		A52A14A72A3748C100960751 /* Pods_Industry.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D744E5C0DB64F0E2CA68335B /* Pods_Industry.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		A52D517729F95E20005DB97D /* Duration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52D517629F95E1F005DB97D /* Duration.swift */; };
 		A52EB8522A30A81200FCFEE0 /* RecovoryPasswordInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52EB8512A30A81200FCFEE0 /* RecovoryPasswordInfo.swift */; };
 		A52EB8572A30ACB200FCFEE0 /* resetPasswordEmailModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52EB8562A30ACB200FCFEE0 /* resetPasswordEmailModel.swift */; };
@@ -87,6 +89,20 @@
 			remoteInfo = Industry;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A52A14A82A3748C100960751 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				A52A14A72A3748C100960751 /* Pods_Industry.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		2F6553E98AFD03F8A774538D /* Pods-Industry.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Industry.release.xcconfig"; path = "Target Support Files/Pods-Industry/Pods-Industry.release.xcconfig"; sourceTree = "<group>"; };
@@ -170,7 +186,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A0569DF829DEAB9600D25991 /* Pods_Industry.framework in Frameworks */,
+				A52A14A62A3748C100960751 /* Pods_Industry.framework in Frameworks */,
+				35AF759E6FBEB28B5556B101 /* Pods_Industry.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -466,6 +483,7 @@
 				A0E4AA2729A8E25600BDB4EF /* Frameworks */,
 				A0E4AA2829A8E25600BDB4EF /* Resources */,
 				D5403E46EAECB109089008CB /* [CP] Embed Pods Frameworks */,
+				A52A14A82A3748C100960751 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -900,6 +918,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = B2BN3T2SCB;
 				INFOPLIST_FILE = IndustryTests/Info.plist;
@@ -921,6 +940,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = B2BN3T2SCB;
 				INFOPLIST_FILE = IndustryTests/Info.plist;
@@ -941,6 +961,7 @@
 		A52F87B22A12A6DC00CE2E4E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = B2BN3T2SCB;
 				INFOPLIST_FILE = IndustryUITests/Info.plist;
@@ -961,6 +982,7 @@
 		A52F87B32A12A6DC00CE2E4E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = B2BN3T2SCB;
 				INFOPLIST_FILE = IndustryUITests/Info.plist;

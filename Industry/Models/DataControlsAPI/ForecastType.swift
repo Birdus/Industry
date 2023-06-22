@@ -43,7 +43,9 @@ enum ForecastType: FinalURLPoint {
     /// Endpoint for checking the validity of a confirmation code.
     case CheakValidConfirmationCode
     /// Endpoint for loading an image from a specific URL.
-    case LoadImage(url: URL)
+    case LoadImage
+    /// Endpoint for uploading an image from a specific URL.
+    case UploadImage(id: Int)
     
     /// The base URL for all endpoints.
     var baseURL: URL {
@@ -86,8 +88,10 @@ enum ForecastType: FinalURLPoint {
             return "Auth/confirm-reset-password"
         case .CheakValidConfirmationCode:
             return "Auth/cheak-valid-confirmation-code"
-        case .LoadImage(let url):
-            return url.absoluteString
+        case .LoadImage:
+            return "Employees/GetImage"
+        case .UploadImage(let id):
+            return "Employees/\(id)"
         }
     }
     

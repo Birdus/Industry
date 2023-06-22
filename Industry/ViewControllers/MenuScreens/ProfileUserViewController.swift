@@ -5,21 +5,31 @@
 //
 
 import UIKit
+import AVFoundation
+
+/// Protocol for the ProfileUserViewController delegate.
 protocol ProfileUserViewControllerDelegate: AnyObject {
-    func profileUserViewController(_ viewController: ProfileUserViewController, didLoadEmployee image: @escaping (UIImage)-> Void)
+    /// Called when the ProfileUserViewController loads an employee image.
+    func profileUserViewController(_ viewController: ProfileUserViewController, didLoadEmployee imageUser: @escaping (UIImage)-> Void)
+    
+    /// Called when the ProfileUserViewController exports an employee image.
+    func profileUserViewController(_ viewController: ProfileUserViewController, didExportEmployee imageUser: UIImage)
 }
 
 /**
  ProfileUserViewController displays a user's profile with a menu of options.
  */
 class ProfileUserViewController: UIViewController {
-    
     // MARK: - Properties
+    /// The delegate for the ProfileUserViewController.
     weak var delegete: ProfileUserViewControllerDelegate!
+    
+    /// The `Employee` object associated with the ProfileUserViewController.
     private var employee: Employee!
     
+    /// The `AVCaptureSession` object used for scanning QR codes.
+    private var captureSession: AVCaptureSession?
     // MARK: - Private UI
-    
     /// A table view that displays menu items.
     private lazy var tblMenu: UITableView = {
         let tableView = UITableView()
@@ -43,8 +53,14 @@ class ProfileUserViewController: UIViewController {
         return imageView
     }()
     
-    // MARK: - View Controller Life Cycle
+    /// A gesture recognizer for swipe right gestures.
+    private lazy var swipeRightScaner: UISwipeGestureRecognizer = {
+        let swipe = UISwipeGestureRecognizer(target: self, action: #selector(respondToSwipeGesture))
+        swipe.direction = .right
+        return swipe
+    }()
     
+    // MARK: - View Controller Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
@@ -52,13 +68,70 @@ class ProfileUserViewController: UIViewController {
     }
     
     deinit {
+        self.view.removeGestureRecognizer(swipeRightScaner)
         print("sucsses closed ProfileUserViewController")
     }
-    
+    // MARK: - Action
+    /// Responds to swipe gestures.
+    ///
+    /// This method is called in response to a swipe gesture. If the swipe is to the right, it stops the capture session and dismisses the view controller.
+    ///
+    /// - Parameter gesture: The UIGestureRecognizer instance that is calling this method.
+    @objc
+    func respondToSwipeGesture(gesture: UIGestureRecognizer) {
+        if let swipeGesture = gesture as? UISwipeGestureRecognizer {
+            switch swipeGesture.direction {
+            case .right:
+                self.captureSession?.stopRunning()
+                self.dismiss(animated: true, completion: nil)
+            default:
+                break
+            }
+        }
+    }
+
     // MARK: - Private Methods
-    /**
-     Configures the view controller's UI.
-     */
+    /// Starts scanning for a QR code.
+    private func startScanningQRCode() {
+        AVCaptureDevice.requestAccess(for: .video) { response in
+            if response {
+                self.captureSession = AVCaptureSession()
+                guard let videoCaptureDevice = AVCaptureDevice.default(for: .video) else { return }
+                let videoInput: AVCaptureDeviceInput
+                do {
+                    videoInput = try AVCaptureDeviceInput(device: videoCaptureDevice)
+                } catch {
+                    return
+                }
+                if (self.captureSession?.canAddInput(videoInput)) != nil {
+                    self.captureSession?.addInput(videoInput)
+                } else {
+                    return
+                }
+                let metadataOutput = AVCaptureMetadataOutput()
+                if (self.captureSession?.canAddOutput(metadataOutput)) != nil {
+                    self.captureSession?.addOutput(metadataOutput)
+                    metadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
+                    metadataOutput.metadataObjectTypes = [.qr]
+                } else {
+                    return
+                }
+                let previewLayer = AVCaptureVideoPreviewLayer(session: self.captureSession!)
+                previewLayer.frame = self.view.layer.bounds
+                previewLayer.videoGravity = .resizeAspectFill
+                self.view.layer.addSublayer(previewLayer)
+                self.captureSession?.startRunning()
+                let overlayView = UIView()
+                overlayView.frame = self.view.bounds
+                self.view.addSubview(overlayView)
+                overlayView.addGestureRecognizer(self.swipeRightScaner)
+            } else {
+                return
+            }
+        }
+    }
+
+    /// Configures the view controller's UI.
     private func configureUI() {
         view.backgroundColor = .white
         navigationController?.isNavigationBarHidden = true
@@ -73,9 +146,7 @@ class ProfileUserViewController: UIViewController {
 }
 
 // MARK: - UITableViewDelegate
-
 extension ProfileUserViewController: UITableViewDelegate {
-    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let screenHeight = UIScreen.main.bounds.size.height
         let contentOffsetY = tableView.contentOffset.y
@@ -113,8 +184,10 @@ extension ProfileUserViewController: UITableViewDelegate {
         case 4:
             vc = SettingUserViewController()
         case 5:
+            startScanningQRCode()
+        case 6:
             let alControl: UIAlertController = {
-                let alControl = UIAlertController(title: "Выход".localized, message: "Вы хотите выйти из акаунта?", preferredStyle: .alert)
+                let alControl = UIAlertController(title: "Выход".localized, message: "Вы хотите выйти из акаунта?".localized, preferredStyle: .alert)
                 let btnOk: UIAlertAction = {
                     let btn = UIAlertAction(title: "Ok".localized, style: .default) { _ in
                         let apiManager = APIManagerIndustry()
@@ -122,7 +195,7 @@ extension ProfileUserViewController: UITableViewDelegate {
                         apiManager.dropAuthBody()
                         let vc = EnterMenuViewController()
                         let navVc = UINavigationController(rootViewController: vc)
-                        
+                        self.view.removeGestureRecognizer(self.swipeRightScaner)
                         if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
                             appDelegate.window?.rootViewController = navVc
                         }
@@ -148,11 +221,9 @@ extension ProfileUserViewController: UITableViewDelegate {
 }
 
 // MARK: - UITableViewDataSource
-
 extension ProfileUserViewController: UITableViewDataSource {
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 6
+        return 7
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -164,9 +235,7 @@ extension ProfileUserViewController: UITableViewDataSource {
             cell.selectionStyle = .none
             cell.backgroundColor = .clear
             cell.contentView.backgroundColor = .clear
-            delegete.profileUserViewController(self, didLoadEmployee: {image in
-                self.imgChange = image
-            })
+            
             cell.fiillTable("\(employee.lastName) \(employee.firstName) \(employee.secondName)", employee.division.divisionName, employee.role, imgChange)
             cell.separatorInset = UIEdgeInsets(top: 0, left: view.bounds.width / 4, bottom: 0, right: 0)
             cell.delegete = self
@@ -202,6 +271,8 @@ extension ProfileUserViewController: UITableViewDataSource {
             case 4:
                 cell.fiillTable("Настройки".localized, UIImage(named: "iconSetting"))
             case 5:
+                cell.fiillTable("QR-сканер".localized, UIImage(named: "iconQrScaner"))
+            case 6:
                 cell.fiillTable("Выйти".localized, UIImage(named: "iconExit"))
             default:
                 cell.fiillTable("", UIImage())
@@ -211,24 +282,15 @@ extension ProfileUserViewController: UITableViewDataSource {
     }
 }
 
-// MARK: - HeadMenuTblViewCellDelegate
-
-extension ProfileUserViewController: HeadMenuTblViewCellDelegate {
-    
-    func headMenuTblViewCell(_ cell: HeadMenuTblViewCell, didFinishPickingImage avatar: UIImageView) {
-        let picker = UIImagePickerController()
-        picker.delegate = self
-        picker.sourceType = UIImagePickerController.SourceType.photoLibrary
-        picker.allowsEditing = false
-        self.present(picker, animated: true)
-    }
-}
-
 // MARK: - UIImagePickerControllerDelegate
-
 extension ProfileUserViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    /// Called when an image is picked from the image picker.
+    /// - Parameters:
+    ///   - picker: The UIImagePickerController instance that is calling this delegate method.
+    ///   - info: A dictionary containing the original image and the edited image, if an image was picked.
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
         if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+            delegete.profileUserViewController(self, didExportEmployee: image)
             imgChange = image
             tblMenu.reloadData()
             dismiss(animated: true)
@@ -247,15 +309,58 @@ extension ProfileUserViewController: UIImagePickerControllerDelegate, UINavigati
         }
     }
     
+    /// Called when the image picker is cancelled.
+    /// - Parameter picker: The UIImagePickerController instance that is calling this delegate method.
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true, completion: nil)
     }
 }
 
+// MARK: - AVCaptureMetadataOutputObjectsDelegate
+extension ProfileUserViewController: AVCaptureMetadataOutputObjectsDelegate {
+    /// Called when the metadata output has outputted metadata objects.
+    /// - Parameters:
+    ///   - output: The AVCaptureMetadataOutput instance that is calling this delegate method.
+    ///   - metadataObjects: An array of AVMetadataObject instances representing the metadata that was recognized in the input.
+    ///   - connection: The AVCaptureConnection instance that is calling this delegate method.
+    func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
+        if let metadataObject = metadataObjects.first,
+           let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject,
+           let stringValue = readableObject.stringValue {
+            print("QR Code Scanned: \(stringValue)")
+            captureSession?.stopRunning()
+        }
+    }
+}
+
 // MARK: - TabBarControllerDelegate
 extension ProfileUserViewController: TabBarControllerDelegate {
+    /// Called when a tab is selected in the TabBarController.
+    /// - Parameters:
+    ///   - tabBarController: The TabBarController instance that is calling this delegate method.
+    ///   - index: The index of the selected tab.
+    ///   - datas: An array of Issues instances representing the issues associated with the selected tab.
+    ///   - data: An Employee instance representing the employee associated with the selected tab.
     func tabBarController(_ tabBarController: TabBarController, didSelectTabAtIndex index: Int, issues datas: [Issues], employee data: Employee) {
         self.employee = data
+        delegete.profileUserViewController(self, didLoadEmployee: {image in
+            self.imgChange = image
+        })
         return
+    }
+}
+
+// MARK: - HeadMenuTblViewCellDelegate
+extension ProfileUserViewController: HeadMenuTblViewCellDelegate {
+    /// Called when an image is picked from the HeadMenuTblViewCell.
+    /// - Parameters:
+    ///   - cell: The HeadMenuTblViewCell instance that is calling this delegate method.
+    ///   - avatar: The UIImageView instance representing the picked image.
+    func headMenuTblViewCell(_ cell: HeadMenuTblViewCell, didFinishPickingImage avatar: UIImageView) {
+        let picker = UIImagePickerController()
+        picker.delegate = self
+        picker.sourceType = UIImagePickerController.SourceType.photoLibrary
+        picker.allowsEditing = false
+        self.present(picker, animated: true)
     }
 }

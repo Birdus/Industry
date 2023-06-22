@@ -28,7 +28,6 @@ class SplachViewController: UIViewController {
     }()
     
     // MARK: - View Controller Lifecycle
-    // other properties and methods
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
@@ -39,6 +38,7 @@ class SplachViewController: UIViewController {
     }
     
     // MARK: - Privates func
+    /// Configures the UI elements of the view controller.
     private func configureUI() {
         view.backgroundColor = .white
         self.view.addSubview(lblGreeting)
@@ -52,6 +52,7 @@ class SplachViewController: UIViewController {
         animateGradient()
     }
     
+    /// Backfraund animated in load splash view.
     private func animateGradient() {
         let gradientLayer = CAGradientLayer()
         gradientLayer.frame = view.bounds

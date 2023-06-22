@@ -155,3 +155,7 @@
 "Недействительный токен доступа" = "Invalid Access Token";
 "Ошибка кодирования" = "Encoding Failed";
 "Ошибка декодирования" = "Decoding Failed";
+"Ошибка" = "Error";
+"Вы хотите выйти из акаунта?" = "Do you want to get out of the account?";
+"QR-сканер" = "QR scanner";
+"Неверные логин или пароль" = "Invalid username or password";

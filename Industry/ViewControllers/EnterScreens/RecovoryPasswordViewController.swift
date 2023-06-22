@@ -12,7 +12,7 @@ class RecovoryPasswordViewController: UIViewController {
     private var apiManagerIndustry: APIManagerIndustry? = APIManagerIndustry()
     
     // MARK: - Private UI
-    // Collection view for displaying recovery options
+    /// Collection view for displaying recovery options
     private lazy var collRecovery: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
@@ -29,6 +29,7 @@ class RecovoryPasswordViewController: UIViewController {
         return collectionView
     }()
     
+    /// UI view container round in logo company
     private lazy var containerImg: UIView = {
         let view = UIView()
         view.accessibilityIdentifier = "containerImg"
@@ -55,7 +56,7 @@ class RecovoryPasswordViewController: UIViewController {
         return icon
     }()
     
-    // Back button
+    /// Back button
     private lazy var btnBack: UIBarButtonItem = {
         let btn = UIBarButtonItem(title: "✖️", style: .plain, target: self, action: #selector(btnBack_Click))
         btn.setTitleTextAttributes([
@@ -91,6 +92,8 @@ class RecovoryPasswordViewController: UIViewController {
     }
     
     /// Keyboard will show notification handler
+    ///
+    /// - Parameter notification: The Notification that was show keyboard.
     @objc
     private func kbWillShow(_ notification: Notification) {
         if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
@@ -103,19 +106,21 @@ class RecovoryPasswordViewController: UIViewController {
     }
     
     /// Keyboard will hide notification handler
+    ///
+    /// - Parameter notification: The Notification that was show hide.
     @objc
     private func kbWillHide(_ notification: Notification) {
         self.view.frame.origin.y = 0
     }
     
-    // MARK: - Keyboard Notifications
+    // MARK: - Private Methods
     /// Register for keyboard notifications
     private func registerForKeyboardNotification() {
         NotificationCenter.default.addObserver(self, selector: #selector(kbWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(kbWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
-    // MARK: - Private Methods
+    /// Register show View Activity Indicator
     private func setupBlurAndActivityIndicator() -> (UIActivityIndicatorView, UIVisualEffectView) {
         let activityIndicator = UIActivityIndicatorView(style: .gray)
         activityIndicator.center = view.center
@@ -131,6 +136,10 @@ class RecovoryPasswordViewController: UIViewController {
         return (activityIndicator, blurEffectView)
     }
     
+    /// Register hide View Activity Indicator
+    ///
+    /// - Parameter activityIndicator: This UIActivityIndicatorView ned close inidicator to sucses load
+    /// - Parameter blurEffectView: This UIVisualEffectView ned close inidicator to sucses load
     private func handleSucsess(_ activityIndicator: UIActivityIndicatorView, _ blurEffectView: UIVisualEffectView) {
         DispatchQueue.main.async {
             activityIndicator.stopAnimating()
@@ -166,6 +175,9 @@ class RecovoryPasswordViewController: UIViewController {
         ])
     }
     
+    /// This fumc show alelrt controoler
+    ///
+    /// - Parameter messege: The messege show alert controller
     private func showAlController(messege: String) {
         let alControl:UIAlertController = {
             let alControl = UIAlertController(title: "Ошибка".localized, message: messege, preferredStyle: .alert)
@@ -205,6 +217,12 @@ extension RecovoryPasswordViewController: UICollectionViewDataSource {
 
 // MARK: - RecovoryPasswordCollViewCellDelegate
 extension RecovoryPasswordViewController: RecovoryPasswordCollViewCellDelegate {
+    /// Called when the recovery password collection view cell changes its values.
+    ///
+    /// - Parameters:
+    ///   - viewController: The `RecovoryPasswordCollViewCell` that is notifying the delegate of the change.
+    ///   - values: The new `RecovoryPasswordInfo` values.
+    ///   - complition: A closure that is called when the operation is complete.
     func recovoryPasswordCollViewCell(_ viewController: RecovoryPasswordCollViewCell, didChange values: RecovoryPasswordInfo, complition: @escaping () -> Void) {
         let (activityIndicator, blurEffectView) = setupBlurAndActivityIndicator()
         switch values {
@@ -256,6 +274,12 @@ extension RecovoryPasswordViewController: RecovoryPasswordCollViewCellDelegate {
         }
     }
     
+    /// Called when the recovery password collection view cell changes its password.
+    ///
+    /// - Parameters:
+    ///   - viewController: The `RecovoryPasswordCollViewCell` that is notifying the delegate of the change.
+    ///   - password: The new password.
+    ///   - code: The confirmation code.
     func recovoryPasswordCollViewCell(_ viewController: RecovoryPasswordCollViewCell, didChange password: String, code: Int) {
         let (activityIndicator, blurEffectView) = setupBlurAndActivityIndicator()
         apiManagerIndustry?.post(request: ForecastType.ConfirmResetPassword, data: ConfirmResetPassword(confirmationCode: code, newPassword: password), completionHandler: { result in

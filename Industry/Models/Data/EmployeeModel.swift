@@ -1,6 +1,7 @@
 struct Employee: Codable, Equatable {
     let id: Int
     let firstName: String
+    let email: String
     let secondName: String
     let password: String
     let role: String
@@ -27,6 +28,7 @@ extension Employee: JSONDecodable {
             let serviceNumber = json["serviceNumber"] as? Int,
             let post = json["post"] as? String,
             let iconPath = json["iconPath"] as? String,
+            let email = json["email"] as? String,
             let divisionJson = json["division"] as? [String: Any],
             let laborCostsJson = json["laborCosts"] as? [[String:Any]] else {
             return nil
@@ -38,6 +40,6 @@ extension Employee: JSONDecodable {
             return nil
         }
         
-        return Employee(id: id, firstName: firstName, secondName: secondName, password: password, role: role, divisionId: divisionId, lastName: lastName, serviceNumber: serviceNumber, oneCPass: oneCPass, post: post, iconPath: iconPath, division: division, laborCosts: laborCosts)
+        return Employee(id: id, firstName: firstName, email: email, secondName: secondName, password: password, role: role, divisionId: divisionId, lastName: lastName, serviceNumber: serviceNumber, oneCPass: oneCPass, post: post, iconPath: iconPath, division: division, laborCosts: laborCosts)
     }
 }

@@ -165,6 +165,8 @@ class CalendarTaskViewController: UIViewController {
     
     // MARK: - Action
     /// Handler for the add task and reload buttons.
+    ///
+    /// - Parameter sender: The `UIBarButtonItem` that initiated the event.
     @objc
     private func btnAddTask_Click(_ sender: UIBarButtonItem) {
         let vc = NewTaskViewController()
@@ -175,12 +177,16 @@ class CalendarTaskViewController: UIViewController {
     }
     
     /// Handler for the  reload button.
+    ///
+    /// - Parameter sender: The `UIBarButtonItem` that initiated the event.
     @objc
     private func btnReloadTask_Click(_ sender: UIBarButtonItem) {
         delegete?.calendarTaskViewController(self)
     }
     
     /// Handler for swipe calendare.
+    ///
+    /// - Parameter gesture: The `UISwipeGestureRecognizer` that initiated the event.
     @objc
     private func swipecalendareTask_Swipe(_ gesture: UISwipeGestureRecognizer) {
         switch gesture.direction {
@@ -202,6 +208,9 @@ class CalendarTaskViewController: UIViewController {
     }
     
     // MARK: - Private func
+    /// This function shows or hides the activity indicator.
+    ///
+    /// - Parameter isShow: A Boolean value that determines whether to show the activity indicator.
     private func isViewLoad(_ isShow: Bool) {
         if isShow {
             blurEffectView.contentView.addSubview(activityIndicator)
@@ -213,6 +222,9 @@ class CalendarTaskViewController: UIViewController {
         }
     }
     
+    /// This function shows an alert controller with a specified message.
+    ///
+    /// - Parameter message: The message to display in the alert.
     private func showAlController(message: String) {
         let alControl:UIAlertController = {
             let alControl = UIAlertController(title: "Ошибка".localized, message: message, preferredStyle: .alert)
@@ -228,6 +240,7 @@ class CalendarTaskViewController: UIViewController {
         self.present(alControl, animated: true, completion: nil)
     }
     
+    /// This function sets up notifications for tasks.
     private func notificationTask() {
         guard let dates = employee.laborCosts?.map({ $0.date }) else { return }
         let notificationCenter = UNUserNotificationCenter.current()
@@ -536,16 +549,6 @@ extension CalendarTaskViewController: UITableViewDelegate {
     }
 }
 
-// MARK: - TabBarControllerDelegate
-extension CalendarTaskViewController: TabBarControllerDelegate {
-    func tabBarController(_ tabBarController: TabBarController, didSelectTabAtIndex index: Int, issues datas: [Issues], employee data: Employee) {
-        employee = data
-        issues = datas
-        tblListCalendar.reloadData()
-        clnEvent.reloadData()
-    }
-}
-
 // MARK: - UIViewControllerTransitioningDelegate
 extension CalendarTaskViewController: UIViewControllerTransitioningDelegate {
     func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
@@ -555,22 +558,59 @@ extension CalendarTaskViewController: UIViewControllerTransitioningDelegate {
 
 // MARK: - NewTaskViewControllerDelegate
 extension CalendarTaskViewController: NewTaskViewControllerDelegate {
+    /// Called when the NewTaskViewController has loaded a list of employees.
+    ///
+    /// - Parameters:
+    ///   - viewController: The NewTaskViewController instance that is calling this method.
+    ///   - values: The list of Employee instances that have been loaded.
+    ///   - employees: The list of selected Employee instances.
     func newTaskViewController(_ viewController: NewTaskViewController, didLoad values: [Employee], selected employees: [Employee]?) {
         return
     }
     
+    /// Called when the NewTaskViewController has changed values.
+    ///
+    /// - Parameters:
+    ///   - viewController: The NewTaskViewController instance that is calling this method.
+    ///   - values: A boolean indicating whether values have changed.
     func newTaskViewController(_ viewController: NewTaskViewController, isChande values: Bool) {
         if values {
             self.delegete?.calendarTaskViewController(self)
         }
     }
     
+    /// Called when the NewTaskViewController has closed.
+    ///
+    /// - Parameters:
+    ///   - viewController: The NewTaskViewController instance that is calling this method.
+    ///   - didClosed: A boolean indicating whether the NewTaskViewController has closed.
     func newTaskViewController(_ viewController: NewTaskViewController, didClosed: Bool) {
         return
     }
     
+    /// Called when the NewTaskViewController has loaded a list of projects.
+    ///
+    /// - Parameters:
+    ///   - viewController: The NewTaskViewController instance that is calling this method.
+    ///   - values: The list of Project instances that have been loaded.
     func newTaskViewController(_ viewController: NewTaskViewController, didLoad values: [Project]) {
         return
     }
-    
+}
+
+// MARK: - TabBarControllerDelegate
+extension CalendarTaskViewController: TabBarControllerDelegate {
+    /// Called when a tab is selected in the TabBarController.
+    ///
+    /// - Parameters:
+    ///   - tabBarController: The TabBarController instance that is calling this method.
+    ///   - index: The index of the selected tab.
+    ///   - datas: The list of Issues instances associated with the selected tab.
+    ///   - data: The Employee instance associated with the selected tab.
+    func tabBarController(_ tabBarController: TabBarController, didSelectTabAtIndex index: Int, issues datas: [Issues], employee data: Employee) {
+        employee = data
+        issues = datas
+        tblListCalendar.reloadData()
+        clnEvent.reloadData()
+    }
 }
