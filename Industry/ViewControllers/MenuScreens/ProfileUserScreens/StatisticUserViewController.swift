@@ -38,12 +38,19 @@ class StatisticUserViewController: UIViewController {
         let pieChart: PieChartView = PieChartView()
         pieChart.translatesAutoresizingMaskIntoConstraints = false
         pieChart.legend.enabled = true
-        pieChart.legend.horizontalAlignment = .left
-        pieChart.legend.verticalAlignment = .center
-        pieChart.legend.orientation = .vertical
-        pieChart.drawEntryLabelsEnabled = true
+        pieChart.drawEntryLabelsEnabled = false
+        pieChart.legend.verticalAlignment = .bottom
+        pieChart.legend.horizontalAlignment = .right
+        pieChart.legend.orientation = .horizontal
+        pieChart.legend.drawInside = false
+        pieChart.legend.wordWrapEnabled = true
+        pieChart.legend.formSize = 9.0
+        pieChart.legend.formToTextSpace = 4.0
+        pieChart.legend.xEntrySpace = 6.0
+        pieChart.setExtraOffsets(left: 0, top: 0, right: 0, bottom: 0)
         return pieChart
     }()
+
     
     // MARK: - View Lifecycle
     override func viewDidLoad() {
@@ -78,6 +85,9 @@ class StatisticUserViewController: UIViewController {
     
     // MARK: - Private Methods
     private func showMenu() {
+        navigationController?.navigationBar.barTintColor = .white
+        navigationController?.navigationBar.shadowImage = UIImage()
+        navigationController?.navigationBar.barStyle = .default
         let alControl:UIAlertController = {
             let alControl = UIAlertController(title: "Продолжительность статистики".localized, message: nil, preferredStyle: .alert)
             
@@ -129,25 +139,60 @@ class StatisticUserViewController: UIViewController {
     private func showStatistics(for duration: Duration) {
         let formatter = IndexAxisValueFormatter(values: duration.description.map { "\($0)" })
         brChStatic.xAxis.valueFormatter = formatter
-        
-        var entriesPie = [PieChartDataEntry]()
-        for x in 0..<duration.description.count {
-            entriesPie.append(PieChartDataEntry(value: Double(60 * x), label: duration.description[x]))
-        }
-        
-        var entries = [BarChartDataEntry]()
-        for x in 0..<duration.description.count {
-            entries.append(BarChartDataEntry(x: Double(x), y: Double(60 * x)))
-        }
+
+        let entries = createEntries(for: duration.description)
+        let entriesPie = createPieEntries(for: duration.description)
+
         let dataSetBrCh = BarChartDataSet(entries: entries, label: "₽")
         brChStatic.data = BarChartData(dataSet: dataSetBrCh)
+
         let dataSetPieCh = PieChartDataSet(entries: entriesPie, label: "Затраченное время по часам".localized)
+        dataSetPieCh.valueFormatter = DefaultValueFormatter { (value, entry, dataSetIndex, viewPortHandler) -> String in
+            guard let entry = entry as? PieChartDataEntry else { return "" }
+            return "\(entry.label ?? "") - \(value)"
+        }
         dataSetPieCh.colors = ChartColorTemplates.vordiplom()
         dataSetPieCh.entryLabelColor = .clear
         dataSetPieCh.valueTextColor = .black
         pieChStatic.data = PieChartData(dataSet: dataSetPieCh)
+
+        var legendEntries = [LegendEntry]()
+        for x in 0..<duration.description.count {
+            let label = "\(duration.description[x]) - \(Double(60 * x))"
+            legendEntries.append(LegendEntry(label: label))
+        }
+        pieChStatic.legend.setCustom(entries: legendEntries)
+
         configureUI()
     }
+
+    private func createEntries(for description: [String]) -> [BarChartDataEntry] {
+        var entries = [BarChartDataEntry]()
+        for x in 0..<description.count {
+            entries.append(BarChartDataEntry(x: Double(x), y: Double(60 * x)))
+        }
+        return entries
+    }
+
+    private func createPieEntries(for description: [String]) -> [PieChartDataEntry] {
+        var entriesPie = [PieChartDataEntry]()
+        for x in 0..<description.count {
+            let label = "\(description[x]) - \(Double(60 * x))"
+            entriesPie.append(PieChartDataEntry(value: Double(60 * x), label: label))
+        }
+        return entriesPie
+    }
+
+
+    private func createLegendEntries(for description: [String]) -> [LegendEntry] {
+        var legendEntries = [LegendEntry]()
+        for duration in description {
+            let legendEntry: LegendEntry = LegendEntry(label: duration)
+            legendEntries.append(legendEntry)
+        }
+        return legendEntries
+    }
+
     
     private func configureUI() {
         self.navigationItem.leftBarButtonItem = btnBack

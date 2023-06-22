@@ -14,16 +14,24 @@ enum Duration {
     case year
     
     var description: [String] {
+        let formatter = DateFormatter()
+        let calendar = Calendar.current
+        let now = Date()
+        
         switch self {
         case .week:
-            return ["Понедельник".localized,"Вторник".localized,"Среда".localized,"Четверг".localized,"Пятница".localized,"Суббота".localized]
+            return formatter.weekdaySymbols
         case .month:
-            let formatter = DateFormatter()
-            return (1...12).compactMap { month in
-                formatter.monthSymbols[month - 1]
-            }
+            let year = calendar.component(.year, from: now)
+            let month = calendar.component(.month, from: now)
+            var components = DateComponents()
+            components.year = year
+            components.month = month
+            let date = calendar.date(from: components)!
+            let range = calendar.range(of: .day, in: .month, for: date)!
+            return range.map { "\($0)" }
         case .year:
-            return ["01","02","03","04","05","06","07","08","09","10","11","12"]
+            return formatter.monthSymbols
         }
     }
     
@@ -38,4 +46,3 @@ enum Duration {
         }
     }
 }
-
