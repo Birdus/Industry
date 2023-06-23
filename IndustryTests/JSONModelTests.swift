@@ -61,6 +61,7 @@ class JSONModelTests: XCTestCase {
         [
             "id": 1,
             "firstName": "Daniil",
+            "email" : "dg@mail.ru",
             "secondName": "Vinokurov",
             "password": "qwerty",
             "role": "Admin",
@@ -81,7 +82,7 @@ class JSONModelTests: XCTestCase {
         let devision = Division(id: 4, divisionName: "Продажи")
         
         
-        let expectedEmployee = Employee(id: 1, firstName: "Daniil", secondName: "Vinokurov", password: "qwerty", role: "Admin", divisionId: 1, lastName: "Antonovic", serviceNumber: 23232, oneCPass: 123131, post: "Glav", iconPath: "ddd", division: devision, laborCosts: [])
+        let expectedEmployee = Employee(id: 1, firstName: "Daniil", email: "dg@mail.ru", secondName: "Vinokurov", password: "qwerty", role: "Admin", divisionId: 1, lastName: "Antonovic", serviceNumber: 23232, oneCPass: 123131, post: "Glav", iconPath: "ddd", division: devision, laborCosts: [])
         
         // when
         let employee = Employee.decodeJSON(json: json)
