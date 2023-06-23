@@ -12,6 +12,7 @@
  */
 
 import UIKit
+import AVFoundation
 
 // MARK: - MenuTabBarControllerDelegate
 protocol TabBarControllerDelegate: AnyObject {
@@ -41,6 +42,8 @@ class TabBarController: UITabBarController {
 
     /// The `APIManagerIndustry` object used for API calls.
     private var apiManagerIndustry: APIManagerIndustry? = APIManagerIndustry()
+    
+    private var captureSession: AVCaptureSession?
     
     // MARK: - Private UI
     /// The visual effect view blur need for reload data
@@ -126,6 +129,7 @@ class TabBarController: UITabBarController {
             }
         }
     }
+    
     
     private func resizeImage(_ image: UIImage, to targetSize: CGSize) -> UIImage? {
         let size = image.size
@@ -414,6 +418,7 @@ extension TabBarController: CalendarTaskViewControllerDelegate {
 
 // MARK: - ProfileUserViewControllerDelegate
 extension TabBarController: ProfileUserViewControllerDelegate {
+    
     /// Called when the profile user view controller exports an employee image.
     ///
     /// - Parameters:
@@ -468,4 +473,3 @@ extension TabBarController: ProfileUserViewControllerDelegate {
         imageUser(image)
     }
 }
-

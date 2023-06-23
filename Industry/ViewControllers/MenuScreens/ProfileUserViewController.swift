@@ -29,6 +29,8 @@ class ProfileUserViewController: UIViewController {
     
     /// The `AVCaptureSession` object used for scanning QR codes.
     private var captureSession: AVCaptureSession?
+    private var previewLayer: AVCaptureVideoPreviewLayer?
+    private var overlayView: UIView?
     // MARK: - Private UI
     /// A table view that displays menu items.
     private lazy var tblMenu: UITableView = {
@@ -90,45 +92,130 @@ class ProfileUserViewController: UIViewController {
         }
     }
 
+    @objc
+    func exitButton_Tapped(_ sender: UIButton) {
+        closeCamera()
+    }
     // MARK: - Private Methods
-    /// Starts scanning for a QR code.
+    private func closeCamera() {
+        self.captureSession?.stopRunning()
+        self.previewLayer?.removeFromSuperlayer()
+        self.overlayView?.removeFromSuperview()
+        
+        self.previewLayer = nil
+        self.overlayView = nil
+    }
+    
     private func startScanningQRCode() {
-        AVCaptureDevice.requestAccess(for: .video) { response in
+        AVCaptureDevice.requestAccess(for: .video) { [weak self] response in
+            guard let self = self else { return }
+            
             if response {
-                self.captureSession = AVCaptureSession()
-                guard let videoCaptureDevice = AVCaptureDevice.default(for: .video) else { return }
-                let videoInput: AVCaptureDeviceInput
-                do {
-                    videoInput = try AVCaptureDeviceInput(device: videoCaptureDevice)
-                } catch {
-                    return
+                DispatchQueue.main.async {
+                    self.setupCaptureSession()
                 }
-                if (self.captureSession?.canAddInput(videoInput)) != nil {
-                    self.captureSession?.addInput(videoInput)
+            } else {
+                self.showAlController(messege: "Доступ к камере запрещен")
+            }
+        }
+    }
+
+    private func setupCaptureSession() {
+            captureSession = AVCaptureSession()
+
+            guard let videoCaptureDevice = AVCaptureDevice.default(for: .video) else {
+                self.showAlController(messege: "Не удалось получить доступ к камере")
+                return
+            }
+
+            do {
+                let videoInput = try AVCaptureDeviceInput(device: videoCaptureDevice)
+                if captureSession!.canAddInput(videoInput) {
+                    captureSession!.addInput(videoInput)
                 } else {
+                    self.showAlController(messege: "Не удалось добавить входное устройство видеозахвата")
                     return
                 }
+
                 let metadataOutput = AVCaptureMetadataOutput()
-                if (self.captureSession?.canAddOutput(metadataOutput)) != nil {
-                    self.captureSession?.addOutput(metadataOutput)
+                if captureSession!.canAddOutput(metadataOutput) {
+                    captureSession!.addOutput(metadataOutput)
                     metadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
                     metadataOutput.metadataObjectTypes = [.qr]
                 } else {
+                    self.showAlController(messege: "Не удалось добавить выходное устройство видеозахвата")
                     return
                 }
-                let previewLayer = AVCaptureVideoPreviewLayer(session: self.captureSession!)
-                previewLayer.frame = self.view.layer.bounds
-                previewLayer.videoGravity = .resizeAspectFill
-                self.view.layer.addSublayer(previewLayer)
-                self.captureSession?.startRunning()
-                let overlayView = UIView()
-                overlayView.frame = self.view.bounds
-                self.view.addSubview(overlayView)
-                overlayView.addGestureRecognizer(self.swipeRightScaner)
-            } else {
-                return
+
+                self.previewLayer = AVCaptureVideoPreviewLayer(session: captureSession!)
+                previewLayer!.frame = view.layer.bounds
+                previewLayer!.videoGravity = .resizeAspectFill
+                self.view.layer.addSublayer(previewLayer!)
+
+                captureSession!.startRunning()
+
+                self.overlayView = UIView(frame: view.bounds)
+                self.view.addSubview(overlayView!)
+                overlayView!.addGestureRecognizer(swipeRightScaner)
+
+                // Add exit button
+                let exitButton = UIButton()
+                guard let overlayView = overlayView else {
+                    return
+                }
+                exitButton.setTitle("Exit", for: .normal)
+                exitButton.translatesAutoresizingMaskIntoConstraints = false
+                exitButton.titleLabel?.textColor = .blue
+                overlayView.addSubview(exitButton)
+                exitButton.addTarget(self, action: #selector(exitButton_Tapped), for: .touchUpInside)
+
+                NSLayoutConstraint.activate([
+                    exitButton.topAnchor.constraint(equalTo: overlayView.topAnchor, constant: 20),
+                    exitButton.leadingAnchor.constraint(equalTo: overlayView.leadingAnchor, constant: 20),
+                    exitButton.widthAnchor.constraint(equalToConstant: 60),
+                    exitButton.heightAnchor.constraint(equalToConstant: 60)
+                ])
+
+            } catch {
+                self.showAlController(messege: "Ошибка при инициализации устройства видеозахвата")
             }
         }
+
+        
+    /// This fumc show alelrt controoler
+    ///
+    /// - Parameter messege: The messege show alert controller
+    private func showAlController(messege: String) {
+        let alControl:UIAlertController = {
+            let alControl = UIAlertController(title: "Ошибка".localized, message: messege, preferredStyle: .alert)
+            let btnOk: UIAlertAction = {
+                let btn = UIAlertAction(title: "Ok".localized,
+                                        style: .default,
+                                        handler: nil )
+                return btn
+            }()
+            alControl.addAction(btnOk)
+            return alControl
+        }()
+        self.present(alControl, animated: true, completion: nil)
+    }
+    
+    /// This fumc show alelrt controoler
+    ///
+    /// - Parameter messege: The messege show alert controller
+    private func showAlController(messege: String, title: String) {
+        let alControl:UIAlertController = {
+            let alControl = UIAlertController(title: title, message: messege, preferredStyle: .alert)
+            let btnOk: UIAlertAction = {
+                let btn = UIAlertAction(title: "Ok".localized,
+                                        style: .default,
+                                        handler: nil )
+                return btn
+            }()
+            alControl.addAction(btnOk)
+            return alControl
+        }()
+        self.present(alControl, animated: true, completion: nil)
     }
 
     /// Configures the view controller's UI.
@@ -179,12 +266,21 @@ extension ProfileUserViewController: UITableViewDelegate {
         switch indexPath.row {
         case 2:
             vc = NotificationListViewController()
+            let vcNav = UINavigationController(rootViewController: vc)
+            vcNav.modalPresentationStyle = .fullScreen
+            navigationController?.present(vcNav, animated: true, completion: nil)
         case 3:
             vc = StatisticUserViewController()
+            let vcNav = UINavigationController(rootViewController: vc)
+            vcNav.modalPresentationStyle = .fullScreen
+            navigationController?.present(vcNav, animated: true, completion: nil)
         case 4:
             vc = SettingUserViewController()
+            let vcNav = UINavigationController(rootViewController: vc)
+            vcNav.modalPresentationStyle = .fullScreen
+            navigationController?.present(vcNav, animated: true, completion: nil)
         case 5:
-            startScanningQRCode()
+            setupCaptureSession()
         case 6:
             let alControl: UIAlertController = {
                 let alControl = UIAlertController(title: "Выход".localized, message: "Вы хотите выйти из акаунта?".localized, preferredStyle: .alert)
@@ -214,9 +310,6 @@ extension ProfileUserViewController: UITableViewDelegate {
         default:
             return
         }
-        let vcNav = UINavigationController(rootViewController: vc)
-        vcNav.modalPresentationStyle = .fullScreen
-        navigationController?.present(vcNav, animated: true, completion: nil)
     }
 }
 
@@ -327,8 +420,9 @@ extension ProfileUserViewController: AVCaptureMetadataOutputObjectsDelegate {
         if let metadataObject = metadataObjects.first,
            let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject,
            let stringValue = readableObject.stringValue {
-            print("QR Code Scanned: \(stringValue)")
+            self.showAlController(messege: stringValue, title: "Ваш отсканированный QR")
             captureSession?.stopRunning()
+            closeCamera()
         }
     }
 }
